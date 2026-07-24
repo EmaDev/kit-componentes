@@ -58,7 +58,6 @@ hooks/
   useStatusBarColor.ts         # tiñe la barra de estado (theme-color)
 docs/                     # guía de uso de cada componente y hook (ver enlace arriba)
 dev/                      # playground Vite que importa components/ real (ver sección Preview)
-preview.html              # demo visual standalone (mock, no importa components/)
 ```
 
 ## 🔧 Instalación
@@ -121,16 +120,7 @@ Todos los colores usan CSS variables (`--color-primary`, `--color-foreground`, �
 
 ## 🧪 Preview y desarrollo local
 
-Hay dos formas de ver los componentes corriendo, con propósitos distintos:
-
-**`preview.html`** — demo visual standalone (React + Babel + Tailwind Play, todo por CDN, sin build). Es una **reimplementación a mano** de cada componente en `preview/*.jsx` (mismo look, animaciones en CSS en vez de Framer Motion). Sirve para mostrar el diseño rápido, pero no importa el código real — si agregás un componente nuevo en `components/`, no aparece acá solo, hay que replicarlo a mano.
-
-```bash
-npx serve .
-# abrí http://localhost:3000/preview.html
-```
-
-**`dev/`** — playground real con Vite que importa los componentes **directamente desde `components/`** (mismo Tailwind v4 + Framer Motion que consume cualquier proyecto). Cualquier componente nuevo que agregues y uses en `dev/src/sections/*.tsx` se ve con su comportamiento real, sin duplicar nada.
+`dev/` es un playground real con Vite que importa los componentes **directamente desde `components/`** (mismo Tailwind v4 + Framer Motion que consume cualquier proyecto) — no un mock.
 
 ```bash
 cd dev
@@ -139,9 +129,9 @@ npm run dev
 # abrí la URL que imprime Vite (típicamente http://localhost:5173)
 ```
 
-Los tres componentes que dependen de Next.js (`Navbar`, `SideBar`, `BottomNav`, por `next/link`/`next/navigation`) no resuelven en este playground de Vite — se documentan aparte en la pestaña "Plataforma" y se ven (con mock visual) en `preview.html`.
+Los tres componentes que dependen de Next.js (`Navbar`, `SideBar`, `BottomNav`, por `next/link`/`next/navigation`) no resuelven en este playground de Vite — tienen su propia sección en el sidebar con una nota explicando por qué, en vez de una demo en vivo.
 
-Para agregar un componente nuevo al playground: creá el `.tsx` en `components/`, exportalo en `components/index.ts`, e importalo en la sección de `dev/src/sections/` que corresponda (o creá una nueva sección y sumala a `TABS` en `dev/src/App.tsx`).
+Para agregar un componente nuevo al playground (y el resto de los pasos obligatorios al crear uno): ver [CLAUDE.md](CLAUDE.md).
 
 ## 📚 Uso rápido
 

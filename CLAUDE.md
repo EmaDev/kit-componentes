@@ -21,7 +21,7 @@ Esto aplica tanto a componentes en `components/` como a hooks en `hooks/`. Ning�
 
 4. **Agregarlo al `README.md` principal**: una línea en el árbol de `## 📁 Estructura` (con comentario corto de qué hace), y si corresponde, un bloque en `## 📚 Uso rápido` o la sección temática correspondiente (Datos, PWA, Plataforma, etc.).
 
-5. **Agregarlo al playground real (`dev/`)** — NO a `preview.html` (ese es un mock visual standalone, desactualizado a propósito, no se mantiene). Pasos:
+5. **Agregarlo al playground real (`dev/`)**. Pasos:
    - Importar el componente real desde `../../../components/<Nombre>` en el grupo de `dev/src/sections/` que corresponda (`AtomsGroup.tsx`, `InteractionGroup.tsx`, `DataGroup.tsx`, `PwaGroup.tsx`), o crear un grupo nuevo si no encaja en ninguno.
    - Envolverlo en `<Section id="..." title="..." description="...">` con al menos una `<Card>` mostrando un uso representativo (interactivo si el componente tiene estado).
    - Si es un grupo nuevo, registrarlo en `dev/src/chrome/groups.ts` (`GROUPS`) para que aparezca en el sidebar con scroll-spy, y agregar el `<GroupHeader/>` + el grupo en `dev/src/App.tsx`.
