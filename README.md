@@ -1,6 +1,8 @@
 # Scaffolding · Atomic Components
 
-12 componentes atómicos + 3 de datos + 6 moléculas PWA para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+31 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+
+> 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
 ## 📁 Estructura
 
@@ -15,8 +17,14 @@ components/
   Dropdown.tsx
   Spinner.tsx
   Toast.tsx              # incluye <ToastProvider> + hook useToast()
+  Checkbox.tsx           # + <CheckboxGroup/>
   Modal.tsx
   BottomSheet.tsx        # 7 alturas + snapPoints arrastrables
+  Breadcrumbs.tsx
+  FlipCard.tsx           # + <CreditCard/> y <CreditCardStack/>
+  FloatingButton.tsx     # FAB + speed dial
+  Stepper.tsx            # + <AddButton/>
+  Progress.tsx           # <ProgressBar/> <ProgressRing/> <StepsProgress/>
   DataTable.tsx          # orden, búsqueda, selección, paginado, sticky header
   Spreadsheet.tsx        # hoja de cálculo editable con fórmulas y atajos
   CalendarGrid.tsx       # grilla mensual con eventos
@@ -48,7 +56,9 @@ hooks/
   useKeyboardInset.ts          # altura del teclado virtual (--kb-inset)
   useHaptics.ts                # feedback táctil con nombres semánticos
   useStatusBarColor.ts         # tiñe la barra de estado (theme-color)
-preview.html             # demo en vivo de todos los componentes
+docs/                     # guía de uso de cada componente y hook (ver enlace arriba)
+dev/                      # playground Vite que importa components/ real (ver sección Preview)
+preview.html              # demo visual standalone (mock, no importa components/)
 ```
 
 ## 🔧 Instalación
