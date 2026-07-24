@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Scaffolding · Atomic Components</title>
+
+<!-- Tailwind v3 play CDN (preview only — el proyecto real usa Tailwind v4) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          primary:         'rgb(var(--color-primary-rgb) / <alpha-value>)',
+          'primary-hover': 'rgb(var(--color-primary-hover-rgb) / <alpha-value>)',
+          surface:         'rgb(var(--color-surface-rgb) / <alpha-value>)',
+          'surface-alt':   'rgb(var(--color-surface-alt-rgb) / <alpha-value>)',
+          foreground:      'rgb(var(--color-foreground-rgb) / <alpha-value>)',
+          muted:           'rgb(var(--color-muted-rgb) / <alpha-value>)',
+          border:          'rgb(var(--color-border-rgb) / <alpha-value>)',
+          accent:          'rgb(var(--color-accent-rgb) / <alpha-value>)',
+          danger:          'rgb(var(--color-danger-rgb) / <alpha-value>)',
+          success:         'rgb(var(--color-success-rgb) / <alpha-value>)',
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace'],
+        },
+        height: { 13: '3.25rem' },
+      }
+    }
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+  /* === Theme tokens ============================================
+     Cada color se define dos veces:
+     · hex   — para usar en style={{ background: var(--color-x) }}
+     · -rgb  — canales sueltos, para que los modificadores de opacidad
+              de Tailwind (bg-primary/10) resuelvan correctamente.
+     ============================================================ */
+  :root {
+    --color-primary: #2563eb;         --color-primary-rgb: 37 99 235;
+    --color-primary-hover: #1d4ed8;   --color-primary-hover-rgb: 29 78 216;
+    --color-surface: #ffffff;         --color-surface-rgb: 255 255 255;
+    --color-surface-alt: #f8fafc;     --color-surface-alt-rgb: 248 250 252;
+    --color-foreground: #0f172a;      --color-foreground-rgb: 15 23 42;
+    --color-muted: #64748b;           --color-muted-rgb: 100 116 139;
+    --color-border: #e2e8f0;          --color-border-rgb: 226 232 240;
+    --color-accent: #8b5cf6;          --color-accent-rgb: 139 92 246;
+    --color-danger: #ef4444;          --color-danger-rgb: 239 68 68;
+    --color-success: #22c55e;         --color-success-rgb: 34 197 94;
+  }
+  .dark {
+    --color-primary: #3b82f6;         --color-primary-rgb: 59 130 246;
+    --color-primary-hover: #60a5fa;   --color-primary-hover-rgb: 96 165 250;
+    --color-surface: #0f172a;         --color-surface-rgb: 15 23 42;
+    --color-surface-alt: #1e293b;     --color-surface-alt-rgb: 30 41 59;
+    --color-foreground: #f1f5f9;      --color-foreground-rgb: 241 245 249;
+    --color-muted: #94a3b8;           --color-muted-rgb: 148 163 184;
+    --color-border: #334155;          --color-border-rgb: 51 65 85;
+    --color-accent: #a78bfa;          --color-accent-rgb: 167 139 250;
+    --color-danger: #f87171;          --color-danger-rgb: 248 113 113;
+    --color-success: #4ade80;         --color-success-rgb: 74 222 128;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  html, body {
+    background-color: var(--color-surface);
+    color: var(--color-foreground);
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* === Scrollbar =============================================== */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+  /* === Keyframes used by preview ============================= */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-30%); opacity: 1; }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  @keyframes barScale {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(380px) scale(0.9); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  @keyframes toastBar {
+    from { width: 100%; }
+    to   { width: 0; }
+  }
+  @keyframes pwaSpringUp {
+    from { transform: translate(-50%, 120px) scale(0.95); opacity: 0; }
+    to   { transform: translate(-50%, 0) scale(1); opacity: 1; }
+  }
+  @keyframes pwaSlideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  @keyframes pwaBob {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50%      { transform: translateY(6px); opacity: 1; }
+  }
+  @keyframes pwaBlink {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1; }
+  }
+  @keyframes pwaBellSwing {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-12deg); }
+    45% { transform: rotate(12deg); }
+    70% { transform: rotate(-8deg); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes sheetOut {
+    from { transform: translateY(0); }
+    to   { transform: translateY(100%); }
+  }
+  /* === Splash screen ========================================= */
+  @keyframes splashRise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes splashPop {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes splashTilt {
+    from { opacity: 0; transform: rotate(-8deg) scale(0.9); }
+    to   { opacity: 1; transform: rotate(0) scale(1); }
+  }
+  @keyframes splashSpring {
+    from { opacity: 0; transform: scale(0.4); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes splashDrop {
+    from { opacity: 0; transform: translateY(18px) rotate(-6deg); }
+    to   { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+  @keyframes splashPulse {
+    from { transform: scale(1); opacity: 0.55; }
+    to   { transform: scale(1.9); opacity: 0; }
+  }
+  @keyframes splashZoomOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.12); }
+  }
+  @keyframes splashWipeUp {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-100%); }
+  }
+  @keyframes splashWipeDown {
+    from { transform: translateY(0); }
+    to   { transform: translateY(100%); }
+  }
+  @keyframes splashContentOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.94); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes ripple {
+    from { transform: scale(0); opacity: 0.6; }
+    to   { transform: scale(1); opacity: 0; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .animate-spin { animation: spin 0.9s linear infinite; }
+
+  /* selección texto */
+  input, textarea, [contenteditable="true"], p, code, pre {
+    -webkit-user-select: text; user-select: text;
+  }
+</style>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react" src="preview/atoms.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/shell.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/pwa.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/sheet.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/platform.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/splash.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/native.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/table.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/spreadsheet.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/calendar.jsx"></script>
+<script type="text/babel" data-presets="react" src="preview/app.jsx"></script>
+</body>
+</html>
