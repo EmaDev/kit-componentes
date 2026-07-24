@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DataTable, type Column } from "../../../components/DataTable";
 import { Spreadsheet } from "../../../components/Spreadsheet";
 import { CalendarGrid, type CalendarEvent } from "../../../components/CalendarGrid";
-import { Card } from "./Layout";
+import { Section, Card } from "../chrome/Section";
 
 interface Person {
   id: string;
@@ -34,12 +34,11 @@ const EVENTS: CalendarEvent[] = [
   { id: "e3", title: "Entrega", start: new Date(today.getFullYear(), today.getMonth(), 20), color: "success" },
 ];
 
-export function DataSection() {
+function DataTableSection() {
   const [selected, setSelected] = useState<string[]>([]);
-
   return (
-    <div className="flex flex-col gap-6">
-      <Card title="DataTable">
+    <Section id="datatable" title="DataTable" description="Orden, búsqueda, selección, paginado y header sticky.">
+      <Card>
         <DataTable
           columns={columns}
           rows={PEOPLE}
@@ -53,8 +52,14 @@ export function DataSection() {
           maxHeight="320px"
         />
       </Card>
+    </Section>
+  );
+}
 
-      <Card title="Spreadsheet">
+function SpreadsheetSection() {
+  return (
+    <Section id="spreadsheet" title="Spreadsheet" description="Hoja de cálculo editable con fórmulas y atajos de Excel.">
+      <Card>
         <Spreadsheet
           rows={12}
           cols={6}
@@ -63,10 +68,26 @@ export function DataSection() {
           initial={{ A1: "Mes", B1: "Ingresos", A2: "Enero", B2: "1200", A3: "Febrero", B3: "1450", B4: "=SUM(B2:B3)" }}
         />
       </Card>
+    </Section>
+  );
+}
 
-      <Card title="CalendarGrid">
+function CalendarSection() {
+  return (
+    <Section id="calendar" title="CalendarGrid" description="Grilla mensual con eventos, click en día/evento y semanas adyacentes.">
+      <Card>
         <CalendarGrid events={EVENTS} weekStartsOn={1} maxPerDay={3} />
       </Card>
-    </div>
+    </Section>
+  );
+}
+
+export function DataGroup() {
+  return (
+    <>
+      <DataTableSection />
+      <SpreadsheetSection />
+      <CalendarSection />
+    </>
   );
 }
