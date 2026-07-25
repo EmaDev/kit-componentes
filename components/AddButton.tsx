@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 
-interface StepperProps {
+interface AddButtonProps {
   value: number;
   /** puede devolver una promesa: el botón muestra loading hasta que resuelva */
   onChange: (value: number) => void | Promise<unknown>;
@@ -28,14 +28,14 @@ const S = {
 };
 
 /**
- * Stepper de cantidad con loading independiente en «+» y «−»: si onChange
+ * Control de cantidad con loading independiente en «+» y «−»: si onChange
  * devuelve una promesa, sólo ese botón queda en spinner y el otro se bloquea.
  */
-export function Stepper({
+export function AddButton({
   value, onChange, min = 0, max = 99, step = 1,
   size = "md", variant = "solid", collapsible = false,
   unit, disabled = false, className = "",
-}: StepperProps) {
+}: AddButtonProps) {
   const [busy, setBusy] = useState<"inc" | "dec" | null>(null);
   const [expanded, setExpanded] = useState(!collapsible || value > min);
   const prev = useRef(value);
@@ -127,58 +127,6 @@ export function Stepper({
   );
 }
 
-/** Botón "agregar" con estados idle → loading → hecho. */
-export function AddButton({
-  onAdd, label = "Agregar", addedLabel = "Agregado", size = "md", className = "",
-}: {
-  onAdd: () => void | Promise<unknown>;
-  label?: string;
-  addedLabel?: string;
-  size?: "sm" | "md" | "lg";
-  className?: string;
-}) {
-  const [state, setState] = useState<"idle" | "busy" | "done">("idle");
-  const h = { sm: "h-8 px-3 text-xs", md: "h-10 px-4 text-sm", lg: "h-12 px-5 text-base" }[size];
-
-  const click = async () => {
-    if (state !== "idle") return;
-    setState("busy");
-    try {
-      await onAdd();
-      setState("done");
-      setTimeout(() => setState("idle"), 1600);
-    } catch {
-      setState("idle");
-    }
-  };
-
-  return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      onClick={click}
-      disabled={state !== "idle"}
-      className={[
-        "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors",
-        h,
-        state === "done" ? "bg-success text-white" : "bg-primary text-white shadow-sm shadow-primary/30 hover:bg-primary-hover",
-        className,
-      ].join(" ")}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={state}
-          initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.16 }}
-          className="inline-flex items-center gap-2"
-        >
-          {state === "busy" ? <Spin /> : state === "done" ? <CheckIcon /> : <PlusIcon size="sm" />}
-          {state === "done" ? addedLabel : label}
-        </motion.span>
-      </AnimatePresence>
-    </motion.button>
-  );
-}
-
 /* ---------- iconos ---------- */
 const dims = { sm: 14, md: 16, lg: 20 };
 function PlusIcon({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
@@ -194,13 +142,6 @@ function MinusIcon({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   return (
     <svg width={d} height={d} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
       <line x1="5" y1="12" x2="19" y2="12" />
-    </svg>
-  );
-}
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
     </svg>
   );
 }

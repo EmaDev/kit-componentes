@@ -46,7 +46,7 @@ export const GROUPS: Group[] = [
       { id: "breadcrumbs", label: "Breadcrumbs" },
       { id: "flipcard", label: "FlipCard" },
       { id: "floatingbutton", label: "FloatingButton" },
-      { id: "stepper", label: "Stepper" },
+      { id: "addbutton", label: "AddButton" },
       { id: "progress", label: "Progress" },
       { id: "skeleton", label: "Skeleton" },
     ],
@@ -88,6 +88,20 @@ export const GROUPS: Group[] = [
       { id: "carousel", label: "Carrusel" },
       { id: "imagezoom", label: "Imagen con zoom" },
       { id: "tabs", label: "Tabs" },
+    ],
+  },
+  {
+    id: "heroes",
+    label: "Heroes",
+    kicker: "Heroes",
+    tone: "accent",
+    blurb:
+      "Cabeceras de pantalla completa listas para el tope de una vista: buscador con sugerencias en vivo, imagen a sangre con overlay, pestañas horizontales scrolables y saludo de bienvenida.",
+    sections: [
+      { id: "herosearch", label: "HeroSearch" },
+      { id: "heroimage", label: "HeroImage" },
+      { id: "herotabs", label: "HeroTabs" },
+      { id: "herowelcome", label: "HeroWelcome" },
     ],
   },
   {

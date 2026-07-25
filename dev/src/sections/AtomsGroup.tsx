@@ -39,7 +39,7 @@ const TOPICS = [
 function ButtonSection() {
   const [loading, setLoading] = useState(false);
   return (
-    <Section id="button" title="Button" description="6 variantes · 4 tamaños · loading state · iconos · hover lift y tap scale.">
+    <Section id="button" title="Button" description="6 variantes · 4 tamaños · loading state · iconos · ripple y tap scale.">
       <div className="grid lg:grid-cols-2 gap-4">
         <Card title="Variantes">
           <div className="flex flex-wrap gap-2">

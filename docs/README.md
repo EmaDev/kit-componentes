@@ -32,7 +32,8 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una tarjeta que se voltea en 3D (fichas, tarjetas de crédito) | [FlipCard](components/FlipCard.md) |
 | Mostrar/seleccionar una tarjeta de crédito/débito | [FlipCard](components/FlipCard.md) (`CreditCard` / `CreditCardStack`) |
 | Un botón de acción flotante (FAB), con o sin speed dial | [FloatingButton](components/FloatingButton.md) |
-| Un control de cantidad (+ / −), tipo carrito de compras | [Stepper](components/Stepper.md) |
+| Un control de cantidad (+ / −), tipo carrito de compras | [AddButton](components/AddButton.md) |
+| Un botón "agregar" con confirmación idle → loading → hecho | [AddToCartButton](components/AddToCartButton.md) |
 | Una barra o anillo de progreso, o un indicador de pasos de un wizard | [Progress](components/Progress.md) |
 | Un placeholder animado mientras carga contenido (texto, avatar, tarjeta, lista, tabla) | [Skeleton](components/Skeleton.md) |
 | Un panel para ajustar/exportar la paleta de colores del tema (marca, superficie, texto, estado) | [ThemeConfigurator](components/ThemeConfigurator.md) |
@@ -41,6 +42,10 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una galería de imágenes navegable (drag, flechas, dots, miniaturas, autoplay) | [Carousel](components/Carousel.md) |
 | Ampliar **una** imagen a pantalla completa con pan y zoom | [ImageZoom](components/ImageZoom.md) (`ZoomableImage`) |
 | Dividir contenido en pestañas dentro de una misma pantalla | [Tabs](components/Tabs.md) |
+| Una cabecera de pantalla completa con buscador y sugerencias en vivo | [HeroSearch](components/Hero.md) |
+| Una cabecera con imagen a sangre, overlay y datos destacados (portada) | [HeroImage](components/Hero.md) |
+| Una cabecera con pestañas horizontales scrolables (bandeja, listado con muchas categorías) | [HeroTabs](components/Hero.md) |
+| Un saludo de bienvenida con dato destacado y accesos rápidos, para el home de la app | [HeroWelcome](components/Hero.md) |
 | Una fila horizontal de chips (categorías, filtros, personas) con drag y snap | [ChipCarousel](components/ChipCarousel.md) |
 | Un teclado numérico propio a pantalla completa (no el del sistema) | [Keypad](components/Keypad.md) |
 | Una pantalla de bloqueo por PIN o contraseña al abrir la app | [PinLock](components/PinLock.md) |
@@ -94,7 +99,8 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Breadcrumbs](components/Breadcrumbs.md) | Ruta de navegación con colapso automático. |
 | [FlipCard](components/FlipCard.md) | Tarjeta 3D volteable + `CreditCard` / `CreditCardStack`. |
 | [FloatingButton](components/FloatingButton.md) | FAB con speed dial opcional. |
-| [Stepper](components/Stepper.md) | Control de cantidad + `AddButton`. |
+| [AddButton](components/AddButton.md) | Control de cantidad (+/−) con loading independiente por botón. |
+| [AddToCartButton](components/AddToCartButton.md) | Botón "agregar" con estados idle → loading → hecho. |
 | [Progress](components/Progress.md) | `ProgressBar`, `ProgressRing`, `StepsProgress`. |
 | [Skeleton](components/Skeleton.md) | Placeholders animados: primitivo + `SkeletonText`/`Avatar`/`Card`/`List`/`Table`. |
 
@@ -113,6 +119,15 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
 | [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
+
+### Heroes
+
+| Componente | Descripción |
+|---|---|
+| [HeroSearch](components/Hero.md) | Cabecera con buscador, sugerencias frecuentes y resultados en vivo. |
+| [HeroImage](components/Hero.md) | Cabecera con imagen a sangre, overlay, metadatos y acciones. |
+| [HeroTabs](components/Hero.md) | Cabecera con pestañas horizontales scrolables + panel opcional. |
+| [HeroWelcome](components/Hero.md) | Saludo de bienvenida + dato destacado + accesos rápidos, para el home de la app. |
 
 ### Bloques de app
 

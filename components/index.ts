@@ -32,7 +32,8 @@ export { FlipCard, CreditCard, CreditCardStack } from "./FlipCard";
 export type { CreditCardData } from "./FlipCard";
 export { FloatingButton } from "./FloatingButton";
 export type { FabAction } from "./FloatingButton";
-export { Stepper, AddButton } from "./Stepper";
+export { AddButton } from "./AddButton";
+export { AddToCartButton } from "./AddToCartButton";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
 export { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "./Skeleton";
 export type { SkeletonVariant, SkeletonAnimation } from "./Skeleton";
@@ -64,6 +65,10 @@ export type { CarouselImage } from "./Carousel";
 export { ImageZoom, ZoomableImage } from "./ImageZoom";
 export { Tabs } from "./Tabs";
 export type { TabItem, TabsVariant, TabsSize } from "./Tabs";
+
+// --- Heroes ---
+export { HeroSearch, HeroImage, HeroTabs, HeroWelcome, greetingFor } from "./Hero";
+export type { HeroSearchProps, HeroImageProps, HeroTabsProps, HeroWelcomeProps, HeroTab } from "./Hero";
 
 // --- Bloques de app ---
 export { ChipCarousel } from "./ChipCarousel";

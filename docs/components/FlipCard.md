@@ -15,7 +15,7 @@ import { FlipCard, CreditCard, CreditCardStack, type CreditCardData } from "lib-
 
 - Si sólo necesitás mostrar datos de tarjeta sin la interacción de volteo (por ejemplo, un resumen de facturación de sólo lectura), puede ser más simple maquetar una tarjeta estática en vez de `CreditCard`.
 - Si el reveal no necesita ser literalmente 3D (ej. mostrar/ocultar un panel con fade), usá otro patrón más liviano en vez de `FlipCard`.
-- No están relacionados con `Stepper`/`FloatingButton`; no hay ambigüedad de uso con esos componentes.
+- No están relacionados con `AddButton`/`FloatingButton`; no hay ambigüedad de uso con esos componentes.
 
 ## Props
 

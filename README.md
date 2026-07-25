@@ -23,7 +23,8 @@ components/
   Breadcrumbs.tsx
   FlipCard.tsx           # + <CreditCard/> y <CreditCardStack/>
   FloatingButton.tsx     # FAB + speed dial
-  Stepper.tsx            # + <AddButton/>
+  AddButton.tsx          # control de cantidad (+/−) con loading por botón
+  AddToCartButton.tsx    # botón "agregar" con estados idle → loading → hecho
   Progress.tsx           # <ProgressBar/> <ProgressRing/> <StepsProgress/>
   Skeleton.tsx           # placeholders animados: primitivo + Text/Avatar/Card/List/Table
   ThemeConfigurator.tsx  # editor en vivo de los tokens de color del tema, con export CSS/JSON
@@ -32,6 +33,7 @@ components/
   Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
   ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
+  Hero.tsx               # HeroSearch · HeroImage · HeroTabs · HeroWelcome — cabeceras de pantalla completa
   ChipCarousel.tsx       # fila de chips con drag, snap y flechas — 4 variantes
   Keypad.tsx             # teclado numérico táctil 3×4, tecla extra + borrado long-press
   PinLock.tsx            # pantalla de bloqueo por PIN o contraseña
@@ -205,6 +207,42 @@ Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la 
 ```
 
 Gestos del visor: arrastrar = pan · rueda o pinch = zoom hacia el puntero · doble click = 250% ↔ reset · `+` / `−` / `0` · `←` `→` para recorrer la galería · `Esc` cierra. El pan está limitado para que la imagen nunca se escape de la pantalla.
+
+## 🦸 Heroes
+
+```tsx
+// Cabecera con buscador — sugerencias frecuentes + resultados en vivo
+<HeroSearch
+  title="Encontrá tu próximo lugar" eyebrow="1.284 propiedades activas"
+  placeholder="Barrio, calle o código…" cta="Buscar"
+  suggestions={["Palermo", "Belgrano", "2 ambientes"]}
+  results={liveResults} onSubmit={(q) => router.push(`/buscar?q=${q}`)}
+/>
+
+// Cabecera con imagen a sangre — overlay, metadatos y acciones
+<HeroImage
+  src="/casa.jpg" eyebrow="Obra terminada" title="Casa Aldama"
+  description="Reforma integral de 140 m² en dos plantas."
+  meta={[{ label: "Superficie", value: "140 m²" }, { label: "Año", value: "2025" }]}
+  actions={<Button>Ver proyecto</Button>} height={420} overlay="gradient"
+/>
+
+// Cabecera con pestañas horizontales scrolables
+<HeroTabs
+  title="Bandeja de entrada"
+  tabs={[{ id: "todo", label: "Todo", count: 128 }, { id: "hoy", label: "Hoy", count: 12 }]}
+  value={tab} onChange={setTab} variant="underline"
+  panels={{ todo: <Todo />, hoy: <Hoy /> }}
+/>
+
+// Saludo de bienvenida — home de la app instalada
+<HeroWelcome
+  name="Lucía Marín" avatar={user.photo} subtitle="Cuenta personal · **** 4417"
+  highlight={{ label: "Saldo disponible", value: "$248.320", delta: "+4,2%" }}
+  quickActions={[{ id: "enviar", label: "Enviar", icon: <SendIcon /> }]}
+  onQuickAction={(id) => go(id)} tone="brand"
+/>
+```
 
 ## 🧱 Bloques de app
 

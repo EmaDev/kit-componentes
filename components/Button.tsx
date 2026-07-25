@@ -26,7 +26,7 @@ interface Ripple {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-primary text-white shadow-md shadow-primary/25 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/30",
+    "bg-primary text-white shadow-md shadow-primary/25 hover:bg-primary-hover",
   secondary:
     "bg-surface-alt text-foreground border border-border hover:bg-border/50",
   ghost: "text-foreground hover:bg-surface-alt",
@@ -90,8 +90,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={ref}
-        whileHover={{ y: -1 }}
-        whileTap={{ scale: 0.97, y: 0 }}
+        whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
         disabled={disabled || loading}
         onClick={handleClick}

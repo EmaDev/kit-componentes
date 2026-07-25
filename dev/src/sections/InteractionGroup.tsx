@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Breadcrumbs, type Crumb } from "../../../components/Breadcrumbs";
 import { CreditCard, CreditCardStack, type CreditCardData } from "../../../components/FlipCard";
 import { FloatingButton } from "../../../components/FloatingButton";
-import { Stepper, AddButton } from "../../../components/Stepper";
+import { AddButton } from "../../../components/AddButton";
+import { AddToCartButton } from "../../../components/AddToCartButton";
 import { ProgressBar, ProgressRing, StepsProgress } from "../../../components/Progress";
 import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "../../../components/Skeleton";
 import { Section, Card } from "../chrome/Section";
@@ -70,7 +71,7 @@ function FloatingButtonSection() {
   return (
     <Section id="floatingbutton" title="FloatingButton" description="Se esconde al scrollear · speed dial con acciones secundarias.">
       <Card>
-        <div className="relative h-40 rounded-xl border border-dashed border-border">
+        <div className="relative h-40 rounded-xl border border-dashed border-border overflow-hidden">
           <FloatingButton
             icon={<span>＋</span>}
             label="Nuevo"
@@ -87,26 +88,49 @@ function FloatingButtonSection() {
   );
 }
 
-function StepperSection() {
-  const [qty, setQty] = useState(1);
+function AddButtonSection() {
+  const [qtyAsync, setQtyAsync] = useState(5);
+  const [qtySm, setQtySm] = useState(1);
+  const [qtyMd, setQtyMd] = useState(1);
+  const [qtyLg, setQtyLg] = useState(1);
   const [added, setAdded] = useState(false);
+
   return (
-    <Section id="stepper" title="Stepper" description="Loading independiente en + y − · AddButton estilo 'agregar al carrito'.">
+    <Section id="addbutton" title="AddButton" description="Loading independiente en + y − · AddToCartButton estilo 'agregar al carrito'.">
       <div className="grid sm:grid-cols-2 gap-4">
-        <Card title="Cantidad">
-          <Stepper value={qty} onChange={setQty} min={0} max={10} unit="u." />
-        </Card>
-        <Card title="AddButton">
+        <Card title="Con carga en el servidor">
+          <p className="text-sm text-muted mb-4 leading-relaxed">
+            Cada toque espera 900&nbsp;ms. Fijate que el spinner aparece <strong>sólo en el botón que tocaste</strong>.
+          </p>
           <AddButton
-            onAdd={async () => {
-              setAdded(false);
-              await new Promise((r) => setTimeout(r, 800));
-              setAdded(true);
+            value={qtyAsync}
+            onChange={async (next) => {
+              await new Promise((r) => setTimeout(r, 900));
+              setQtyAsync(next);
             }}
-            label={added ? "Agregado" : "Agregar al carrito"}
+            min={0}
+            max={20}
+            unit="u."
           />
         </Card>
+        <Card title="Variantes y tamaños">
+          <div className="flex flex-col gap-3">
+            <AddButton value={qtySm} onChange={setQtySm} size="sm" variant="solid" />
+            <AddButton value={qtyMd} onChange={setQtyMd} size="md" variant="outline" unit="kg" />
+            <AddButton value={qtyLg} onChange={setQtyLg} size="lg" variant="pill" />
+          </div>
+        </Card>
       </div>
+      <Card title="AddToCartButton" className="mt-4">
+        <AddToCartButton
+          onAdd={async () => {
+            setAdded(false);
+            await new Promise((r) => setTimeout(r, 800));
+            setAdded(true);
+          }}
+          label={added ? "Agregado" : "Agregar al carrito"}
+        />
+      </Card>
     </Section>
   );
 }
@@ -244,7 +268,7 @@ export function InteractionGroup() {
       <BreadcrumbsSection />
       <FlipCardSection />
       <FloatingButtonSection />
-      <StepperSection />
+      <AddButtonSection />
       <ProgressSection />
       <SkeletonSection />
     </>

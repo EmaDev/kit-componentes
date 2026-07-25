@@ -13,7 +13,7 @@ Usalo para la acción principal y global de una pantalla: crear un nuevo element
 
 ## Cuándo NO usarlo / alternativas
 
-- No lo uses para controles de cantidad puntuales dentro de una fila o card (ej. "+1 / -1" en un ítem de carrito) — para eso están `Stepper` y `AddButton`, pensados como controles locales embebidos en contenido, no como acción flotante global de la pantalla.
+- No lo uses para controles de cantidad puntuales dentro de una fila o card (ej. "+1 / -1" en un ítem de carrito) — para eso están `AddButton` y `AddToCartButton`, pensados como controles locales embebidos en contenido, no como acción flotante global de la pantalla.
 - Si ya tenés `BottomNav` visible, considerá el `position` para que el FAB no quede tapado por la barra inferior (el componente no lo evita automáticamente).
 
 ## Props
@@ -106,3 +106,4 @@ const panelRef = useRef<HTMLDivElement>(null);
 - Si se pasan `actions`, la prop `onClick` del componente se ignora completamente: el botón principal sólo alterna el estado `open`.
 - El posicionamiento respeta el safe-area inferior en modo `fixed` (`bottom-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))]`); en modo `absolute` usa `bottom-4` fijo.
 - El botón principal tiene `aria-label={label}` y `aria-expanded` (sólo definido cuando hay `actions`).
+- El backdrop es un `div` con esquinas rectas (no hereda `border-radius`). En modo `absolute` dentro de un contenedor con esquinas redondeadas, agregá `overflow-hidden` a ese contenedor — si no, el backdrop se ve como un rectángulo gris con esquinas cuadradas asomando por fuera del borde redondeado.

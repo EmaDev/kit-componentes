@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "../../../components/Button";
 import { I } from "./Icon";
 
@@ -45,6 +46,11 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <Logo />
         <div className="flex items-center gap-2">
+          <Link href="/ejemplos">
+            <Button size="sm" variant="ghost">
+              Ejemplos
+            </Button>
+          </Link>
           <ThemeToggle />
           <Button size="sm" leftIcon={I.github} variant="secondary">
             GitHub

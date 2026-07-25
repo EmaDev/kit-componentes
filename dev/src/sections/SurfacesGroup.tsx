@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   Card,
-  CardHeader,
-  CardFooter,
   StatCard,
   MediaCard,
   ProfileCard,
@@ -50,8 +48,6 @@ function phSet(labels: string[], size: { w: number; h: number } = { w: 1600, h: 
 
 const GALLERY = phSet(["Living", "Cocina", "Dormitorio", "Balcón", "Baño"]);
 
-const CARD_VARIANTS: CardVariant[] = ["elevated", "outline", "flat", "gradient", "glass"];
-
 const TAB_ITEMS: TabItem[] = [
   { id: "resumen", label: "Resumen" },
   { id: "actividad", label: "Actividad", badge: 3 },
@@ -66,78 +62,163 @@ const TAB_VARIANTS: { id: TabsVariant; label: string }[] = [
   { id: "vertical", label: "vertical" },
 ];
 
+const VARIANT_PICKS: { id: CardVariant; label: string; accent: string }[] = [
+  { id: "elevated", label: "Elevada", accent: "border-rose-300 text-rose-600 dark:border-rose-800 dark:text-rose-400" },
+  { id: "outline", label: "Contorno", accent: "border-accent/40 text-accent" },
+  { id: "flat", label: "Plana", accent: "border-border text-muted" },
+  { id: "gradient", label: "Gradiente", accent: "border-orange-300 text-orange-600 dark:border-orange-800 dark:text-orange-400" },
+  { id: "glass", label: "Glass", accent: "border-primary/40 text-primary" },
+];
+
 function CardSection() {
+  const [variant, setVariant] = useState<CardVariant>("glass");
+
   return (
-    <Section id="cards" title="Card" description="Superficie base con 5 variantes + StatCard · MediaCard · ProfileCard · PricingCard.">
-      <div className="grid sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-        {CARD_VARIANTS.map((v) => (
-          <Card key={v} variant={v} padding="md" className="h-24 flex items-center justify-center">
-            <span className="text-xs font-semibold text-foreground">{v}</span>
-          </Card>
+    <Section
+      id="cards"
+      title="Card"
+      description="Una superficie base con 5 variantes y 4 paddings, más cuatro cards ya armadas sobre ella: KPI con sparkline, media card (vertical u horizontal), perfil y plan de precios."
+    >
+      <div className="flex flex-wrap items-center gap-2 mb-5">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted mr-1">Variante</span>
+        {VARIANT_PICKS.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            onClick={() => setVariant(v.id)}
+            className={[
+              "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors",
+              variant === v.id ? "bg-primary text-white border-primary shadow-sm shadow-primary/30" : `bg-surface ${v.accent}`,
+            ].join(" ")}
+          >
+            {v.label}
+          </button>
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <PreviewCard title="Card + header/footer">
-          <Card variant="elevated" padding="md">
-            <CardHeader title="Ingresos del mes" subtitle="Julio 2026" />
-            <p className="mt-3 text-sm text-muted">Resumen de facturación consolidada.</p>
-            <CardFooter>
-              <Button size="sm" variant="secondary">Exportar</Button>
-              <Button size="sm">Ver detalle</Button>
-            </CardFooter>
-          </Card>
-        </PreviewCard>
-
-        <PreviewCard title="StatCard">
-          <StatCard label="MRR" value="$48.2k" delta={12.4} tone="primary" spark={[8, 10, 9, 13, 15, 14, 18]} footnote="vs. mes anterior" />
-        </PreviewCard>
-
-        <PreviewCard title="MediaCard">
-          <MediaCard
-            src={phImage({ w: 1200, h: 900, label: "casa", from: "#0ea5a4", to: "#22c55e" })}
-            badge="Nuevo"
-            title="Casa Aldama"
-            description="Reforma integral de 140 m²."
-            actions={<Button size="sm">Ver</Button>}
-          />
-        </PreviewCard>
-
-        <PreviewCard title="ProfileCard">
-          <ProfileCard
-            name="Lucía Marín"
-            role="Product designer"
-            cover
-            stats={[{ label: "Proyectos", value: 12 }, { label: "Equipo", value: 4 }]}
-            actions={<Button size="sm" fullWidth>Ver perfil</Button>}
-          />
-        </PreviewCard>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <StatCard variant={variant} label="MRR" value="$48.2k" delta={12.4} tone="primary" icon={<ChartIcon />} spark={[8, 10, 9, 13, 15, 14, 18]} />
+        <StatCard variant={variant} label="Usuarios activos" value="9.481" delta={4.1} tone="success" icon={<UsersIcon />} spark={[5, 6, 6, 7, 8, 7, 9]} />
+        <StatCard variant={variant} label="Churn" value="2.3" unit="%" delta={-0.8} tone="danger" icon={<FlagIcon />} spark={[3, 3.4, 3, 2.8, 2.5, 2.6, 2.3]} />
+        <StatCard variant={variant} label="Tickets" value={37} delta={-15} tone="accent" icon={<MailIcon />} spark={[60, 55, 50, 45, 40, 38, 37]} />
       </div>
 
-      <div className="mt-4 grid sm:grid-cols-2 gap-4">
-        <PreviewCard title="MediaCard horizontal">
-          <MediaCard
-            src={phImage({ w: 900, h: 900, label: "plano", from: "#f59e0b", to: "#ef4444" })}
-            badge="A-01"
-            title="Departamento en Palermo"
-            description="2 ambientes, luz natural todo el día."
-            horizontal
-            actions={<Button size="sm" variant="secondary">Ver plano</Button>}
-          />
-        </PreviewCard>
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
+        <MediaCard
+          variant={variant}
+          src={phImage({ w: 900, h: 700, label: "fachada norte", from: "#6d28d9", to: "#4338ca", n: 1 })}
+          badge="Nuevo"
+          title="Casa Aldama"
+          description="Reforma integral de 140 m² con patio interior y galería vidriada."
+          meta={<span>Córdoba · 140 m²</span>}
+          actions={
+            <>
+              <Button size="sm">Ver proyecto</Button>
+              <Button size="sm" variant="ghost">Compartir</Button>
+            </>
+          }
+        />
 
-        <PreviewCard title="PricingCard destacado">
-          <PricingCard
-            plan="Pro"
-            price="$29"
-            highlight
-            badge="Popular"
-            features={["Proyectos ilimitados", "Soporte prioritario", "Exportación avanzada"]}
-            cta={<Button fullWidth>Elegir Pro</Button>}
-          />
-        </PreviewCard>
+        <ProfileCard
+          variant={variant}
+          name="Lucía Marín"
+          role="Product designer · Equipo Producto"
+          cover
+          stats={[{ label: "Proyectos", value: 12 }, { label: "Equipos", value: 3 }, { label: "Años", value: 5 }]}
+          actions={
+            <>
+              <Button size="sm" fullWidth>Mensaje</Button>
+              <Button size="sm" variant="secondary" fullWidth>Perfil</Button>
+            </>
+          }
+        />
+
+        <MediaCard
+          variant={variant}
+          src={phImage({ w: 700, h: 700, label: "living", from: "#f97316", to: "#ea580c", n: 3 })}
+          badge="3"
+          title="Living reformado"
+          description="Antes y después del estar principal."
+          meta={<span>hace 2 días</span>}
+          horizontal
+        />
+
+        <Card variant={variant} padding="md">
+          <p className="text-[15px] font-semibold leading-snug text-foreground mb-2">Card base, sin adornos</p>
+          <p className="text-sm text-muted leading-relaxed">
+            La superficie sola: componé lo que quieras adentro con{" "}
+            <code className="font-mono text-xs bg-surface-alt px-1.5 py-0.5 rounded">CardMedia</code>,{" "}
+            <code className="font-mono text-xs bg-surface-alt px-1.5 py-0.5 rounded">CardHeader</code>{" "}
+            y <code className="font-mono text-xs bg-surface-alt px-1.5 py-0.5 rounded">CardFooter</code>.
+          </p>
+          <div className="mt-4 flex items-center justify-between">
+            <Button size="sm" variant="secondary">Acción</Button>
+            <span className="text-[11px] font-mono text-muted">padding=&quot;md&quot;</span>
+          </div>
+        </Card>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-4">
+        <PricingCard
+          plan="Starter"
+          price="$0"
+          description="Para probar la librería en un proyecto chico."
+          features={["1 proyecto", "Componentes atómicos", "Tema claro/oscuro"]}
+          cta={<Button variant="secondary" fullWidth>Empezar</Button>}
+        />
+        <PricingCard
+          plan="Pro"
+          price="$29"
+          highlight
+          badge="Popular"
+          description="Todo lo que necesita un equipo de producto."
+          features={["Proyectos ilimitados", "Datos y grillas", "Moléculas PWA", "Soporte prioritario"]}
+          cta={<Button fullWidth>Elegir Pro</Button>}
+        />
+        <PricingCard
+          plan="Enterprise"
+          price="A medida"
+          period=""
+          description="Con revisión de accesibilidad y onboarding."
+          features={["SSO y auditoría", "Datos y grillas propios", "SLA 99.9%"]}
+          cta={<Button variant="outline" fullWidth>Hablar con ventas</Button>}
+        />
       </div>
     </Section>
+  );
+}
+
+function ChartIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19V10M12 19V5M20 19v-7" />
+    </svg>
+  );
+}
+function UsersIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 19a5.7 5.7 0 0 1 11 0" />
+      <path d="M16 8.4a3 3 0 1 1 0 5.8" />
+      <path d="M15.5 14.6c2.4.4 4 1.9 4.4 4.4" />
+    </svg>
+  );
+}
+function FlagIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 21V4" />
+      <path d="M5 5h13l-3 4 3 4H5" />
+    </svg>
+  );
+}
+function MailIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="m4 7 8 6 8-6" />
+    </svg>
   );
 }
 

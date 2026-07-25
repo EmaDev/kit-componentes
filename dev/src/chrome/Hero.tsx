@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "../../../components/Button";
 import { I } from "./Icon";
 
@@ -29,6 +30,11 @@ export function Hero() {
         <Button variant="secondary" leftIcon={I.github}>
           Ver código
         </Button>
+        <Link href="/ejemplos">
+          <Button variant="outline" leftIcon={I.layers}>
+            Ver ejemplos
+          </Button>
+        </Link>
       </div>
     </div>
   );
