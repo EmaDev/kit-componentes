@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "../../../components/Button";
 import { I } from "./Icon";
+import { SITE_CONFIG } from "../site.config";
 
 export function Hero() {
   return (
@@ -27,9 +28,11 @@ export function Hero() {
         >
           Empezar
         </Button>
-        <Button variant="secondary" leftIcon={I.github}>
-          Ver código
-        </Button>
+        <a href={SITE_CONFIG.repoUrl} target="_blank" rel="noreferrer">
+          <Button variant="secondary" leftIcon={I.github}>
+            Ver código
+          </Button>
+        </a>
         <Link href="/ejemplos">
           <Button variant="outline" leftIcon={I.layers}>
             Ver ejemplos

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "../../../components/Button";
 import { I } from "./Icon";
+import { SITE_CONFIG } from "../site.config";
 
 function ThemeToggle() {
   const [dark, setDark] = useState(
@@ -52,9 +53,11 @@ export function Header() {
             </Button>
           </Link>
           <ThemeToggle />
-          <Button size="sm" leftIcon={I.github} variant="secondary">
-            GitHub
-          </Button>
+          <a href={SITE_CONFIG.repoUrl} target="_blank" rel="noreferrer">
+            <Button size="sm" leftIcon={I.github} variant="secondary">
+              GitHub
+            </Button>
+          </a>
         </div>
       </div>
     </header>

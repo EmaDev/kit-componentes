@@ -2,6 +2,7 @@
 
 import { Header } from "../chrome/Header";
 import { Hero } from "../chrome/Hero";
+import { Footer } from "../chrome/Footer";
 import { SideNav } from "../chrome/SideNav";
 import { IntroSection } from "../chrome/IntroSection";
 import { GroupHeader } from "../chrome/GroupHeader";
@@ -54,6 +55,8 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

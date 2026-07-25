@@ -4,6 +4,8 @@
 
 > 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
+> 🧪 **[Demo en vivo →](https://lib-kit-components.vercel.app)** — el playground de `dev/` deployado en Vercel, los componentes reales corriendo.
+
 ## 📁 Estructura
 
 ```
@@ -300,6 +302,30 @@ npm run dev
 Al ser una app Next.js de verdad, `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también corren en vivo: tienen su demo en la página principal y una mini-demo de navegación real en `/nav-demo` para ver el estado activo cambiar entre rutas.
 
 Para agregar un componente nuevo al playground (y el resto de los pasos obligatorios al crear uno): ver [CLAUDE.md](CLAUDE.md).
+
+### Variables de entorno del playground
+
+`dev/` lee estas variables (ver [`dev/.env.example`](dev/.env.example)) para armar los links del header/hero/footer — copiá el archivo a `dev/.env.local` para desarrollo local:
+
+| Variable | Uso | Default |
+| --- | --- | --- |
+| `NEXT_PUBLIC_REPO_URL` | Botones "GitHub" / "Ver código" | `https://github.com/<usuario>/lib-kit-components` |
+| `NEXT_PUBLIC_DEMO_URL` | URL pública del propio deploy (referencia, ej. para compartir) | `https://lib-kit-components.vercel.app` |
+| `NEXT_PUBLIC_LIB_VERSION` | Versión mostrada en el footer | `0.1.0` |
+| `NEXT_PUBLIC_DONATE_URL` | Link de donaciones en el footer (se oculta si no está seteada) | *(vacío)* |
+
+Todas son `NEXT_PUBLIC_*` porque solo arman URLs en la UI, no hay nada sensible.
+
+### Deploy del playground en Vercel
+
+El código fuente (`components/`, `hooks/`, `docs/`) vive en un repo de GitHub; el playground de `dev/` se deploya aparte, como demo pública:
+
+1. En Vercel, **New Project** → importar este repo.
+2. **Root Directory**: `dev` (el playground tiene su propio `package.json`).
+3. Cargar las variables de la tabla de arriba en **Settings → Environment Variables** (con la URL real del repo y, una vez asignado, el dominio que te dio Vercel para `NEXT_PUBLIC_DEMO_URL`).
+4. Deploy. Framework preset: Next.js (autodetectado).
+
+El resto del repo (paquete instalable) no necesita deploy — se consume vía `npm i github:<usuario>/lib-kit-components` como se explica en Instalación.
 
 ## 📚 Uso rápido
 
