@@ -29,7 +29,7 @@ export default function PlaygroundPage() {
           <div className="flex-1 min-w-0">
             <IntroSection />
 
-            <GroupHeader group={GROUPS[0]} count="13 componentes" />
+            <GroupHeader group={GROUPS[0]} count="18 componentes" />
             <AtomsGroup />
 
             <GroupHeader group={GROUPS[1]} count="6 componentes" />
@@ -41,7 +41,7 @@ export default function PlaygroundPage() {
             <GroupHeader group={GROUPS[3]} count="2 componentes · 1 hook" />
             <ThemeGroup />
 
-            <GroupHeader group={GROUPS[4]} count="4 componentes" />
+            <GroupHeader group={GROUPS[4]} count="6 componentes" />
             <SurfacesGroup />
 
             <GroupHeader group={GROUPS[5]} count="4 componentes" />

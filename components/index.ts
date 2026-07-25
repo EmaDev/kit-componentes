@@ -23,11 +23,23 @@ export { SideBar } from "./SideBar";
 export type { SidebarLink, SidebarSection } from "./SideBar";
 export { BottomNav } from "./BottomNav";
 export type { BottomNavItem } from "./BottomNav";
+export { Tooltip } from "./Tooltip";
+export type { TooltipSide, TooltipAlign } from "./Tooltip";
+export { Popover } from "./Popover";
+export type { PopoverSide, PopoverAlign } from "./Popover";
+export { CoachMark } from "./CoachMark";
+export type { CoachMarkStep, CoachMarkSide, CoachMarkAlign } from "./CoachMark";
+export { Footer } from "./Footer";
+export type { FooterLink, FooterLinkGroup, FooterSocialLink, FooterNewsletter } from "./Footer";
 
 // --- Interacción & feedback ---
 export { Breadcrumbs } from "./Breadcrumbs";
 export type { Crumb } from "./Breadcrumbs";
 export { Checkbox, CheckboxGroup } from "./Checkbox";
+export { Switch } from "./Switch";
+export type { SwitchSize, SwitchTone } from "./Switch";
+export { CodeOTP } from "./CodeOTP";
+export type { CodeOTPType, CodeOTPSize } from "./CodeOTP";
 export { FlipCard, CreditCard, CreditCardStack } from "./FlipCard";
 export type { CreditCardData } from "./FlipCard";
 export { FloatingButton } from "./FloatingButton";
@@ -65,6 +77,8 @@ export type { CarouselImage } from "./Carousel";
 export { ImageZoom, ZoomableImage } from "./ImageZoom";
 export { Tabs } from "./Tabs";
 export type { TabItem, TabsVariant, TabsSize } from "./Tabs";
+export { ScrollArea } from "./ScrollArea";
+export type { ScrollAreaVariant, ScrollAreaOrientation } from "./ScrollArea";
 
 // --- Heroes ---
 export { HeroSearch, HeroImage, HeroTabs, HeroWelcome, greetingFor } from "./Hero";

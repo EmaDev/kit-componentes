@@ -1,6 +1,6 @@
 # Scaffolding · Atomic Components
 
-35 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+42 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
 
 > 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
@@ -20,8 +20,13 @@ components/
   Spinner.tsx
   Toast.tsx              # incluye <ToastProvider> + hook useToast()
   Checkbox.tsx           # + <CheckboxGroup/>
+  Switch.tsx             # interruptor on/off con thumb animado por spring
+  CodeOTP.tsx            # código OTP/2FA en casillas segmentadas, auto-avance y pegado multi-dígito
   Modal.tsx
   BottomSheet.tsx        # 7 alturas + snapPoints arrastrables
+  Tooltip.tsx            # globo informativo con hover/focus y auto-flip
+  Popover.tsx            # panel anclado con contenido arbitrario, abierto con click
+  CoachMark.tsx          # tour guiado con spotlight sobre elementos reales de la UI
   Breadcrumbs.tsx
   FlipCard.tsx           # + <CreditCard/> y <CreditCardStack/>
   FloatingButton.tsx     # FAB + speed dial
@@ -35,6 +40,8 @@ components/
   Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
   ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
+  ScrollArea.tsx         # scroll con barra propia arrastrable — 3 variantes de grosor/animación
+  Footer.tsx             # pie de página: marca, columnas de links, redes y newsletter
   Hero.tsx               # HeroSearch · HeroImage · HeroTabs · HeroWelcome — cabeceras de pantalla completa
   ChipCarousel.tsx       # fila de chips con drag, snap y flechas — 4 variantes
   Keypad.tsx             # teclado numérico táctil 3×4, tecla extra + borrado long-press
@@ -356,6 +363,44 @@ toast({ title: "¡Listo!", variant: "success" });
 
 // …o con alturas arrastrables
 <BottomSheet snapPoints={[0.35, 0.65, 0.92]} defaultSnap={0} … />
+
+// Tooltip
+<Tooltip content="Eliminar producto">
+  <Button variant="ghost" size="icon"><TrashIcon /></Button>
+</Tooltip>
+
+// Popover
+<Popover trigger={<Button variant="secondary">Filtros</Button>}>
+  <div className="flex flex-col gap-3 w-56">…</div>
+</Popover>
+
+// CoachMark — tour guiado con spotlight
+<CoachMark
+  open={tourOpen}
+  onClose={() => setTourOpen(false)}
+  steps={[
+    { target: "#nav-search", title: "Buscá lo que necesites" },
+    { target: "#cart-button", title: "Tu carrito", side: "left" },
+  ]}
+/>
+
+// Switch
+<Switch checked={notifications} onChange={setNotifications} label="Notificaciones push" />
+
+// CodeOTP
+<CodeOTP length={6} label="Código de verificación" onComplete={(code) => verifyCode(code)} />
+
+// ScrollArea — variant: thin | pill | glow
+<ScrollArea variant="pill" maxHeight={280}>
+  <div className="flex flex-col gap-3 p-1">…</div>
+</ScrollArea>
+
+// Footer
+<Footer
+  brand={<span>Mi Tienda</span>}
+  groups={[{ title: "Producto", links: [{ label: "Catálogo", href: "/catalogo" }] }]}
+  bottomLinks={[{ label: "Privacidad", href: "/privacidad" }]}
+/>
 ```
 
 ## 📊 Datos y grillas

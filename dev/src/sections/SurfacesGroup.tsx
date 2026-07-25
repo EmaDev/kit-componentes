@@ -10,6 +10,8 @@ import {
 import { Carousel, type CarouselImage } from "../../../components/Carousel";
 import { ImageZoom, ZoomableImage } from "../../../components/ImageZoom";
 import { Tabs, type TabItem, type TabsVariant } from "../../../components/Tabs";
+import { ScrollArea, type ScrollAreaVariant } from "../../../components/ScrollArea";
+import { Footer } from "../../../components/Footer";
 import { Button } from "../../../components/Button";
 import { Section, Card as PreviewCard } from "../chrome/Section";
 
@@ -302,6 +304,82 @@ function TabsSection() {
   );
 }
 
+const SCROLLAREA_VARIANTS: { id: ScrollAreaVariant; label: string; hint: string }[] = [
+  { id: "thin", label: "thin", hint: "Invisible en reposo, aparece con fade al hacer hover o scrollear." },
+  { id: "pill", label: "pill", hint: "Siempre visible atenuada; se ensancha y se pinta primary al activarse." },
+  { id: "glow", label: "glow", hint: "Gradiente primary → accent con resplandor permanente." },
+];
+
+const SCROLL_ITEMS = Array.from({ length: 24 }, (_, i) => `Elemento ${i + 1}`);
+
+function ScrollAreaSection() {
+  return (
+    <Section
+      id="scrollarea"
+      title="ScrollArea"
+      description="Reemplaza el scroll nativo por una barra propia, arrastrable — 3 variantes de grosor y animación."
+    >
+      <div className="grid md:grid-cols-3 gap-4">
+        {SCROLLAREA_VARIANTS.map(({ id, label, hint }) => (
+          <PreviewCard key={id} title={label}>
+            <ScrollArea variant={id} maxHeight={240} className="rounded-xl border border-border">
+              <div className="flex flex-col gap-2 p-3">
+                {SCROLL_ITEMS.map((item) => (
+                  <div key={item} className="rounded-lg bg-surface-alt px-3 py-2 text-sm text-foreground">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+            <p className="mt-3 text-[11px] text-muted leading-relaxed">{hint}</p>
+          </PreviewCard>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function FooterSection() {
+  return (
+    <Section id="footer" title="Footer" description="Marca + redes, columnas de links con reveal animado, newsletter y barra inferior con volver-arriba.">
+      <div className="rounded-2xl border border-border overflow-hidden">
+        <Footer
+          brand={<span className="font-bold text-foreground">Logo</span>}
+          description="Componentes atómicos + moléculas PWA, listos para instalar."
+          socials={[
+            { label: "GitHub", href: "#", icon: <GithubIcon /> },
+            { label: "X", href: "#", icon: <XIcon /> },
+          ]}
+          groups={[
+            { title: "Producto", links: [{ label: "Componentes", href: "#" }, { label: "Hooks", href: "#" }, { label: "Playground", href: "#" }] },
+            { title: "Compañía", links: [{ label: "Repositorio", href: "#" }, { label: "Changelog", href: "#" }] },
+          ]}
+          newsletter={{
+            description: "Novedades de la librería, sin spam.",
+            onSubmit: () => new Promise((resolve) => setTimeout(resolve, 900)),
+          }}
+          bottomLinks={[{ label: "Privacidad", href: "#" }, { label: "Términos", href: "#" }]}
+        />
+      </div>
+    </Section>
+  );
+}
+
+function GithubIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.6 9.6 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+function XIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.9 2H22l-7.6 8.7L23.3 22h-7.1l-5.5-7.2L4.3 22H1.2l8.1-9.3L1 2h7.3l5 6.6L18.9 2Zm-1.2 18h1.7L6.4 4H4.6l13.1 16Z" />
+    </svg>
+  );
+}
+
 export function SurfacesGroup() {
   return (
     <>
@@ -309,6 +387,8 @@ export function SurfacesGroup() {
       <CarouselSection />
       <ImageZoomSection />
       <TabsSection />
+      <ScrollAreaSection />
+      <FooterSection />
     </>
   );
 }

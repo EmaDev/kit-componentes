@@ -20,7 +20,12 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Capturar texto largo/multilínea, con auto-resize | [Textarea](components/Textarea.md) |
 | Elegir **un** valor de una lista, dentro de un formulario | [Select](components/Select.md) |
 | Un menú de **acciones** contextual (editar/eliminar/duplicar) anclado a un botón/ícono | [Dropdown](components/Dropdown.md) |
+| Aclarar un ícono o campo sin label, con texto corto que aparece al hacer hover/focus | [Tooltip](components/Tooltip.md) |
+| Un panel con contenido interactivo (formulario, filtros) anclado a un trigger, que se abre con click | [Popover](components/Popover.md) |
+| Guiar a un usuario nuevo paso a paso por varias funcionalidades reales de la UI (onboarding) | [CoachMark](components/CoachMark.md) |
 | Un checkbox individual o un grupo con "seleccionar todo" | [Checkbox](components/Checkbox.md) |
+| Un interruptor on/off que se aplica al instante (sin botón "Guardar") | [Switch](components/Switch.md) |
+| Un código de verificación (2FA/OTP) en casillas segmentadas | [CodeOTP](components/CodeOTP.md) |
 | Indicar que algo está cargando (inline) | [Spinner](components/Spinner.md) |
 | Feedback transitorio no bloqueante ("Guardado", "Error al subir") | [Toast](components/Toast.md) |
 | Un diálogo centrado que **bloquea** la interacción hasta confirmar/cancelar | [Modal](components/Modal.md) |
@@ -42,6 +47,8 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una galería de imágenes navegable (drag, flechas, dots, miniaturas, autoplay) | [Carousel](components/Carousel.md) |
 | Ampliar **una** imagen a pantalla completa con pan y zoom | [ImageZoom](components/ImageZoom.md) (`ZoomableImage`) |
 | Dividir contenido en pestañas dentro de una misma pantalla | [Tabs](components/Tabs.md) |
+| Reemplazar el scroll nativo por una barra propia (grosor/animación custom, arrastrable) | [ScrollArea](components/ScrollArea.md) |
+| Un pie de página con columnas de links, redes y newsletter | [Footer](components/Footer.md) |
 | Una cabecera de pantalla completa con buscador y sugerencias en vivo | [HeroSearch](components/Hero.md) |
 | Una cabecera con imagen a sangre, overlay y datos destacados (portada) | [HeroImage](components/Hero.md) |
 | Una cabecera con pestañas horizontales scrolables (bandeja, listado con muchas categorías) | [HeroTabs](components/Hero.md) |
@@ -79,10 +86,15 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Select](components/Select.md) | Selector de un valor, campo de formulario. |
 | [Dropdown](components/Dropdown.md) | Menú contextual de acciones anclado a un trigger. |
 | [Checkbox](components/Checkbox.md) | Checkbox individual y `CheckboxGroup`. |
+| [Switch](components/Switch.md) | Interruptor on/off con thumb animado por spring. |
+| [CodeOTP](components/CodeOTP.md) | Código OTP/2FA en casillas segmentadas, auto-avance y pegado multi-dígito. |
 | [Spinner](components/Spinner.md) | Indicador de carga, 4 variantes. |
 | [Toast](components/Toast.md) | `ToastProvider` + `useToast()`, notificaciones apiladas. |
 | [Modal](components/Modal.md) | Diálogo centrado con backdrop. |
 | [BottomSheet](components/BottomSheet.md) | Panel deslizable desde abajo, con snapPoints. |
+| [Tooltip](components/Tooltip.md) | Globo informativo anclado, con hover/focus y auto-flip. |
+| [Popover](components/Popover.md) | Panel anclado con contenido arbitrario, abierto con click. |
+| [CoachMark](components/CoachMark.md) | Tour guiado con spotlight sobre elementos reales de la UI. |
 
 ### Navegación *(requieren Next.js — ver nota abajo)*
 
@@ -119,6 +131,8 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
 | [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
+| [ScrollArea](components/ScrollArea.md) | Scroll con barra propia arrastrable — 3 variantes de grosor/animación. |
+| [Footer](components/Footer.md) | Pie de página con marca, columnas de links, redes y newsletter. |
 
 ### Heroes
 
