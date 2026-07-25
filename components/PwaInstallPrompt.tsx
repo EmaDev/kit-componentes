@@ -32,7 +32,14 @@ export function PwaInstallPrompt({
 }: PwaInstallPromptProps) {
   const pwa = usePwaInstall({ snoozeDays });
   const platform = forcePlatform ?? pwa.platform;
-  const visible = forcePlatform ? true : pwa.canInstall;
+
+  // forcePlatform es para testear el UI sin depender de elegibilidad real del
+  // navegador: su "cerrado" es local a este montaje, no toca el dismiss
+  // persistido (si no, quedaría atado al snooze real de 14 días).
+  const [forceClosed, setForceClosed] = useState(false);
+  useEffect(() => setForceClosed(false), [forcePlatform]);
+  const visible = forcePlatform ? !forceClosed : pwa.canInstall;
+  const onDismiss = forcePlatform ? () => setForceClosed(true) : pwa.dismiss;
 
   return (
     <AnimatePresence>
@@ -43,7 +50,7 @@ export function PwaInstallPrompt({
             appName={appName}
             tagline={tagline}
             icon={icon}
-            onDismiss={pwa.dismiss}
+            onDismiss={onDismiss}
           />
         ) : (
           <AndroidInstallBanner
@@ -54,7 +61,7 @@ export function PwaInstallPrompt({
             installLabel={installLabel}
             dismissLabel={dismissLabel}
             onInstall={pwa.install}
-            onDismiss={pwa.dismiss}
+            onDismiss={onDismiss}
           />
         ))}
     </AnimatePresence>

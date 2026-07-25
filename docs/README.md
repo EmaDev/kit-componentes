@@ -34,6 +34,9 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Un botón de acción flotante (FAB), con o sin speed dial | [FloatingButton](components/FloatingButton.md) |
 | Un control de cantidad (+ / −), tipo carrito de compras | [Stepper](components/Stepper.md) |
 | Una barra o anillo de progreso, o un indicador de pasos de un wizard | [Progress](components/Progress.md) |
+| Un placeholder animado mientras carga contenido (texto, avatar, tarjeta, lista, tabla) | [Skeleton](components/Skeleton.md) |
+| Un panel para ajustar/exportar la paleta de colores del tema (marca, superficie, texto, estado) | [ThemeConfigurator](components/ThemeConfigurator.md) |
+| Que un mismo deploy use una paleta distinta por cliente, según el dominio o la sesión (white-label / multi-tenant) | [TenantThemeProvider](components/TenantTheme.md) |
 | Listar/explorar datos tabulares: orden, búsqueda, selección, paginado | [DataTable](components/DataTable.md) |
 | Una grilla **editable** tipo Excel/Sheets, con fórmulas | [Spreadsheet](components/Spreadsheet.md) |
 | Un calendario mensual con eventos | [CalendarGrid](components/CalendarGrid.md) |
@@ -82,6 +85,14 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [FloatingButton](components/FloatingButton.md) | FAB con speed dial opcional. |
 | [Stepper](components/Stepper.md) | Control de cantidad + `AddButton`. |
 | [Progress](components/Progress.md) | `ProgressBar`, `ProgressRing`, `StepsProgress`. |
+| [Skeleton](components/Skeleton.md) | Placeholders animados: primitivo + `SkeletonText`/`Avatar`/`Card`/`List`/`Table`. |
+
+### Personalización
+
+| Componente | Descripción |
+|---|---|
+| [ThemeConfigurator](components/ThemeConfigurator.md) | Editor en vivo de los 10 tokens de color del tema, con presets y export a CSS/JSON. |
+| [TenantThemeProvider](components/TenantTheme.md) | Paleta multi-tenant: resuelve el tema por dominio o por sesión y lo aplica a toda la app. Incluye `useTenantTheme()`. |
 
 ### Datos & grillas
 

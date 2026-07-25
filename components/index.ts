@@ -34,6 +34,27 @@ export { FloatingButton } from "./FloatingButton";
 export type { FabAction } from "./FloatingButton";
 export { Stepper, AddButton } from "./Stepper";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
+export { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "./Skeleton";
+export type { SkeletonVariant, SkeletonAnimation } from "./Skeleton";
+
+// --- Personalización / multi-tenant ---
+export {
+  ThemeConfigurator,
+  DEFAULT_THEME_TOKENS,
+  DEFAULT_DARK_THEME_TOKENS,
+  THEME_TOKEN_VARS,
+  THEME_TOKEN_KEYS,
+} from "./ThemeConfigurator";
+export type { ThemeTokens, ThemePreset } from "./ThemeConfigurator";
+export {
+  TenantThemeProvider,
+  useTenantTheme,
+  resolveTenantByHost,
+  resolveTenantTokens,
+  tenantThemeCss,
+  hostMatches,
+} from "./TenantTheme";
+export type { TenantTheme, ThemeMode } from "./TenantTheme";
 
 // --- PWA ---
 export { PwaInstallPrompt } from "./PwaInstallPrompt";

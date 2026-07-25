@@ -24,8 +24,8 @@ Esto aplica tanto a componentes en `components/` como a hooks en `hooks/`. Ning�
 5. **Agregarlo al playground real (`dev/`)**. Pasos:
    - Importar el componente real desde `../../../components/<Nombre>` en el grupo de `dev/src/sections/` que corresponda (`AtomsGroup.tsx`, `InteractionGroup.tsx`, `DataGroup.tsx`, `PwaGroup.tsx`), o crear un grupo nuevo si no encaja en ninguno.
    - Envolverlo en `<Section id="..." title="..." description="...">` con al menos una `<Card>` mostrando un uso representativo (interactivo si el componente tiene estado).
-   - Si es un grupo nuevo, registrarlo en `dev/src/chrome/groups.ts` (`GROUPS`) para que aparezca en el sidebar con scroll-spy, y agregar el `<GroupHeader/>` + el grupo en `dev/src/App.tsx`.
-   - Excepción: componentes que importan `next/link` o `next/navigation` (como `Navbar`, `SideBar`, `BottomNav`) no resuelven en Vite — en vez de montarlos en vivo, agregar una `Section` con nota explicando la limitación (mismo patrón que esos tres ya usan en `AtomsGroup.tsx`).
+   - Si es un grupo nuevo, registrarlo en `dev/src/chrome/groups.ts` (`GROUPS`) para que aparezca en el sidebar con scroll-spy, y agregar el `<GroupHeader/>` + el grupo en `dev/src/app/page.tsx`.
+   - `dev/` es una app Next.js real, así que `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también se montan en vivo — no hace falta ninguna excepción para ellos.
    - Validar con `cd dev && npx tsc --noEmit` antes de dar por terminado.
 
 No hace falta pedir permiso para estos cinco pasos — son parte de terminar el trabajo de agregar el componente, no un extra opcional.

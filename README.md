@@ -25,6 +25,9 @@ components/
   FloatingButton.tsx     # FAB + speed dial
   Stepper.tsx            # + <AddButton/>
   Progress.tsx           # <ProgressBar/> <ProgressRing/> <StepsProgress/>
+  Skeleton.tsx           # placeholders animados: primitivo + Text/Avatar/Card/List/Table
+  ThemeConfigurator.tsx  # editor en vivo de los tokens de color del tema, con export CSS/JSON
+  TenantTheme.tsx        # paleta multi-tenant por dominio/sesión: <TenantThemeProvider/> + useTenantTheme()
   DataTable.tsx          # orden, búsqueda, selección, paginado, sticky header
   Spreadsheet.tsx        # hoja de cálculo editable con fórmulas y atajos
   CalendarGrid.tsx       # grilla mensual con eventos
@@ -57,7 +60,7 @@ hooks/
   useHaptics.ts                # feedback táctil con nombres semánticos
   useStatusBarColor.ts         # tiñe la barra de estado (theme-color)
 docs/                     # guía de uso de cada componente y hook (ver enlace arriba)
-dev/                      # playground Vite que importa components/ real (ver sección Preview)
+dev/                      # playground Next.js que importa components/ real (ver sección Preview)
 ```
 
 ## 🔧 Instalación
@@ -118,18 +121,61 @@ Todos los imports de ejemplo en este README (`@/components/...`) pasan a importa
 
 Todos los colores usan CSS variables (`--color-primary`, `--color-foreground`, …) definidas en `globals.css`. Cambia los valores allí — los componentes se adaptan solos en claro/oscuro.
 
+Para editarlos en vivo (paleta de marca, superficie, texto y estado) desde la propia UI en vez de tocar el CSS a mano, usá `ThemeConfigurator`:
+
+```tsx
+// Reskinea toda la app en vivo mientras se ajusta cada color
+<ThemeConfigurator applyToDocument />
+
+// …con presets de marca y export a CSS/JSON
+<ThemeConfigurator
+  presets={[{ name: "Océano", tokens: { ...DEFAULT_THEME_TOKENS, primary: "#0891b2", accent: "#06b6d4" } }]}
+  onChange={(tokens) => console.log(tokens)}
+/>
+```
+
+### Multi-tenant (white-label)
+
+Un mismo deploy, una paleta por cliente — resuelta por **dominio** o por **sesión**. `TenantThemeProvider` inyecta las CSS vars del tenant activo, así todos los componentes se reskinean solos:
+
+```ts
+// lib/tenants.ts
+export const TENANTS: TenantTheme[] = [
+  { id: "acme",   name: "Acme",   domains: ["acme.com", "*.acme.com"],
+    tokens: { primary: "#e11d48", primaryHover: "#be123c", accent: "#fb7185" } },
+  { id: "globex", name: "Globex", domains: ["globex.io", "*.globex.io"],
+    tokens: { primary: "#0891b2", primaryHover: "#0e7490", accent: "#06b6d4" },
+    dark:   { primary: "#22d3ee", surface: "#082f49" } },
+];
+```
+
+```tsx
+// app/layout.tsx — Server Component: resolver en el servidor evita el flash de marca
+const host = (await headers()).get("host") ?? undefined;
+
+<TenantThemeProvider themes={TENANTS} host={host}>          {/* por dominio */}
+<TenantThemeProvider themes={TENANTS} tenantId={session?.tenantId ?? null}>  {/* por auth */}
+```
+
+```tsx
+// …y desde cualquier client component
+const { tenant, themes, setTenant, tokens, setTokens, css } = useTenantTheme();
+```
+
+Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la base de datos): [TenantThemeProvider](docs/components/TenantTheme.md).
+
 ## 🧪 Preview y desarrollo local
 
-`dev/` es un playground real con Vite que importa los componentes **directamente desde `components/`** (mismo Tailwind v4 + Framer Motion que consume cualquier proyecto) — no un mock.
+`dev/` es un playground real con Next.js (App Router) que importa los componentes **directamente desde `components/`** (mismo Tailwind v4 + Framer Motion que consume cualquier proyecto) — no un mock.
 
 ```bash
 cd dev
 npm install
 npm run dev
-# abrí la URL que imprime Vite (típicamente http://localhost:5173)
+# abrí http://localhost:3000
 ```
 
-Los tres componentes que dependen de Next.js (`Navbar`, `SideBar`, `BottomNav`, por `next/link`/`next/navigation`) no resuelven en este playground de Vite — tienen su propia sección en el sidebar con una nota explicando por qué, en vez de una demo en vivo.
+Al ser una app Next.js de verdad, `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también corren en vivo: tienen su demo en la página principal y una mini-demo de navegación real en `/nav-demo` para ver el estado activo cambiar entre rutas.
 
 Para agregar un componente nuevo al playground (y el resto de los pasos obligatorios al crear uno): ver [CLAUDE.md](CLAUDE.md).
 
