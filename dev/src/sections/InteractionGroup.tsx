@@ -4,6 +4,7 @@ import { CreditCard, CreditCardStack, type CreditCardData } from "../../../compo
 import { FloatingButton } from "../../../components/FloatingButton";
 import { Stepper, AddButton } from "../../../components/Stepper";
 import { ProgressBar, ProgressRing, StepsProgress } from "../../../components/Progress";
+import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "../../../components/Skeleton";
 import { Section, Card } from "../chrome/Section";
 
 const CRUMBS: Crumb[] = [
@@ -143,6 +144,100 @@ function ProgressSection() {
   );
 }
 
+function SkeletonSection() {
+  const [loading, setLoading] = useState(true);
+  return (
+    <Section id="skeleton" title="Skeleton" description="Placeholders animados (pulse / wave) para texto, avatar, tarjeta, lista y tabla.">
+      <div className="mb-4">
+        <button
+          className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-border hover:bg-surface-alt transition-colors"
+          onClick={() => setLoading((v) => !v)}
+        >
+          {loading ? "Mostrar contenido real" : "Simular carga"}
+        </button>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card title="SkeletonCard">
+          {loading ? (
+            <SkeletonCard media mediaHeight={120} avatar lines={2} />
+          ) : (
+            <div className="rounded-2xl border border-border p-4">
+              <div className="h-[120px] rounded-xl bg-primary/15 mb-4 grid place-items-center text-2xl">🖼️</div>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 grid place-items-center text-sm shrink-0">EC</div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm mb-1">Nuevo lanzamiento</p>
+                  <p className="text-sm text-muted leading-relaxed">
+                    El contenido real reemplaza al skeleton una vez que termina de cargar.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Card>
+
+        <Card title="SkeletonList">
+          {loading ? (
+            <SkeletonList rows={4} avatar lines={2} />
+          ) : (
+            <div className="flex flex-col divide-y divide-border">
+              {["Ana", "Bruno", "Caro", "Dani"].map((name) => (
+                <div key={name} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                  <div className="w-9 h-9 rounded-full bg-accent/20 grid place-items-center text-xs shrink-0">
+                    {name[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{name}</p>
+                    <p className="text-xs text-muted truncate">Comentó en tu publicación</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        <Card title="SkeletonTable">
+          {loading ? (
+            <SkeletonTable rows={4} columns={3} />
+          ) : (
+            <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(3, minmax(0,1fr))" }}>
+              {["Nombre", "Plan", "Estado"].map((h) => (
+                <p key={h} className="text-xs font-semibold text-muted">{h}</p>
+              ))}
+              {[
+                ["Ana", "Pro", "Activo"],
+                ["Bruno", "Free", "Activo"],
+                ["Caro", "Pro", "Pausado"],
+                ["Dani", "Team", "Activo"],
+              ].flatMap((row, i) =>
+                row.map((cell, j) => (
+                  <p key={`${i}-${j}`} className="text-sm">{cell}</p>
+                ))
+              )}
+            </div>
+          )}
+        </Card>
+
+        <Card title="Primitivo · formas y animación">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <Skeleton variant="circle" width={36} height={36} />
+              <Skeleton variant="text" width="55%" />
+              <Skeleton variant="rounded" width={56} height={24} />
+            </div>
+            <SkeletonText lines={3} />
+            <div className="flex items-center gap-3">
+              <SkeletonAvatar size={28} animation="wave" />
+              <Skeleton variant="rect" width="100%" height={16} animation="wave" />
+            </div>
+          </div>
+        </Card>
+      </div>
+    </Section>
+  );
+}
+
 export function InteractionGroup() {
   return (
     <>
@@ -151,6 +246,7 @@ export function InteractionGroup() {
       <FloatingButtonSection />
       <StepperSection />
       <ProgressSection />
+      <SkeletonSection />
     </>
   );
 }

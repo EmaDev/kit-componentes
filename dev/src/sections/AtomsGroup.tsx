@@ -1,5 +1,9 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../../../components/Button";
+import { Navbar, type NavLink } from "../../../components/Navbar";
+import { SideBar, type SidebarSection } from "../../../components/SideBar";
+import { BottomNav, type BottomNavItem } from "../../../components/BottomNav";
 import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
 import { Select, type SelectOption } from "../../../components/Select";
@@ -10,6 +14,7 @@ import { useToast } from "../../../components/Toast";
 import { Modal } from "../../../components/Modal";
 import { BottomSheet } from "../../../components/BottomSheet";
 import { Section, Card } from "../chrome/Section";
+import { I } from "../chrome/Icon";
 
 const COUNTRIES: SelectOption[] = [
   { value: "ar", label: "Argentina" },
@@ -280,15 +285,94 @@ function BottomSheetSection() {
   );
 }
 
-function NextOnlyNote({ id, title, importLine }: { id: string; title: string; importLine: string }) {
+const NAV_LINKS: NavLink[] = [
+  { label: "Playground", href: "/", icon: I.zap },
+  { label: "Reportes", href: "/nav-demo/reportes", icon: I.layers },
+  { label: "Ajustes", href: "/nav-demo/ajustes", icon: I.edit },
+];
+
+const SIDEBAR_SECTIONS: SidebarSection[] = [
+  {
+    title: "General",
+    links: [
+      { label: "Playground", href: "/", icon: I.zap },
+      { label: "Reportes", href: "/nav-demo/reportes", icon: I.layers, badge: 3 },
+      { label: "Ajustes", href: "/nav-demo/ajustes", icon: I.edit },
+    ],
+  },
+];
+
+const BOTTOMNAV_ITEMS: BottomNavItem[] = [
+  { label: "Playground", href: "/", icon: I.zap },
+  { label: "Reportes", href: "/nav-demo/reportes", icon: I.layers, badge: 3 },
+  { label: "Ajustes", href: "/nav-demo/ajustes", icon: I.edit },
+];
+
+function NavGoLive() {
+  const router = useRouter();
   return (
-    <Section id={id} title={title} description="Usa next/link y next/navigation: no resuelve fuera de una app Next.js real.">
+    <Button variant="secondary" size="sm" onClick={() => router.push("/nav-demo")}>
+      Ver demo con navegación real →
+    </Button>
+  );
+}
+
+function NavbarSection() {
+  return (
+    <Section
+      id="navbar"
+      title="Navbar"
+      description="Usa next/link + next/navigation — corre de verdad porque el playground es una app Next.js. El link activo se calcula con usePathname(), acá la ruta actual es '/'."
+    >
+      <Card>
+        <div className="rounded-xl border border-border overflow-hidden">
+          <Navbar sticky={false} brand={<span className="font-bold text-foreground">Logo</span>} links={NAV_LINKS} />
+        </div>
+        <div className="mt-4">
+          <NavGoLive />
+        </div>
+      </Card>
+    </Section>
+  );
+}
+
+function SideBarSection() {
+  return (
+    <Section
+      id="sidebar"
+      title="SideBar"
+      description="h-screen + sticky de verdad; acá se muestra recortada dentro de una caja para no romper el layout del playground."
+    >
+      <Card>
+        <div className="relative h-105 overflow-hidden rounded-xl border border-border">
+          <SideBar
+            brand={<span className="font-bold text-foreground">Logo</span>}
+            sections={SIDEBAR_SECTIONS}
+          />
+        </div>
+        <div className="mt-4">
+          <NavGoLive />
+        </div>
+      </Card>
+    </Section>
+  );
+}
+
+function BottomNavSection() {
+  return (
+    <Section
+      id="bottomnav"
+      title="BottomNav"
+      description="fixed bottom-0: solo se ve en anchos mobile (<768px). En este preview queda anclada al fondo real de la ventana, no de la Card."
+    >
       <Card>
         <p className="text-sm text-muted leading-relaxed">
-          No se puede montar en vivo en este playground de Vite. Se ve con un mock visual en{" "}
-          <code>preview.html</code>, y funciona de verdad en cualquier app Next.js que instale el paquete.
+          Achicá la ventana (o el DevTools en modo mobile) para verla aparecer anclada abajo de la pantalla.
         </p>
-        <pre className="mt-3 text-[11px] bg-surface rounded-lg p-3 overflow-auto border border-border">{importLine}</pre>
+        <BottomNav items={BOTTOMNAV_ITEMS} />
+        <div className="mt-4">
+          <NavGoLive />
+        </div>
       </Card>
     </Section>
   );
@@ -307,9 +391,9 @@ export function AtomsGroup() {
       <ToastSection />
       <ModalSection />
       <BottomSheetSection />
-      <NextOnlyNote id="navbar" title="Navbar" importLine={`<Navbar brand={<Logo/>} links={[...]} />`} />
-      <NextOnlyNote id="sidebar" title="SideBar" importLine={`<SideBar links={[...]} />`} />
-      <NextOnlyNote id="bottomnav" title="BottomNav" importLine={`<BottomNav items={[...]} />`} />
+      <NavbarSection />
+      <SideBarSection />
+      <BottomNavSection />
     </>
   );
 }

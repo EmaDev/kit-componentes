@@ -42,7 +42,7 @@ export function SideNav() {
   };
 
   return (
-    <nav className="hidden xl:block sticky top-24 self-start w-52 shrink-0">
+    <nav className="hidden xl:block sticky top-24 self-start w-52 shrink-0 max-h-[calc(100vh-7rem)] scroll-native pr-2 pb-6">
       <ul className="space-y-0.5">{item({ id: "intro", label: "Introducción" })}</ul>
       {GROUPS.map((g) => (
         <div key={g.id} className="mt-6">

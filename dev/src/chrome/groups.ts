@@ -48,6 +48,7 @@ export const GROUPS: Group[] = [
       { id: "floatingbutton", label: "FloatingButton" },
       { id: "stepper", label: "Stepper" },
       { id: "progress", label: "Progress" },
+      { id: "skeleton", label: "Skeleton" },
     ],
   },
   {
@@ -61,6 +62,18 @@ export const GROUPS: Group[] = [
       { id: "datatable", label: "DataTable" },
       { id: "spreadsheet", label: "Spreadsheet" },
       { id: "calendar", label: "CalendarGrid" },
+    ],
+  },
+  {
+    id: "theme-group",
+    label: "Personalización",
+    kicker: "Tema",
+    tone: "accent",
+    blurb:
+      "Editor en vivo de los 10 tokens de color del tema y paleta multi-tenant: un mismo deploy que cambia de marca según el dominio o la sesión.",
+    sections: [
+      { id: "themeconfigurator", label: "ThemeConfigurator" },
+      { id: "tenants", label: "Multi-tenant" },
     ],
   },
   {

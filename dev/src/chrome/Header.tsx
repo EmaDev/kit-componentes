@@ -3,7 +3,9 @@ import { Button } from "../../../components/Button";
 import { I } from "./Icon";
 
 function ThemeToggle() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
+  const [dark, setDark] = useState(
+    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  );
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);

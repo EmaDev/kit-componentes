@@ -3,7 +3,7 @@ import { GROUPS, GROUP_TONES } from "./groups";
 import { I } from "./Icon";
 
 const BADGES = [
-  { label: "Vite (real)", icon: I.zap },
+  { label: "Next.js (real)", icon: I.zap },
   { label: "React 19", icon: I.layers },
   { label: "Tailwind v4", icon: I.edit },
 ];
