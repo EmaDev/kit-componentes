@@ -177,9 +177,9 @@ export function ImageZoom({
               src={src}
               alt={alt}
               draggable={false}
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
               className="max-w-full max-h-full object-contain will-change-transform"
               style={{
                 transform: `translate3d(${tx}px,${ty}px,0) scale(${scale})`,

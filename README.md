@@ -1,6 +1,6 @@
 # Scaffolding · Atomic Components
 
-31 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+35 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
 
 > 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
@@ -28,6 +28,10 @@ components/
   Skeleton.tsx           # placeholders animados: primitivo + Text/Avatar/Card/List/Table
   ThemeConfigurator.tsx  # editor en vivo de los tokens de color del tema, con export CSS/JSON
   TenantTheme.tsx        # paleta multi-tenant por dominio/sesión: <TenantThemeProvider/> + useTenantTheme()
+  Card.tsx               # Card base + StatCard · MediaCard · ProfileCard · PricingCard
+  Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
+  ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
+  Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
   DataTable.tsx          # orden, búsqueda, selección, paginado, sticky header
   Spreadsheet.tsx        # hoja de cálculo editable con fórmulas y atajos
   CalendarGrid.tsx       # grilla mensual con eventos
@@ -163,6 +167,37 @@ const { tenant, themes, setTenant, tokens, setTokens, css } = useTenantTheme();
 ```
 
 Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la base de datos): [TenantThemeProvider](docs/components/TenantTheme.md).
+
+## 🖼 Superficies & media
+
+```tsx
+// Cards — variant: elevated | outline | flat | gradient | glass
+<Card variant="elevated" padding="md" interactive>…</Card>
+<StatCard label="MRR" value="$48.2k" delta={12.4} tone="primary" spark={[8,10,9,13]}/>
+<MediaCard src="/casa.jpg" badge="Nuevo" title="Casa Aldama" horizontal
+  description="Reforma integral de 140 m²." actions={<Button size="sm">Ver</Button>}/>
+<ProfileCard name="Lucía Marín" role="Product designer" cover
+  stats={[{ label: "Proyectos", value: 12 }]}/>
+<PricingCard plan="Pro" price="$29" highlight badge="Popular"
+  features={["Proyectos ilimitados", "Soporte prioritario"]} cta={<Button/>}/>
+
+// Carrusel — drag, flechas, dots, miniaturas, autoplay, varias por vista
+<Carousel images={[{ src, alt, caption }]} perView={2} peek={56}
+  aspect={16/9} loop autoplay={2600} thumbs zoomable/>
+
+// Imagen con pan y zoom — sólo la imagen; bloquea scroll, pinch del navegador,
+// ctrl+scroll, pull-to-refresh, long-press y clicks fuera del visor
+<ZoomableImage src="/plano.png" caption="A-01 · 1:50"/>
+<ImageZoom open={open} onClose={close} src={img.src} maxScale={6}
+  onPrev={prev} onNext={next}/>
+
+// Tabs
+<Tabs items={items} value={tab} onChange={setTab}
+  variant="segmented" size="md" fitted scrollable
+  panels={{ resumen: <Resumen/>, actividad: <Actividad/> }}/>
+```
+
+Gestos del visor: arrastrar = pan · rueda o pinch = zoom hacia el puntero · doble click = 250% ↔ reset · `+` / `−` / `0` · `←` `→` para recorrer la galería · `Esc` cierra. El pan está limitado para que la imagen nunca se escape de la pantalla.
 
 ## 🧪 Preview y desarrollo local
 

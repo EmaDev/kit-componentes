@@ -56,6 +56,15 @@ export {
 } from "./TenantTheme";
 export type { TenantTheme, ThemeMode } from "./TenantTheme";
 
+// --- Superficies & media ---
+export { Card, CardMedia, CardHeader, CardFooter, StatCard, MediaCard, ProfileCard, PricingCard } from "./Card";
+export type { CardVariant, CardPadding, StatTone } from "./Card";
+export { Carousel } from "./Carousel";
+export type { CarouselImage } from "./Carousel";
+export { ImageZoom, ZoomableImage } from "./ImageZoom";
+export { Tabs } from "./Tabs";
+export type { TabItem, TabsVariant, TabsSize } from "./Tabs";
+
 // --- PWA ---
 export { PwaInstallPrompt } from "./PwaInstallPrompt";
 export { InstallButton } from "./InstallButton";

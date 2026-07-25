@@ -37,6 +37,10 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Un placeholder animado mientras carga contenido (texto, avatar, tarjeta, lista, tabla) | [Skeleton](components/Skeleton.md) |
 | Un panel para ajustar/exportar la paleta de colores del tema (marca, superficie, texto, estado) | [ThemeConfigurator](components/ThemeConfigurator.md) |
 | Que un mismo deploy use una paleta distinta por cliente, según el dominio o la sesión (white-label / multi-tenant) | [TenantThemeProvider](components/TenantTheme.md) |
+| Un contenedor de superficie genérico (KPI, contenido con imagen, perfil, pricing) | [Card](components/Card.md) (`StatCard` / `MediaCard` / `ProfileCard` / `PricingCard`) |
+| Una galería de imágenes navegable (drag, flechas, dots, miniaturas, autoplay) | [Carousel](components/Carousel.md) |
+| Ampliar **una** imagen a pantalla completa con pan y zoom | [ImageZoom](components/ImageZoom.md) (`ZoomableImage`) |
+| Dividir contenido en pestañas dentro de una misma pantalla | [Tabs](components/Tabs.md) |
 | Listar/explorar datos tabulares: orden, búsqueda, selección, paginado | [DataTable](components/DataTable.md) |
 | Una grilla **editable** tipo Excel/Sheets, con fórmulas | [Spreadsheet](components/Spreadsheet.md) |
 | Un calendario mensual con eventos | [CalendarGrid](components/CalendarGrid.md) |
@@ -93,6 +97,15 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 |---|---|
 | [ThemeConfigurator](components/ThemeConfigurator.md) | Editor en vivo de los 10 tokens de color del tema, con presets y export a CSS/JSON. |
 | [TenantThemeProvider](components/TenantTheme.md) | Paleta multi-tenant: resuelve el tema por dominio o por sesión y lo aplica a toda la app. Incluye `useTenantTheme()`. |
+
+### Superficies & media
+
+| Componente | Descripción |
+|---|---|
+| [Card](components/Card.md) | Superficie base (5 variantes) + `StatCard` / `MediaCard` / `ProfileCard` / `PricingCard`. |
+| [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
+| [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
+| [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
 
 ### Datos & grillas
 

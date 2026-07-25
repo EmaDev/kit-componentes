@@ -77,6 +77,20 @@ export const GROUPS: Group[] = [
     ],
   },
   {
+    id: "surfaces",
+    label: "Superficies & media",
+    kicker: "Superficies",
+    tone: "primary",
+    blurb:
+      "Contenedores y contenido visual: cards de todo tipo, carrusel de imágenes, visor con pan y zoom que bloquea el resto de la página, y cinco estilos de tabs.",
+    sections: [
+      { id: "cards", label: "Cards" },
+      { id: "carousel", label: "Carrusel" },
+      { id: "imagezoom", label: "Imagen con zoom" },
+      { id: "tabs", label: "Tabs" },
+    ],
+  },
+  {
     id: "pwa-group",
     label: "PWA & Nativo",
     kicker: "Plataforma",

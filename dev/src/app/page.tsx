@@ -10,6 +10,7 @@ import { AtomsGroup } from "../sections/AtomsGroup";
 import { InteractionGroup } from "../sections/InteractionGroup";
 import { DataGroup } from "../sections/DataGroup";
 import { ThemeGroup } from "../sections/ThemeGroup";
+import { SurfacesGroup } from "../sections/SurfacesGroup";
 import { PwaGroup } from "../sections/PwaGroup";
 
 export default function PlaygroundPage() {
@@ -37,7 +38,10 @@ export default function PlaygroundPage() {
             <GroupHeader group={GROUPS[3]} count="2 componentes · 1 hook" />
             <ThemeGroup />
 
-            <GroupHeader group={GROUPS[4]} count="7 componentes · varios hooks" />
+            <GroupHeader group={GROUPS[4]} count="4 componentes" />
+            <SurfacesGroup />
+
+            <GroupHeader group={GROUPS[5]} count="7 componentes · varios hooks" />
             <PwaGroup />
           </div>
         </div>
