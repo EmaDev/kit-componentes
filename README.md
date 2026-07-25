@@ -83,9 +83,9 @@ dev/                      # playground Next.js que importa components/ real (ver
 Asume Next.js 15 + Tailwind v4. Se distribuye como dependencia de Git (repo privado en GitHub), no desde npm.
 
 ```bash
-npm i github:<usuario>/lib-kit-components
+npm i github:EmaDev/kit-componentes
 # o fijando una versión/commit concreto:
-npm i github:<usuario>/lib-kit-components#v0.1.0
+npm i github:EmaDev/kit-componentes#v0.1.0
 ```
 
 `npm install` corre automáticamente el script `prepare` (`tsup`), que compila `dist/` a partir del código fuente — no hace falta commitear el build.
@@ -309,7 +309,7 @@ Para agregar un componente nuevo al playground (y el resto de los pasos obligato
 
 | Variable | Uso | Default |
 | --- | --- | --- |
-| `NEXT_PUBLIC_REPO_URL` | Botones "GitHub" / "Ver código" | `https://github.com/<usuario>/lib-kit-components` |
+| `NEXT_PUBLIC_REPO_URL` | Botones "GitHub" / "Ver código" | `https://github.com/EmaDev/kit-componentes` |
 | `NEXT_PUBLIC_DEMO_URL` | URL pública del propio deploy (referencia, ej. para compartir) | `https://lib-kit-components.vercel.app` |
 | `NEXT_PUBLIC_LIB_VERSION` | Versión mostrada en el footer | `0.1.0` |
 | `NEXT_PUBLIC_DONATE_URL` | Link de donaciones en el footer (se oculta si no está seteada) | *(vacío)* |
@@ -325,7 +325,7 @@ El código fuente (`components/`, `hooks/`, `docs/`) vive en un repo de GitHub; 
 3. Cargar las variables de la tabla de arriba en **Settings → Environment Variables** (con la URL real del repo y, una vez asignado, el dominio que te dio Vercel para `NEXT_PUBLIC_DEMO_URL`).
 4. Deploy. Framework preset: Next.js (autodetectado).
 
-El resto del repo (paquete instalable) no necesita deploy — se consume vía `npm i github:<usuario>/lib-kit-components` como se explica en Instalación.
+El resto del repo (paquete instalable) no necesita deploy — se consume vía `npm i github:EmaDev/kit-componentes` como se explica en Instalación.
 
 ## 📚 Uso rápido
 

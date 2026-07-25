@@ -5,7 +5,7 @@
  * footer, y un link de donaciones opcional.
  */
 export const SITE_CONFIG = {
-  repoUrl: process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/<usuario>/lib-kit-components",
+  repoUrl: process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/EmaDev/kit-componentes",
   demoUrl: process.env.NEXT_PUBLIC_DEMO_URL ?? "https://lib-kit-components.vercel.app",
   libVersion: process.env.NEXT_PUBLIC_LIB_VERSION ?? "0.1.0",
   donateUrl: process.env.NEXT_PUBLIC_DONATE_URL || undefined,
