@@ -96,6 +96,40 @@ export type { RedirectTarget } from "./RedirectTimer";
 export { ShareButton } from "./ShareButton";
 export { CardGrid } from "./CardGrid";
 
+// --- Listas, pickers & feedback ---
+export { ImageCounter } from "./ImageCounter";
+export type { CounterImage, CounterStyle, CounterPosition } from "./ImageCounter";
+export { SnackbarProvider, useSnackbar } from "./Snackbar";
+export type { Snack, SnackbarVariant, SnackbarPosition } from "./Snackbar";
+export { DatePicker } from "./DatePicker";
+export type { DateRange } from "./DatePicker";
+export { Pagination } from "./Pagination";
+export { PullToRefresh } from "./PullToRefresh";
+
+// --- Comercio & conversión ---
+export { CartButton, CartPanel, useCart } from "./Cart";
+export type { CartLine } from "./Cart";
+export { PromoPopup } from "./PromoPopup";
+export type { PromoLayout } from "./PromoPopup";
+export { CouponCode } from "./CouponCode";
+export { CountdownBanner } from "./CountdownBanner";
+export type { CountdownVariant } from "./CountdownBanner";
+
+// --- Social, lectura & chat ---
+export { Chatbot } from "./Chatbot";
+export type { ChatMessage } from "./Chatbot";
+export { BookReader } from "./BookReader";
+export type { BookChapter, ReaderTheme } from "./BookReader";
+export { SocialPost } from "./SocialPost";
+export type { PostAuthor, PostMedia, PostCounts } from "./SocialPost";
+export { CommentBox } from "./CommentBox";
+export type { Comment, CommentSort } from "./CommentBox";
+export { Poll } from "./Poll";
+export type { PollOption, PollKind } from "./Poll";
+export { Confetti } from "./Confetti";
+export { SuccessPage } from "./SuccessPage";
+export type { SuccessDetail } from "./SuccessPage";
+
 // --- PWA ---
 export { PwaInstallPrompt } from "./PwaInstallPrompt";
 export { InstallButton } from "./InstallButton";

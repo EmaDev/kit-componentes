@@ -19,6 +19,12 @@ interface ImageZoomProps {
   onNext?: () => void;
 }
 
+/** estado del transform: escala + traslación en px de pantalla */
+type View = { s: number; x: number; y: number };
+
+const IDLE: View = { s: 1, x: 0, y: 0 };
+const EASE = "transform 0.22s cubic-bezier(0.16,1,0.3,1)";
+
 /**
  * Visor de imagen a pantalla completa con pan y zoom. Mientras está abierto
  * BLOQUEA todo lo demás: scroll del documento, gestos del navegador
@@ -31,122 +37,206 @@ interface ImageZoomProps {
 export function ImageZoom({
   src, alt = "", open, onClose, maxScale = 6, doubleTapScale = 2.5, caption, onPrev, onNext,
 }: ImageZoomProps) {
-  const [scale, setScale] = useState(1);
-  const [tx, setTx] = useState(0);
-  const [ty, setTy] = useState(0);
+  const [view, setViewState] = useState<View>(IDLE);
+  const [interacting, setInteracting] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
   const boxRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  /** espejo síncrono de `view`: los gestos necesitan el valor actual, no el del render */
+  const viewRef = useRef<View>(IDLE);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
   const drag = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const lastTap = useRef(0);
 
-  const reset = useCallback(() => { setScale(1); setTx(0); setTy(0); }, []);
-
-  /** limita el pan para que la imagen no se escape de la pantalla */
-  const clamp = useCallback((x: number, y: number, s: number) => {
-    const box = boxRef.current, img = imgRef.current;
-    if (!box || !img) return { x, y };
-    const bw = box.clientWidth, bh = box.clientHeight;
-    const iw = img.clientWidth * s, ih = img.clientHeight * s;
-    const mx = Math.max(0, (iw - bw) / 2), my = Math.max(0, (ih - bh) / 2);
-    return { x: Math.min(mx, Math.max(-mx, x)), y: Math.min(my, Math.max(-my, y)) };
+  const apply = useCallback((v: View) => {
+    viewRef.current = v;
+    setViewState(v);
   }, []);
 
+  const reset = useCallback(() => { apply(IDLE); }, [apply]);
+
+  /**
+   * Tamaño real del contenido dentro del `<img>`: con `object-contain` la caja
+   * del elemento casi nunca coincide con el pixel visible, así que el pan se
+   * calcula sobre el rectángulo dibujado, no sobre la caja.
+   */
+  const contentSize = useCallback(() => {
+    const img = imgRef.current;
+    if (!img) return null;
+    const bw = img.clientWidth, bh = img.clientHeight;
+    const nw = img.naturalWidth, nh = img.naturalHeight;
+    if (!nw || !nh) return { w: bw, h: bh };
+    const k = Math.min(bw / nw, bh / nh);
+    return { w: nw * k, h: nh * k };
+  }, []);
+
+  /** limita el pan para que la imagen no se escape de la pantalla */
+  const clampPan = useCallback((x: number, y: number, s: number) => {
+    const box = boxRef.current, content = contentSize();
+    if (!box || !content) return { x, y };
+    const mx = Math.max(0, (content.w * s - box.clientWidth) / 2);
+    const my = Math.max(0, (content.h * s - box.clientHeight) / 2);
+    return { x: Math.min(mx, Math.max(-mx, x)), y: Math.min(my, Math.max(-my, y)) };
+  }, [contentSize]);
+
+  /** zoom manteniendo fijo el punto (cx, cy) de la pantalla */
   const zoomAt = useCallback((next: number, cx: number, cy: number) => {
     const box = boxRef.current;
     if (!box) return;
     const r = box.getBoundingClientRect();
     const px = cx - r.left - r.width / 2;
     const py = cy - r.top - r.height / 2;
-    setScale((prev) => {
-      const s = Math.min(maxScale, Math.max(1, next));
-      const k = s / prev;
-      const nx = px - (px - tx) * k;
-      const ny = py - (py - ty) * k;
-      const c = clamp(s === 1 ? 0 : nx, s === 1 ? 0 : ny, s);
-      setTx(c.x); setTy(c.y);
-      return s;
-    });
-  }, [clamp, maxScale, tx, ty]);
+    const prev = viewRef.current;
+    const s = Math.min(maxScale, Math.max(1, next));
+    if (Math.abs(s - prev.s) < 0.0005) return;
+    const k = s / prev.s;
+    const nx = s <= 1 ? 0 : px - (px - prev.x) * k;
+    const ny = s <= 1 ? 0 : py - (py - prev.y) * k;
+    const c = clampPan(nx, ny, s);
+    apply({ s, x: c.x, y: c.y });
+  }, [apply, clampPan, maxScale]);
 
-  // --- bloqueo global mientras está abierto -------------------------
+  const zoomCenter = useCallback((factor: number) => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = box.getBoundingClientRect();
+    zoomAt(viewRef.current.s * factor, r.left + r.width / 2, r.top + r.height / 2);
+  }, [zoomAt]);
+
+  // --- reset al abrir y al cambiar de imagen --------------------------
   useEffect(() => {
     if (!open) return;
     reset();
-    const { overflow, touchAction, overscrollBehavior } = document.body.style;
-    document.body.style.overflow = "hidden";
-    document.body.style.touchAction = "none";
-    document.body.style.overscrollBehavior = "none";
+    setLoaded(imgRef.current?.complete ?? false);
+  }, [open, src, reset]);
+
+  // --- bloqueo global mientras está abierto ---------------------------
+  // Sólo depende de `open`: si dependiera del zoom se desmontaría y volvería a
+  // montar en cada gesto, restaurando el scroll del body a mitad de camino.
+  useEffect(() => {
+    if (!open) return;
+    const body = document.body;
+    const prev = {
+      overflow: body.style.overflow,
+      touchAction: body.style.touchAction,
+      overscrollBehavior: body.style.overscrollBehavior,
+    };
+    body.style.overflow = "hidden";
+    body.style.touchAction = "none";
+    body.style.overscrollBehavior = "none";
 
     const stop = (e: Event) => e.preventDefault();
+    window.addEventListener("gesturestart", stop as EventListener);
+    window.addEventListener("gesturechange", stop as EventListener);
+    window.addEventListener("contextmenu", stop);
+    return () => {
+      body.style.overflow = prev.overflow;
+      body.style.touchAction = prev.touchAction;
+      body.style.overscrollBehavior = prev.overscrollBehavior;
+      window.removeEventListener("gesturestart", stop as EventListener);
+      window.removeEventListener("gesturechange", stop as EventListener);
+      window.removeEventListener("contextmenu", stop);
+    };
+  }, [open]);
+
+  // --- teclado ---------------------------------------------------------
+  useEffect(() => {
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { onClose(); return; }
-      if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomAt(scale * 1.4, innerWidth / 2, innerHeight / 2); }
-      if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomAt(scale / 1.4, innerWidth / 2, innerHeight / 2); }
+      if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomCenter(1.4); }
+      if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomCenter(1 / 1.4); }
       if (e.key === "0") { e.preventDefault(); reset(); }
-      if (e.key === "ArrowLeft" && onPrev) { e.preventDefault(); onPrev(); }
-      if (e.key === "ArrowRight" && onNext) { e.preventDefault(); onNext(); }
+      if (e.key === "ArrowLeft" && onPrev) { e.preventDefault(); e.stopPropagation(); onPrev(); }
+      if (e.key === "ArrowRight" && onNext) { e.preventDefault(); e.stopPropagation(); onNext(); }
     };
-    // el navegador no debe hacer su propio zoom ni scroll
-    window.addEventListener("wheel", stop, { passive: false });
-    window.addEventListener("gesturestart", stop as EventListener);
-    window.addEventListener("contextmenu", stop);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = overflow;
-      document.body.style.touchAction = touchAction;
-      document.body.style.overscrollBehavior = overscrollBehavior;
-      window.removeEventListener("wheel", stop);
-      window.removeEventListener("gesturestart", stop as EventListener);
-      window.removeEventListener("contextmenu", stop);
-      window.removeEventListener("keydown", onKey);
+    // captura: gana antes que los listeners de la galería que abrió el visor
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [open, onClose, onPrev, onNext, reset, zoomCenter]);
+
+  // --- rueda / pinch de trackpad ---------------------------------------
+  // Nativo y no pasivo: el `onWheel` de React es pasivo y su preventDefault()
+  // se ignora, así que el navegador seguía haciendo su propio zoom de página.
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!open || !box) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // ctrl+wheel = pinch de trackpad: más fino y proporcional al delta
+      const factor = e.ctrlKey
+        ? Math.exp(-e.deltaY / 120)
+        : e.deltaY < 0 ? 1.12 : 1 / 1.12;
+      zoomAt(viewRef.current.s * factor, e.clientX, e.clientY);
     };
-  }, [open, onClose, reset, zoomAt, scale, onPrev, onNext]);
+    box.addEventListener("wheel", onWheel, { passive: false });
+    return () => box.removeEventListener("wheel", onWheel);
+  }, [open, zoomAt]);
 
-  useEffect(() => { reset(); }, [src, reset]);
-
-  // --- gestos --------------------------------------------------------
+  // --- gestos de puntero ------------------------------------------------
   const onPointerDown = (e: React.PointerEvent) => {
-    (e.target as Element).setPointerCapture?.(e.pointerId);
+    e.currentTarget.setPointerCapture?.(e.pointerId);
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    setInteracting(true);
+
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
-      pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale };
+      pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, scale: viewRef.current.s };
       drag.current = null;
       return;
     }
-    drag.current = { x: e.clientX, y: e.clientY, tx, ty };
-    const now = Date.now();
-    if (now - lastTap.current < 300) {
-      scale > 1 ? reset() : zoomAt(doubleTapScale, e.clientX, e.clientY);
-      lastTap.current = 0;
-    } else lastTap.current = now;
+    drag.current = { x: e.clientX, y: e.clientY, tx: viewRef.current.x, ty: viewRef.current.y };
+
+    // el doble tap es sólo táctil; con mouse lo resuelve onDoubleClick
+    if (e.pointerType === "touch") {
+      const now = Date.now();
+      if (now - lastTap.current < 300) {
+        if (viewRef.current.s > 1.01) reset();
+        else zoomAt(doubleTapScale, e.clientX, e.clientY);
+        lastTap.current = 0;
+      } else lastTap.current = now;
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     if (!pointers.current.has(e.pointerId)) return;
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    if (pointers.current.size === 2 && pinch.current) {
+    if (pointers.current.size >= 2 && pinch.current) {
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       zoomAt(pinch.current.scale * (dist / pinch.current.dist), (a.x + b.x) / 2, (a.y + b.y) / 2);
       return;
     }
-    if (drag.current && scale > 1) {
-      const c = clamp(drag.current.tx + (e.clientX - drag.current.x), drag.current.ty + (e.clientY - drag.current.y), scale);
-      setTx(c.x); setTy(c.y);
+    if (drag.current && viewRef.current.s > 1) {
+      const c = clampPan(
+        drag.current.tx + (e.clientX - drag.current.x),
+        drag.current.ty + (e.clientY - drag.current.y),
+        viewRef.current.s,
+      );
+      apply({ ...viewRef.current, x: c.x, y: c.y });
     }
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinch.current = null;
-    if (pointers.current.size === 0) drag.current = null;
+    if (pointers.current.size === 0) {
+      drag.current = null;
+      setInteracting(false);
+    } else {
+      // quedó un dedo tras el pinch: re-anclar el pan para que no salte
+      const [p] = [...pointers.current.values()];
+      drag.current = { x: p.x, y: p.y, tx: viewRef.current.x, ty: viewRef.current.y };
+    }
   };
 
-  const zoomed = scale > 1.01;
+  const zoomed = view.s > 1.01;
 
   return (
     <AnimatePresence>
@@ -161,40 +251,42 @@ export function ImageZoom({
           <div
             ref={boxRef}
             className="absolute inset-0 overflow-hidden grid place-items-center"
-            style={{ cursor: zoomed ? "grab" : "zoom-in" }}
+            style={{ touchAction: "none", cursor: zoomed ? (interacting ? "grabbing" : "grab") : "zoom-in" }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
-            onWheel={(e) => {
+            onDoubleClick={(e) => {
               e.preventDefault();
-              zoomAt(scale * (e.deltaY < 0 ? 1.12 : 1 / 1.12), e.clientX, e.clientY);
+              if (zoomed) reset();
+              else zoomAt(doubleTapScale, e.clientX, e.clientY);
             }}
-            onDoubleClick={(e) => (zoomed ? reset() : zoomAt(doubleTapScale, e.clientX, e.clientY))}
           >
-            <motion.img
+            {/* `<img>` plano a propósito: framer-motion gestiona su propio
+                transform y pisaría el del zoom. */}
+            <img
               ref={imgRef}
+              key={src}
               src={src}
               alt={alt}
               draggable={false}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              className="max-w-full max-h-full object-contain will-change-transform"
+              onLoad={() => setLoaded(true)}
+              className="max-w-full max-h-full object-contain will-change-transform pointer-events-none"
               style={{
-                transform: `translate3d(${tx}px,${ty}px,0) scale(${scale})`,
-                transition: drag.current || pinch.current ? "none" : "transform 0.22s cubic-bezier(0.16,1,0.3,1)",
+                transform: `translate3d(${view.x}px,${view.y}px,0) scale(${view.s})`,
+                transition: interacting ? "opacity 0.2s ease" : `${EASE}, opacity 0.2s ease`,
+                opacity: loaded ? 1 : 0,
               }}
             />
           </div>
 
           {/* Controles */}
           <div className="absolute top-4 right-4 flex items-center gap-1.5">
-            <ZoomBtn label="Alejar" onClick={() => zoomAt(scale / 1.4, innerWidth / 2, innerHeight / 2)} disabled={scale <= 1}>−</ZoomBtn>
+            <ZoomBtn label="Alejar" onClick={() => zoomCenter(1 / 1.4)} disabled={view.s <= 1}>−</ZoomBtn>
             <span className="h-9 px-2.5 rounded-lg bg-white/10 text-white/80 text-xs font-semibold grid place-items-center tabular-nums min-w-[52px]">
-              {Math.round(scale * 100)}%
+              {Math.round(view.s * 100)}%
             </span>
-            <ZoomBtn label="Acercar" onClick={() => zoomAt(scale * 1.4, innerWidth / 2, innerHeight / 2)} disabled={scale >= maxScale}>+</ZoomBtn>
+            <ZoomBtn label="Acercar" onClick={() => zoomCenter(1.4)} disabled={view.s >= maxScale}>+</ZoomBtn>
             <ZoomBtn label="Restablecer" onClick={reset} disabled={!zoomed}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                 <path d="M3 12a9 9 0 1 0 3-6.7" /><polyline points="3 4 3 9 8 9" />

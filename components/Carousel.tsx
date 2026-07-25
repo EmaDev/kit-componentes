@@ -45,6 +45,8 @@ export function Carousel({
   const shell = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
+  /** hubo arrastre real: evita que el click de fin de swipe abra el visor */
+  const moved = useRef(false);
   const paused = useRef(false);
 
   useEffect(() => {
@@ -83,12 +85,15 @@ export function Carousel({
 
   const onDown = (e: React.PointerEvent) => {
     start.current = { x: e.clientX, y: e.clientY };
+    moved.current = false;
     setDragging(true);
     paused.current = true;
   };
   const onMove = (e: React.PointerEvent) => {
     if (!start.current) return;
-    setDragX(e.clientX - start.current.x);
+    const dx = e.clientX - start.current.x;
+    if (Math.abs(dx) > 6) moved.current = true;
+    setDragX(dx);
   };
   const onUp = () => {
     if (!start.current) return;
@@ -129,7 +134,7 @@ export function Carousel({
               aria-hidden={i < index || i >= index + perView}
             >
               <img src={img.src} alt={img.alt ?? ""} draggable={false}
-                onClick={() => { if (zoomable && !dragX) setZoom(i); }}
+                onClick={() => { if (zoomable && !moved.current) setZoom(i); }}
                 className={`absolute inset-0 w-full h-full object-cover ${zoomable ? "cursor-zoom-in" : ""}`}
                 style={{ opacity: i >= index && i < index + perView ? 1 : 0.45, transition: "opacity 0.4s ease" }}
               />

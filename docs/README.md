@@ -73,6 +73,22 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Respetar el notch / home indicator en un contenedor | [SafeArea](components/SafeArea.md) |
 | Envolver toda la app con comportamiento "nativo" (zoom, overscroll, safe areas, etc. todo junto) | [NativeShell](components/NativeShell.md) |
 | Sólo bloquear zoom/gestos del navegador, sin el resto de NativeShell | [ViewportLock](components/ViewportLock.md) |
+| Una galería de una imagen a la vez con contador «3/12» superpuesto | [ImageCounter](components/ImageCounter.md) |
+| Feedback de una acción con «deshacer», uno a la vez (cola FIFO) | [Snackbar](components/Snackbar.md) |
+| Elegir una fecha o un rango, con atajos y días bloqueados | [DatePicker](components/DatePicker.md) |
+| Saltar a una página específica de un listado grande y conocido | [Pagination](components/Pagination.md) |
+| El gesto nativo de "tirar para refrescar" en una lista mobile | [PullToRefresh](components/PullToRefresh.md) |
+| Un carrito de compras: botón con badge + panel de líneas | [Cart](components/Cart.md) (`CartButton` / `CartPanel` / `useCart`) |
+| Un interstitial de oferta con captura de email | [PromoPopup](components/PromoPopup.md) |
+| Un código de cupón copiable con timer y/o cupos | [CouponCode](components/CouponCode.md) |
+| Un banner de cuenta regresiva de campaña, fijo arriba/abajo | [CountdownBanner](components/CountdownBanner.md) |
+| Un asistente conversacional con burbujas y respuestas rápidas | [Chatbot](components/Chatbot.md) |
+| Un lector de texto paginado por capítulos, tipo Google Books | [BookReader](components/BookReader.md) |
+| Un post de red social con media, reacciones y comentarios | [SocialPost](components/SocialPost.md) |
+| Comentarios con hilos de una respuesta, orden y likes | [CommentBox](components/CommentBox.md) |
+| Una encuesta (única, múltiple, estrellas o NPS) | [Poll](components/Poll.md) |
+| Confeti para celebrar una acción puntual | [Confetti](components/Confetti.md) |
+| Una pantalla de éxito completa tras una operación | [SuccessPage](components/SuccessPage.md) |
 
 ## Componentes
 
@@ -177,6 +193,37 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [SafeArea](components/SafeArea.md) | `SafeArea` + `SafeAreaSpacer`, respeta insets del dispositivo. |
 | [NativeShell](components/NativeShell.md) | Raíz todo-en-uno para experiencia nativa. |
 | [ViewportLock](components/ViewportLock.md) | Bloquea zoom/overscroll/long-press, sin UI. |
+
+### Listas, pickers & feedback
+
+| Componente | Descripción |
+|---|---|
+| [ImageCounter](components/ImageCounter.md) | Galería de una imagen a la vez con contador «03 / 12», arrastre, teclado y zoom. |
+| [Snackbar](components/Snackbar.md) | `SnackbarProvider` + `useSnackbar()`, uno a la vez con "deshacer" y swipe. |
+| [DatePicker](components/DatePicker.md) | Fecha simple o rango, popover o embebido, atajos y límites. |
+| [Pagination](components/Pagination.md) | Paginado numérico con elipsis, resumen y tamaño de página. |
+| [PullToRefresh](components/PullToRefresh.md) | Gesto nativo de refresco, con resistencia y flash de confirmación. |
+
+### Comercio & conversión
+
+| Componente | Descripción |
+|---|---|
+| [Cart](components/Cart.md) | `CartButton` (badge animado) + `CartPanel` (líneas animadas) + `useCart()`. |
+| [PromoPopup](components/PromoPopup.md) | Interstitial de ofertas con captura de email opcional. |
+| [CouponCode](components/CouponCode.md) | Cupón copiable con timer de vencimiento y/o cupos. |
+| [CountdownBanner](components/CountdownBanner.md) | Cuenta regresiva de campaña, fijable y descartable. |
+
+### Social, lectura & chat
+
+| Componente | Descripción |
+|---|---|
+| [Chatbot](components/Chatbot.md) | Chat con burbujas, "escribiendo…", quick replies y lanzador flotante. |
+| [BookReader](components/BookReader.md) | Lector paginado tipo Google Books, con tema y tipografía ajustables. |
+| [SocialPost](components/SocialPost.md) | Post con autor, media adaptativa, reacciones y contadores. |
+| [CommentBox](components/CommentBox.md) | Comentarios con hilos de una respuesta, orden y likes. |
+| [Poll](components/Poll.md) | Encuestas: única, múltiple, estrellas y NPS. |
+| [Confetti](components/Confetti.md) | Confeti en canvas puro — burst, rain o center. |
+| [SuccessPage](components/SuccessPage.md) | Pantalla de éxito con confeti, detalles y CTA. |
 
 ## Hooks
 

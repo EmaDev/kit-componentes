@@ -139,3 +139,21 @@ a,
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
+
+/* Flash de confirmación de PullToRefresh */
+@keyframes ptrFlash {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

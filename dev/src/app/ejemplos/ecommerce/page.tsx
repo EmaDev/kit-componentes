@@ -1,19 +1,31 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../../../../components/Card";
 import { CardGrid } from "../../../../../components/CardGrid";
 import { ChipCarousel, type Chip } from "../../../../../components/ChipCarousel";
 import { Input } from "../../../../../components/Input";
+import { CountdownBanner } from "../../../../../components/CountdownBanner";
+import { PromoPopup } from "../../../../../components/PromoPopup";
+import { Pagination } from "../../../../../components/Pagination";
+import { useToast } from "../../../../../components/Toast";
 import { CATEGORIES, PRODUCTS } from "./_data/products";
 import { ProductCard } from "./_components/ProductCard";
 import { SearchIcon } from "./_components/icons";
 
 const CHIPS: Chip[] = [{ id: "all", label: "Todos" }, ...CATEGORIES.map((c) => ({ id: c, label: c }))];
+const PAGE_SIZE = 6;
 
 export default function EcommerceCatalogPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
+  const [page, setPage] = useState(1);
+  const [promoOpen, setPromoOpen] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setPromoOpen(true);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -24,8 +36,30 @@ export default function EcommerceCatalogPage() {
     });
   }, [query, category]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [query, category]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const saleEnds = useMemo(() => new Date(Date.now() + 3 * 3600_000), []);
+
   return (
     <div>
+      <CountdownBanner
+        until={saleEnds}
+        eyebrow="Hot Sale demo"
+        title="La oferta termina en"
+        variant="boxes"
+        tone="danger"
+        className="mb-6 rounded-2xl"
+        dismissible
+        snoozeDays={1}
+        storageKey="ejemplos-ecommerce-countdown"
+        expiredMessage="La promoción terminó, pero el catálogo sigue disponible."
+      />
+
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Catálogo</h1>
         <p className="mt-1 text-sm text-muted">
@@ -49,14 +83,43 @@ export default function EcommerceCatalogPage() {
           <p className="text-sm text-muted">No encontramos productos con esos filtros.</p>
         </Card>
       ) : (
-        <CardGrid
-          items={filtered}
-          defaultColumns={3}
-          minCardWidth={220}
-          storageKey="ejemplos-ecommerce-columns"
-          renderItem={(p) => <ProductCard key={p.id} product={p} />}
-        />
+        <>
+          <CardGrid
+            items={paged}
+            defaultColumns={3}
+            minCardWidth={220}
+            storageKey="ejemplos-ecommerce-columns"
+            renderItem={(p) => <ProductCard key={p.id} product={p} />}
+          />
+          <Pagination
+            className="mt-8"
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        </>
       )}
+
+      <PromoPopup
+        open={promoOpen}
+        onClose={() => setPromoOpen(false)}
+        eyebrow="Sólo para nuevos visitantes"
+        highlight="15% OFF"
+        title="Llevate 15% en tu primera compra"
+        description="Dejá tu email y te mandamos el cupón al instante."
+        delay={1500}
+        snoozeDays={1}
+        storageKey="ejemplos-ecommerce-promo"
+        emailCapture={{
+          onSubmit: async (email) => {
+            await new Promise((r) => setTimeout(r, 500));
+            toast({ title: "Cupón enviado", description: email, variant: "success" });
+          },
+          note: "Es una demo: no se envía ningún email real.",
+        }}
+      />
     </div>
   );
 }

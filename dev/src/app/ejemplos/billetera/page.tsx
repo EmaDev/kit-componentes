@@ -8,7 +8,9 @@ import { Card } from "../../../../../components/Card";
 import { Button } from "../../../../../components/Button";
 import { ShareButton } from "../../../../../components/ShareButton";
 import { SkeletonList, SkeletonText } from "../../../../../components/Skeleton";
-import { useToast } from "../../../../../components/Toast";
+import { PullToRefresh } from "../../../../../components/PullToRefresh";
+import { SuccessPage } from "../../../../../components/SuccessPage";
+import { useSnackbar } from "../../../../../components/Snackbar";
 import { CONTACTS } from "./_data/contacts";
 import { formatMoney } from "./_data/format";
 import { useWalletStore } from "./_store/wallet";
@@ -22,7 +24,7 @@ export default function BilleteraHomePage() {
   const transactions = useWalletStore((s) => s.transactions);
   const send = useWalletStore((s) => s.send);
   const topUp = useWalletStore((s) => s.topUp);
-  const { toast } = useToast();
+  const { snack, undo } = useSnackbar();
 
   const [loading, setLoading] = useState(true);
   const [hidden, setHidden] = useState(false);
@@ -31,6 +33,7 @@ export default function BilleteraHomePage() {
   const [recipient, setRecipient] = useState<{ id: string; name: string } | null>(null);
   const [pendingSend, setPendingSend] = useState<{ name: string; amount: number } | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [sentResult, setSentResult] = useState<{ name: string; amount: number } | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 900);
@@ -53,8 +56,11 @@ export default function BilleteraHomePage() {
     }
     if (amountMode === "topup") {
       topUp(amount);
-      toast({ title: "Saldo cargado", description: formatMoney(amount), variant: "success" });
       setAmountMode(null);
+      undo(`Cargaste ${formatMoney(amount)}`, () => {
+        topUp(-amount);
+        snack({ message: "Carga revertida", variant: "info" });
+      });
     }
   };
 
@@ -64,18 +70,38 @@ export default function BilleteraHomePage() {
     await new Promise((r) => setTimeout(r, 700));
     send(pendingSend.name, pendingSend.amount);
     setProcessing(false);
-    toast({
-      title: "Envío realizado",
-      description: `${formatMoney(pendingSend.amount)} a ${pendingSend.name}`,
-      variant: "success",
-    });
+    setSentResult(pendingSend);
     setPendingSend(null);
     setRecipient(null);
   };
 
   const recent = transactions.slice(0, 5);
 
+  if (sentResult) {
+    return (
+      <SuccessPage
+        variant="card"
+        title="¡Envío realizado!"
+        headline={formatMoney(sentResult.amount)}
+        description={`Le enviaste el dinero a ${sentResult.name}.`}
+        primary={{ label: "Volver a mi billetera", onClick: () => setSentResult(null) }}
+        confetti="center"
+        tone="success"
+        redirectIn={4}
+        onRedirect={() => setSentResult(null)}
+      />
+    );
+  }
+
   return (
+    <PullToRefresh
+      onRefresh={async () => {
+        setLoading(true);
+        await new Promise((r) => setTimeout(r, 900));
+        setLoading(false);
+        snack({ message: "Billetera actualizada", variant: "success" });
+      }}
+    >
     <div className="flex flex-col gap-6">
       <Card variant="gradient" padding="lg">
         <div className="flex items-center justify-between">
@@ -197,5 +223,6 @@ export default function BilleteraHomePage() {
         <p className="text-sm text-muted">Esto es una demo: no se transfiere dinero real.</p>
       </Modal>
     </div>
+    </PullToRefresh>
   );
 }

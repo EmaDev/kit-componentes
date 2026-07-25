@@ -7,19 +7,24 @@ import { Card, CardMedia } from "../../../../../../components/Card";
 import { AddButton } from "../../../../../../components/AddButton";
 import { Button } from "../../../../../../components/Button";
 import { Modal } from "../../../../../../components/Modal";
-import { useToast } from "../../../../../../components/Toast";
+import { CouponCode } from "../../../../../../components/CouponCode";
+import { SuccessPage } from "../../../../../../components/SuccessPage";
 import { formatPrice, getProduct } from "../_data/products";
 import { useCartStore } from "../_store/cart";
+
+const COUPON_CODE = "HOTSALE15";
+const COUPON_DISCOUNT = 0.15;
 
 export default function CartPage() {
   const lines = useCartStore((s) => s.lines);
   const setQty = useCartStore((s) => s.setQty);
   const remove = useCartStore((s) => s.remove);
   const clear = useCartStore((s) => s.clear);
-  const { toast } = useToast();
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [placing, setPlacing] = useState(false);
+  const [order, setOrder] = useState<{ id: string; total: number; count: number } | null>(null);
+  const couponExpiresAt = useMemo(() => new Date(Date.now() + 10 * 60_000), []);
 
   const items = useMemo(
     () =>
@@ -30,8 +35,29 @@ export default function CartPage() {
   );
 
   const subtotal = items.reduce((acc, { line, product }) => acc + line.qty * product.price, 0);
-  const shipping = subtotal > 0 && subtotal < 100 ? 12 : 0;
-  const total = subtotal + shipping;
+  const discount = Math.round(subtotal * COUPON_DISCOUNT * 100) / 100;
+  const shipping = subtotal > 0 && subtotal - discount < 100 ? 12 : 0;
+  const total = Math.max(0, subtotal - discount + shipping);
+
+  if (order) {
+    return (
+      <SuccessPage
+        variant="card"
+        title="¡Pedido confirmado!"
+        headline={formatPrice(order.total)}
+        description="Te enviamos un email con los detalles de tu compra."
+        details={[
+          { label: "Operación", value: order.id },
+          { label: "Productos", value: String(order.count) },
+        ]}
+        primary={{ label: "Volver al catálogo", onClick: () => router.push("/ejemplos/ecommerce") }}
+        confetti="burst"
+        tone="success"
+        redirectIn={6}
+        onRedirect={() => router.push("/ejemplos/ecommerce")}
+      />
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -47,11 +73,12 @@ export default function CartPage() {
   const confirm = async () => {
     setPlacing(true);
     await new Promise((r) => setTimeout(r, 900));
+    const id = `#A-${Math.floor(10000 + Math.random() * 89999)}`;
+    const count = items.reduce((acc, { line }) => acc + line.qty, 0);
     clear();
     setPlacing(false);
     setConfirmOpen(false);
-    toast({ title: "Pedido confirmado", description: "Te enviamos un email con los detalles.", variant: "success" });
-    router.push("/ejemplos/ecommerce");
+    setOrder({ id, total, count });
   };
 
   return (
@@ -59,30 +86,39 @@ export default function CartPage() {
       <h1 className="text-2xl font-bold text-foreground mb-6">Tu carrito</h1>
 
       <div className="grid md:grid-cols-[1fr_320px] gap-6 items-start">
-        <div className="flex flex-col gap-3">
-          {items.map(({ line, product }) => (
-            <Card key={line.productId} variant="outline" padding="none" className="flex">
-              <div className="w-24 shrink-0">
-                <CardMedia label={product.name} aspect={1} className="h-full" />
-              </div>
-              <div className="p-4 flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-foreground truncate">{product.name}</p>
-                  <p className="text-xs text-muted mt-0.5">{formatPrice(product.price)} c/u</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
+            {items.map(({ line, product }) => (
+              <Card key={line.productId} variant="outline" padding="none" className="flex">
+                <div className="w-24 shrink-0">
+                  <CardMedia label={product.name} aspect={1} className="h-full" />
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <AddButton value={line.qty} onChange={(v) => setQty(line.productId, v)} min={1} max={product.stock} size="sm" />
-                  <button
-                    type="button"
-                    onClick={() => remove(line.productId)}
-                    className="text-xs font-semibold text-muted hover:text-danger transition-colors"
-                  >
-                    Quitar
-                  </button>
+                <div className="p-4 flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-foreground truncate">{product.name}</p>
+                    <p className="text-xs text-muted mt-0.5">{formatPrice(product.price)} c/u</p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <AddButton value={line.qty} onChange={(v) => setQty(line.productId, v)} min={1} max={product.stock} size="sm" />
+                    <button
+                      type="button"
+                      onClick={() => remove(line.productId)}
+                      className="text-xs font-semibold text-muted hover:text-danger transition-colors"
+                    >
+                      Quitar
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
+
+          <CouponCode
+            code={COUPON_CODE}
+            label="15% OFF ya aplicado a tu compra"
+            expiresAt={couponExpiresAt}
+            tone="success"
+          />
         </div>
 
         <Card variant="elevated" className="md:sticky md:top-20">
@@ -91,6 +127,10 @@ export default function CartPage() {
             <div className="flex justify-between">
               <span className="text-muted">Subtotal</span>
               <span>{formatPrice(subtotal)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted">Cupón {COUPON_CODE}</span>
+              <span className="text-success">− {formatPrice(discount)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted">Envío</span>

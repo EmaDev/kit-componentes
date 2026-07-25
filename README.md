@@ -1,6 +1,6 @@
 # Scaffolding · Atomic Components
 
-42 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+58 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
 
 > 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
@@ -56,6 +56,22 @@ components/
   Navbar.tsx             # usa next/link + next/navigation
   SideBar.tsx            # usa next/link + next/navigation
   BottomNav.tsx          # usa next/link + next/navigation
+  ImageCounter.tsx       # galería de una imagen con contador «03 / 12» + zoom
+  Snackbar.tsx           # <SnackbarProvider> + useSnackbar() (cola + deshacer)
+  DatePicker.tsx         # fecha simple o rango, popover o embebido
+  Pagination.tsx         # paginado con elipsis, resumen y tamaño de página
+  PullToRefresh.tsx      # gesto nativo de refresco
+  Cart.tsx               # CartButton (badge animado) + CartPanel + useCart()
+  PromoPopup.tsx         # interstitial de ofertas + captura de email
+  CouponCode.tsx         # cupón copiable con timer y/o cupos
+  CountdownBanner.tsx    # cuenta regresiva de campaña
+  Chatbot.tsx            # chat conversacional + quick replies + lanzador flotante
+  BookReader.tsx         # lector paginado tipo Google Books (columnas CSS)
+  SocialPost.tsx         # post de red social con media, reacciones y adjuntos
+  CommentBox.tsx         # comentarios con hilos, likes, orden y paginado
+  Poll.tsx               # encuestas: única, múltiple, estrellas y NPS
+  Confetti.tsx           # confeti en canvas (burst · rain · center)
+  SuccessPage.tsx        # pantalla de éxito + confeti + resumen de operación
   PwaInstallPrompt.tsx   # banner Android + sheet iOS
   InstallButton.tsx      # botón de instalación embebible
   OfflineBanner.tsx      # offline / reconectado / conexión lenta
@@ -438,6 +454,162 @@ const columns: Column<Person>[] = [
 **Atajos de la hoja de cálculo**: flechas · `⇧`+flechas (rango) · `⌘/Ctrl`+flechas (extremos) · `Tab`/`⇧Tab` · `Enter`/`F2` (editar) · escribir (reemplazar) · `Esc` · `Delete` · `⌘/Ctrl`+`C`/`X`/`V` (TSV, compatible con Excel y Sheets) · `⌘/Ctrl`+`Z`/`⇧Z` · `⌘/Ctrl`+`A` · `Home`/`End`.
 
 **Fórmulas** (evaluador propio, sin `eval()`): operadores `+ - * / ^ ( )`, referencias, rangos, y `SUM` `AVERAGE`/`AVG` `MIN` `MAX` `COUNT` `ABS` `ROUND`. Errores tipados: `#DIV/0!`, `#NAME?`, `#REF!`, `#CIRC!`.
+
+## 🔁 Listas, pickers & feedback
+
+```tsx
+// Imagen con contador — 03 / 12 superpuesto, arrastre, teclado, zoom
+<ImageCounter
+  images={fotos}          // [{ src, alt, caption }]
+  counter="pill"          // pill | bar | dots
+  position="top-right"    // …-left | bottom-* | bottom-center
+  aspect={4/3} pad badge="Destacada" thumbs zoomable
+  onIndexChange={setIndex}
+/>
+
+// Snackbar — uno a la vez, cola FIFO, acción inline, swipe para descartar
+<SnackbarProvider position="bottom-center">{children}</SnackbarProvider>
+
+const { snack, undo, dismiss } = useSnackbar();
+snack({ message: "Cambios publicados", variant: "success" });
+undo("«Factura #1042» eliminada", () => restore(row));
+
+// Date picker — simple o rango, atajos, límites, días bloqueados
+<DatePicker
+  value={date} onChange={setDate}
+  label="Fecha de la visita" min={hoy} max={enDosMeses}
+  disabledDate={d => d.getDay() === 0 || d.getDay() === 6}
+  presets={[{ label: "Hoy", value: () => new Date() }]}
+  weekStartsOn={1} locale="es-AR"
+/>
+<DatePicker mode="range" months={2} value={range} onChange={setRange}/>
+
+// Paginado — elipsis, extremos, resumen y tamaño de página
+<Pagination
+  page={page} total={248} pageSize={pageSize}
+  onPageChange={setPage} onPageSizeChange={setPageSize}
+  siblings={1} edges summary
+/>
+
+// Pull to refresh — sólo con el scroll arriba del todo
+<PullToRefresh onRefresh={() => mutate()} threshold={72} height="100%">
+  <Feed items={items}/>
+</PullToRefresh>
+```
+
+`Snackbar` es para una acción y uno a la vez (confirmaciones, «deshacer»); `Toast` es para notificaciones que se acumulan. `PullToRefresh` usa `overscroll-behavior-y: contain` para no pelearse con el gesto del navegador.
+
+## 🛒 Comercio & conversión
+
+```tsx
+const cart = useCart();
+
+<CartButton count={cart.count} onClick={openSheet} variant="ghost"/>
+<CartButton count={cart.count} bump="count"/>   // icon | count | none
+<CartPanel
+  lines={cart.lines} onQtyChange={cart.setQty}
+  onRemove={cart.remove} onClear={cart.clear}   // el vaciado se anima antes de llamar
+  shipping={0} discount={cupon}
+  footer={<Button fullWidth>Finalizar compra</Button>}
+/>
+
+// Popup de promociones
+<PromoPopup
+  open={open} onClose={close}
+  eyebrow="Sólo por hoy" highlight="30% OFF"
+  title="Llevate el 30% en toda la colección"
+  image="/promo.jpg"
+  layout="center"            // center | side-image | bottom-sheet
+  delay={4000} snoozeDays={7}
+  emailCapture={{ onSubmit: sendCoupon, note: "Sin spam." }}
+  cta={{ label: "Ver ofertas", onClick: go }}
+/>
+
+// Cupón temporal — timer, cupos, o los dos
+<CouponCode code="HOTSALE30" label="30% OFF en toda la tienda"
+  expiresAt={endOfSale} onExpire={refreshOffers} onCopy={track}/>
+<CouponCode code="ENVIOGRATIS" uses={{ used: 37, total: 50 }} tone="success"/>
+
+// Banner de cuenta regresiva
+<CountdownBanner
+  until={endOfSale} eyebrow="Hot Sale" title="La oferta termina en"
+  variant="boxes"            // boxes | flip | bar
+  tone="danger" sticky="top"
+  cta={{ label: "Ver ofertas", onClick: go }}
+  dismissible snoozeDays={1}
+  expiredMessage="La promoción terminó." onExpire={refreshPrices}
+/>
+```
+
+El badge de `CartButton` entra con spring y salta en cada incremento; con `bump="count"` el icono queda quieto y se agranda sólo el número; `CartPanel` anima cada línea y despide todas en cascada al vaciar. `CouponCode` pulsa en rojo en el último minuto y se tacha al vencer o agotarse.
+
+## 💬 Social, lectura & chat
+
+```tsx
+// Chatbot — burbujas, «escribiendo…», quick replies
+const [msgs, setMsgs] = useState<ChatMessage[]>([]);
+
+<Chatbot
+  messages={msgs}
+  onSend={async text => {
+    setMsgs(m => [...m, { id: uid(), role: "user", text, at: Date.now() }]);
+    const answer = await askBot(text);      // el input queda bloqueado
+    setMsgs(m => [...m, { id: uid(), role: "bot", ...answer }]);
+  }}
+  botName="Asistente" starters={["Envíos", "Pagos", "Devoluciones"]}
+  variant="floating"      // floating | inline
+  unread={2} footnote="Respuestas automáticas."
+/>
+
+// Lector paginado tipo Google Books
+<BookReader
+  title="Las sillas de la calle Aldama" author="Irene Costa"
+  chapters={[{ id: "c1", title: "I · El taller", paragraphs: […] }]}
+  spread="auto"           // auto | single | double
+  theme="sepia"           // light | sepia | dark
+  fontSize={19} height={560}
+  storageKey="reader.aldama"      // recuerda capítulo + página
+  onProgress={pct => save(pct)}
+/>
+
+// Post de red social — cualquier cosa se cuelga abajo
+<SocialPost
+  author={{ name: "Estudio Aldama", handle: "@aldama", verified: true }}
+  time="hace 2 h" text={post.body} media={[{ src, alt }]}
+  counts={{ likes: 1284, comments: 96, shares: 34 }}
+  onLike={liked => react(post.id, liked)} onSave={bookmark}
+  onComment={openThread} onShare={share} onMedia={i => openGallery(i)}
+>
+  <Poll question="¿Con qué madera armamos la próxima serie?"
+    options={[{ id: "a", label: "Roble", votes: 412 }]}
+    kind="single" onVote={async ids => await api.vote(pollId, ids)}/>
+</SocialPost>
+
+// Caja de comentarios — hilos de una respuesta
+<CommentBox
+  comments={comments}              // planos, con parentId en las respuestas
+  currentUser={{ name: "Lucía", avatar: user.photo }}
+  onSubmit={async (text, parentId) => await api.comment({ text, parentId })}
+  onLike={(id, liked) => api.likeComment(id, liked)}
+  maxLength={280} pageSize={4} sort="top"    // recent | top | old
+/>
+
+// Pantalla de éxito con confeti
+<SuccessPage
+  title="¡Pago confirmado!" headline="$248.320"
+  description="Te mandamos el comprobante por mail."
+  details={[{ label: "Operación", value: "#A-10428" }]}
+  primary={{ label: "Ver mi pedido", href: "/pedidos/A-10428" }}
+  confetti="burst"        // burst | rain | center | false
+  tone="success" variant="full"   // full (100dvh) | card
+  redirectIn={10} onRedirect={() => router.push("/")}
+/>
+
+// …o el confeti suelto, sobre cualquier contenedor relative
+<Confetti fire={shot} mode="center" count={160}/>
+```
+
+`Chatbot` bloquea el input mientras `onSend` esté pendiente. `BookReader` pagina con `column-count` + `column-fill: auto` y repagina solo al cambiar tipografía o rotar el dispositivo, sin perder el capítulo. `SocialPost` recorta el texto a 240 caracteres con «ver más». `CommentBox` no anida más de un nivel a propósito. `Confetti` es canvas puro, sin dependencias, y respeta `prefers-reduced-motion`.
 
 ## 📱 PWA
 

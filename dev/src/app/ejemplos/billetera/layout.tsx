@@ -8,6 +8,7 @@ import { Navbar, type NavLink } from "../../../../../components/Navbar";
 import { SideBar, type SidebarSection } from "../../../../../components/SideBar";
 import { BottomNav, type BottomNavItem } from "../../../../../components/BottomNav";
 import { useToast } from "../../../../../components/Toast";
+import { SnackbarProvider } from "../../../../../components/Snackbar";
 import { useSplash } from "../../../../../hooks/useSplash";
 import { useWalletStore } from "./_store/wallet";
 import { WalletHydrator } from "./_store/WalletHydrator";
@@ -43,6 +44,7 @@ export default function BilleteraLayout({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   return (
+    <SnackbarProvider position="bottom-center">
     <div className="min-h-screen bg-surface text-foreground">
       <WalletHydrator />
 
@@ -116,5 +118,6 @@ export default function BilleteraLayout({ children }: { children: ReactNode }) {
         </>
       )}
     </div>
+    </SnackbarProvider>
   );
 }

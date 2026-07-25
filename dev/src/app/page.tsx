@@ -16,6 +16,9 @@ import { SurfacesGroup } from "../sections/SurfacesGroup";
 import { HeroesGroup } from "../sections/HeroesGroup";
 import { AppBlocksGroup } from "../sections/AppBlocksGroup";
 import { DataGroup } from "../sections/DataGroup";
+import { ListsGroup } from "../sections/ListsGroup";
+import { CommerceGroup } from "../sections/CommerceGroup";
+import { SocialGroup } from "../sections/SocialGroup";
 import { PwaGroup } from "../sections/PwaGroup";
 
 function initialUiTab() {
@@ -62,6 +65,15 @@ export default function PlaygroundPage() {
 
             <GroupHeader group={groupById("data")} count="3 componentes" />
             <DataGroup />
+
+            <GroupHeader group={groupById("lists")} count="5 componentes" />
+            <ListsGroup />
+
+            <GroupHeader group={groupById("commerce")} count="4 componentes" />
+            <CommerceGroup />
+
+            <GroupHeader group={groupById("social")} count="7 componentes" />
+            <SocialGroup />
 
             <GroupHeader group={groupById("pwa-group")} count="7 componentes · varios hooks" />
             <PwaGroup />

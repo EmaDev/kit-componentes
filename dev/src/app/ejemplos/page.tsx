@@ -16,18 +16,27 @@ const EXAMPLES: Example[] = [
     id: "ecommerce",
     title: "E-commerce",
     description:
-      "Catálogo con búsqueda y filtro por categoría, ficha de producto y carrito persistente con Zustand.",
+      "Catálogo con búsqueda, filtro por categoría y paginado; ficha de producto; carrito persistente con Zustand, cupón y pantalla de éxito con confeti.",
     href: "/ejemplos/ecommerce",
-    tags: ["CardGrid", "ChipCarousel", "AddButton", "Tabs", "Zustand"],
+    tags: ["CardGrid", "ChipCarousel", "CountdownBanner", "PromoPopup", "CouponCode", "SuccessPage", "Zustand"],
     available: true,
   },
   {
     id: "billetera",
     title: "Billetera virtual",
     description:
-      "Splash screen, bloqueo por PIN, envío y carga de saldo con AmountPad, e historial de movimientos con skeletons.",
+      "Splash screen, bloqueo por PIN, envío y carga de saldo con AmountPad, pull-to-refresh, Snackbar con deshacer y pantalla de éxito con confeti.",
     href: "/ejemplos/billetera",
-    tags: ["SplashScreen", "PinLock", "AmountPad", "Skeleton", "Zustand"],
+    tags: ["SplashScreen", "PinLock", "AmountPad", "PullToRefresh", "Snackbar", "SuccessPage"],
+    available: true,
+  },
+  {
+    id: "red-social",
+    title: "Red social",
+    description:
+      "Feed con posts, encuesta anidada y asistente flotante; el detalle de cada post suma galería con contador y comentarios con hilos.",
+    href: "/ejemplos/red-social",
+    tags: ["SocialPost", "Poll", "CommentBox", "ImageCounter", "Chatbot", "Zustand"],
     available: true,
   },
 ];

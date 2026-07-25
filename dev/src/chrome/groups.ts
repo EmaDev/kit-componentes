@@ -180,6 +180,50 @@ export const GROUPS: Group[] = [
     ],
   },
   {
+    id: "lists",
+    label: "Listas, pickers & feedback",
+    kicker: "Listas",
+    tone: "primary",
+    blurb:
+      "Galería con contador, snackbar de una acción a la vez, selector de fecha, paginado numérico y el gesto nativo de pull-to-refresh.",
+    sections: [
+      { id: "imagecounter", label: "ImageCounter" },
+      { id: "snackbar", label: "Snackbar" },
+      { id: "datepicker", label: "DatePicker" },
+      { id: "pagination", label: "Pagination" },
+      { id: "pulltorefresh", label: "PullToRefresh" },
+    ],
+  },
+  {
+    id: "commerce",
+    label: "Comercio & conversión",
+    kicker: "Comercio",
+    tone: "success",
+    blurb:
+      "Carrito de compras, popup de promociones con captura de email, cupones con timer y banner de cuenta regresiva.",
+    sections: [
+      { id: "cart", label: "Cart" },
+      { id: "promopopup", label: "PromoPopup" },
+      { id: "couponcode", label: "CouponCode" },
+      { id: "countdownbanner", label: "CountdownBanner" },
+    ],
+  },
+  {
+    id: "social",
+    label: "Social, lectura & chat",
+    kicker: "Social",
+    tone: "accent",
+    blurb:
+      "Chatbot con quick replies, lector paginado tipo Google Books, post de red social con encuesta anidada, comentarios con hilos, confeti y pantalla de éxito.",
+    sections: [
+      { id: "chatbot", label: "Chatbot" },
+      { id: "bookreader", label: "BookReader" },
+      { id: "socialpost", label: "SocialPost · Poll" },
+      { id: "commentbox", label: "CommentBox" },
+      { id: "confetti", label: "Confetti · SuccessPage" },
+    ],
+  },
+  {
     id: "pwa-group",
     label: "PWA & Nativo",
     kicker: "Plataforma",
