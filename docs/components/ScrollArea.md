@@ -1,6 +1,6 @@
 # ScrollArea
 
-> Contenedor con scroll y barra propia (reemplaza la nativa), con 3 formatos/grosores/animaciones distintos y thumb arrastrable.
+> Contenedor con scroll y barra propia (reemplaza la nativa), con 4 formatos/grosores/animaciones distintos y thumb arrastrable.
 
 **Import**
 ```tsx
@@ -22,25 +22,27 @@ Usalo para reemplazar el scroll nativo del navegador dentro de un panel, lista l
 | Prop | Tipo | Default | Descripción |
 |---|---|---|---|
 | `children` | `ReactNode` | — (requerido) | Contenido scrolleable. |
-| `variant` | `"thin" \| "pill" \| "glow"` | `"thin"` | Formato/grosor/animación de la barra (ver detalle abajo). |
+| `variant` | `"thin" \| "pill" \| "glow" \| "debounce"` | `"thin"` | Formato/grosor/animación de la barra (ver detalle abajo). |
 | `orientation` | `"vertical" \| "horizontal" \| "both"` | `"vertical"` | Eje(s) en los que se habilita el scroll y se dibuja la barra. |
 | `maxHeight` | `string \| number` | `undefined` | Alto máximo del viewport scrolleable (cualquier valor CSS válido, ej. `"20rem"`, `320`). Sin esto, el contenedor crece con el contenido y no hay nada que scrollear. |
-| `hideDelay` | `number` | `900` | Ms de inactividad tras dejar de scrollear antes de atenuar el thumb (aplica a `"thin"` y `"glow"`). |
+| `hideDelay` | `number` | `900` | Ms de inactividad tras dejar de scrollear antes de atenuar el thumb (aplica a `"thin"`, `"glow"` y `"debounce"`). |
+| `showDelay` | `number` | `160` | Ms de debounce antes de **revelar** el thumb tras iniciar el hover/scroll. Sólo aplica a `variant="debounce"` — el resto de variantes reaccionan al instante. Arrastrar el thumb siempre lo revela sin esperar este delay. |
 | `className` | `string` | `""` | Clases para el contenedor raíz (`relative`). |
 | `contentClassName` | `string` | `""` | Clases adicionales para el viewport scrolleable interno. |
 
-### Los 3 variantes
+### Los 4 variantes
 
 | Variant | Grosor idle → activo | Animación |
 |---|---|---|
 | `thin` | 4px → 4px | Invisible en reposo; aparece con fade al hacer hover del contenedor o al scrollear, y se atenúa de nuevo tras `hideDelay` (estilo overlay scrollbar de macOS). |
 | `pill` | 8px → 12px | Siempre visible a baja opacidad (35%); al activarse (hover/scroll/drag) se ensancha con un spring y pasa a opacidad completa y color `primary`. |
 | `glow` | 6px → 8px | Gradiente `primary → accent` con resplandor (`box-shadow`) permanente; atenuado (45% opacidad) en reposo, a opacidad completa al activarse. |
+| `debounce` | 5px → 11px | Invisible en reposo; **no** reacciona al instante como `thin` — espera `showDelay` de hover/scroll sostenido antes de revelarse, y el grosor "rebota" con un spring más blando (`stiffness: 200, damping: 12`) en vez de resolver directo. Color `accent` con resplandor. Arrastrar el thumb ignora el delay y lo revela al toque. |
 
 ## Tipos exportados
 
 ```ts
-export type ScrollAreaVariant = "thin" | "pill" | "glow";
+export type ScrollAreaVariant = "thin" | "pill" | "glow" | "debounce";
 export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 ```
 
@@ -76,6 +78,13 @@ export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 </ScrollArea>
 ```
 
+### Variant "debounce", con delay de revelación más largo
+```tsx
+<ScrollArea variant="debounce" showDelay={300} maxHeight={320}>
+  <LongDocument />
+</ScrollArea>
+```
+
 ## Requisitos / dependencias
 
 - Usa `framer-motion` para animar opacidad y grosor del thumb.
@@ -90,3 +99,4 @@ export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 - Si `maxHeight` no se especifica (ni se limita la altura por `className`/`contentClassName`), el contenedor crece con el contenido como un `<div>` normal y no hay scroll que mostrar — es responsabilidad del consumidor acotar la altura.
 - Con `orientation="both"`, las dos barras (vertical en el borde derecho, horizontal en el borde inferior) no reservan espacio para evitar superponerse en la esquina — hay un pequeño solape ahí, aceptable para el caso de uso típico (paneles con overflow ocasional en ambos ejes, no grillas densas).
 - La barra se oculta completamente (no se renderiza) cuando el contenido no excede el tamaño del viewport en ese eje — no hay un thumb "vacío" o deshabilitado.
+- **`variant="debounce"`**: el delay de `showDelay` sólo afecta la revelación pasiva por `hover`/`scroll` — se reinicia cada vez que la actividad se corta y vuelve a empezar (comportamiento debounce real, no throttle: scrolls cortos e intermitentes por debajo de `showDelay` nunca llegan a mostrar el thumb). Iniciar un arrastre (`pointerdown` sobre el thumb) lo revela sin esperar el delay, para que la interacción de drag nunca se sienta "trabada".

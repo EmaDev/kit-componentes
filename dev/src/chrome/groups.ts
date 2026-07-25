@@ -3,6 +3,12 @@ export interface GroupSection {
   label: string;
 }
 
+export interface GroupSubsection {
+  id: string;
+  label: string;
+  sections: GroupSection[];
+}
+
 export interface Group {
   id: string;
   label: string;
@@ -10,16 +16,17 @@ export interface Group {
   tone: "primary" | "success" | "accent";
   blurb: string;
   sections: GroupSection[];
+  /** Sólo grupos grandes y heterogéneos la definen: habilita render con tabs. */
+  subsections?: GroupSubsection[];
 }
 
 export const GROUPS: Group[] = [
   {
-    id: "atoms",
-    label: "Componentes atómicos",
+    id: "ui",
+    label: "UI",
     kicker: "UI",
     tone: "primary",
-    blurb:
-      "Piezas de interfaz: formularios, feedback, overlays y navegación. Sin dependencias del navegador ni del dispositivo.",
+    blurb: "Formularios, feedback y overlays: los bloques de interfaz que arma casi cualquier pantalla.",
     sections: [
       { id: "button", label: "Button" },
       { id: "input", label: "Input" },
@@ -36,6 +43,50 @@ export const GROUPS: Group[] = [
       { id: "tooltip", label: "Tooltip" },
       { id: "popover", label: "Popover" },
       { id: "coachmark", label: "CoachMark" },
+    ],
+    subsections: [
+      {
+        id: "formularios",
+        label: "Formularios",
+        sections: [
+          { id: "button", label: "Button" },
+          { id: "input", label: "Input" },
+          { id: "textarea", label: "Textarea" },
+          { id: "select", label: "Select" },
+          { id: "dropdown", label: "Dropdown" },
+          { id: "checkbox", label: "Checkbox" },
+          { id: "switch", label: "Switch" },
+          { id: "codeotp", label: "CodeOTP" },
+        ],
+      },
+      {
+        id: "feedback",
+        label: "Feedback",
+        sections: [
+          { id: "spinner", label: "Spinner" },
+          { id: "toast", label: "Toast" },
+        ],
+      },
+      {
+        id: "overlays",
+        label: "Overlays",
+        sections: [
+          { id: "modal", label: "Modal" },
+          { id: "sheet", label: "BottomSheet" },
+          { id: "tooltip", label: "Tooltip" },
+          { id: "popover", label: "Popover" },
+          { id: "coachmark", label: "CoachMark" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "navigation",
+    label: "Navegación",
+    kicker: "Navegación",
+    tone: "accent",
+    blurb: "Navbar, SideBar y BottomNav — requieren Next.js (usan next/link y next/navigation) y corren de verdad en este playground.",
+    sections: [
       { id: "navbar", label: "Navbar" },
       { id: "sidebar", label: "SideBar" },
       { id: "bottomnav", label: "BottomNav" },
@@ -54,19 +105,6 @@ export const GROUPS: Group[] = [
       { id: "addbutton", label: "AddButton" },
       { id: "progress", label: "Progress" },
       { id: "skeleton", label: "Skeleton" },
-    ],
-  },
-  {
-    id: "data",
-    label: "Datos & grillas",
-    kicker: "Datos",
-    tone: "success",
-    blurb:
-      "Piezas de trabajo pesado: tabla con orden, búsqueda, selección y paginado; hoja de cálculo editable con fórmulas y atajos; y grilla de calendario mensual.",
-    sections: [
-      { id: "datatable", label: "DataTable" },
-      { id: "spreadsheet", label: "Spreadsheet" },
-      { id: "calendar", label: "CalendarGrid" },
     ],
   },
   {
@@ -129,6 +167,19 @@ export const GROUPS: Group[] = [
     ],
   },
   {
+    id: "data",
+    label: "Datos & grillas",
+    kicker: "Datos",
+    tone: "success",
+    blurb:
+      "Piezas de trabajo pesado: tabla con orden, búsqueda, selección y paginado; hoja de cálculo editable con fórmulas y atajos; y grilla de calendario mensual.",
+    sections: [
+      { id: "datatable", label: "DataTable" },
+      { id: "spreadsheet", label: "Spreadsheet" },
+      { id: "calendar", label: "CalendarGrid" },
+    ],
+  },
+  {
     id: "pwa-group",
     label: "PWA & Nativo",
     kicker: "Plataforma",
@@ -145,10 +196,35 @@ export const GROUPS: Group[] = [
   },
 ];
 
+export function groupById(id: string): Group {
+  const g = GROUPS.find((x) => x.id === id);
+  if (!g) throw new Error(`Unknown group id: ${id}`);
+  return g;
+}
+
 export const SECTIONS: GroupSection[] = [
   { id: "intro", label: "Introducción" },
   ...GROUPS.flatMap((g) => g.sections),
 ];
+
+/**
+ * Ids observables por el scrollspy del SideNav. A diferencia de SECTIONS, para
+ * los grupos con `subsections` (render con tabs) sólo observa el ancla del
+ * grupo: las subsecciones comparten un único lugar físico en la página (sólo
+ * el tab activo está montado ahí), así que no tiene sentido un ancla propia
+ * por subsección.
+ */
+export const SCROLLSPY_SECTIONS: GroupSection[] = [
+  { id: "intro", label: "Introducción" },
+  ...GROUPS.flatMap((g) =>
+    g.subsections ? [{ id: g.id, label: g.label }] : [{ id: g.id, label: g.label }, ...g.sections]
+  ),
+];
+
+/** Resuelve un deep-link a un componente individual (ej. "#tooltip") a la subsección que lo contiene. */
+export const UI_SECTION_TO_SUBSECTION: Record<string, string> = Object.fromEntries(
+  (groupById("ui").subsections ?? []).flatMap((sub) => sub.sections.map((s) => [s.id, sub.id]))
+);
 
 export const GROUP_TONES: Record<
   Group["tone"],

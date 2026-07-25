@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Transition } from "framer-motion";
 import {
   useCallback,
   useEffect,
@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react";
 
-export type ScrollAreaVariant = "thin" | "pill" | "glow";
+export type ScrollAreaVariant = "thin" | "pill" | "glow" | "debounce";
 export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 
 interface AxisMetrics {
@@ -27,15 +27,25 @@ interface ScrollAreaProps {
   orientation?: ScrollAreaOrientation;
   /** Alto máximo del viewport scrolleable (cualquier valor CSS válido, ej. "20rem", 320). */
   maxHeight?: string | number;
-  /** Ms de inactividad tras dejar de scrollear antes de atenuar el thumb ("thin"/"glow"). Default: 900. */
+  /** Ms de inactividad tras dejar de scrollear antes de atenuar el thumb ("thin"/"glow"/"debounce"). Default: 900. */
   hideDelay?: number;
+  /** Ms de debounce antes de revelar el thumb tras iniciar el hover/scroll. Sólo aplica a `variant="debounce"`; arrastrar el thumb siempre lo revela al instante. Default: 160. */
+  showDelay?: number;
   className?: string;
   contentClassName?: string;
 }
 
-const THICKNESS: Record<ScrollAreaVariant, number> = { thin: 4, pill: 8, glow: 6 };
-const THICKNESS_ACTIVE: Record<ScrollAreaVariant, number> = { thin: 4, pill: 12, glow: 8 };
-const IDLE_OPACITY: Record<ScrollAreaVariant, number> = { thin: 0, pill: 0.35, glow: 0.45 };
+const THICKNESS: Record<ScrollAreaVariant, number> = { thin: 4, pill: 8, glow: 6, debounce: 5 };
+const THICKNESS_ACTIVE: Record<ScrollAreaVariant, number> = { thin: 4, pill: 12, glow: 8, debounce: 11 };
+const IDLE_OPACITY: Record<ScrollAreaVariant, number> = { thin: 0, pill: 0.35, glow: 0.45, debounce: 0 };
+
+const THUMB_TRANSITION: Record<ScrollAreaVariant, Transition> = {
+  thin: { type: "spring", stiffness: 420, damping: 34 },
+  pill: { type: "spring", stiffness: 420, damping: 34 },
+  glow: { type: "spring", stiffness: 420, damping: 34 },
+  // más blando y con overshoot: el grosor "rebota" al asentarse, en vez de resolver directo.
+  debounce: { type: "spring", stiffness: 200, damping: 12, mass: 0.7 },
+};
 
 export function ScrollArea({
   children,
@@ -43,6 +53,7 @@ export function ScrollArea({
   orientation = "vertical",
   maxHeight,
   hideDelay = 900,
+  showDelay = 160,
   className = "",
   contentClassName = "",
 }: ScrollAreaProps) {
@@ -52,10 +63,12 @@ export function ScrollArea({
   const [hovering, setHovering] = useState(false);
   const [scrolling, setScrolling] = useState(false);
   const [dragging, setDragging] = useState<"x" | "y" | null>(null);
+  const [debouncedReveal, setDebouncedReveal] = useState(false);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showY = orientation === "vertical" || orientation === "both";
   const showX = orientation === "horizontal" || orientation === "both";
+  const rawActive = hovering || scrolling;
 
   const measure = useCallback(() => {
     const el = viewportRef.current;
@@ -76,6 +89,18 @@ export function ScrollArea({
   useEffect(() => () => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
   }, []);
+
+  // "debounce": la revelación del thumb espera `showDelay` de actividad sostenida
+  // antes de aparecer (en vez de reaccionar al instante como el resto de variantes).
+  useEffect(() => {
+    if (variant !== "debounce") return;
+    if (!rawActive) {
+      setDebouncedReveal(false);
+      return;
+    }
+    const t = setTimeout(() => setDebouncedReveal(true), showDelay);
+    return () => clearTimeout(t);
+  }, [rawActive, variant, showDelay]);
 
   const handleScroll = () => {
     measure();
@@ -114,7 +139,9 @@ export function ScrollArea({
     window.addEventListener("pointerup", onUp);
   };
 
-  const active = hovering || scrolling || dragging !== null;
+  // arrastrar siempre revela al instante, incluso en "debounce" — el delay sólo
+  // aplica a la revelación pasiva (hover/scroll), nunca mientras el usuario ya lo tiene agarrado.
+  const active = dragging !== null || (variant === "debounce" ? debouncedReveal : rawActive);
   const overflowCls =
     showX && showY ? "overflow-auto" : showX ? "overflow-x-auto overflow-y-hidden" : "overflow-y-auto overflow-x-hidden";
 
@@ -184,7 +211,11 @@ function Thumb({
           ? { opacity, width: thickness }
           : { opacity, height: thickness }
       }
-      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+      transition={{
+        ...THUMB_TRANSITION[variant],
+        // la opacidad nunca overshootea (evita flicker fuera de 0-1); sólo el grosor rebota.
+        opacity: { duration: variant === "debounce" ? 0.4 : 0.2, ease: "easeOut" },
+      }}
       className={[
         "absolute rounded-full touch-none",
         dragging ? "cursor-grabbing" : "cursor-grab",
@@ -203,5 +234,7 @@ function variantCls(variant: ScrollAreaVariant, dragging: boolean) {
       return dragging ? "bg-primary" : "bg-muted hover:bg-primary/70";
     case "glow":
       return "bg-gradient-to-b from-primary to-accent shadow-[0_0_8px] shadow-primary/50";
+    case "debounce":
+      return dragging ? "bg-accent" : "bg-accent/70 shadow-[0_0_10px] shadow-accent/50 hover:bg-accent";
   }
 }

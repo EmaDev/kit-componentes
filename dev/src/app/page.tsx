@@ -1,22 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { Header } from "../chrome/Header";
 import { Hero } from "../chrome/Hero";
 import { Footer } from "../chrome/Footer";
 import { SideNav } from "../chrome/SideNav";
 import { IntroSection } from "../chrome/IntroSection";
 import { GroupHeader } from "../chrome/GroupHeader";
-import { GROUPS } from "../chrome/groups";
-import { AtomsGroup } from "../sections/AtomsGroup";
+import { groupById, UI_SECTION_TO_SUBSECTION } from "../chrome/groups";
+import { UiGroup } from "../sections/UiGroup";
+import { NavigationGroup } from "../sections/NavigationGroup";
 import { InteractionGroup } from "../sections/InteractionGroup";
-import { DataGroup } from "../sections/DataGroup";
 import { ThemeGroup } from "../sections/ThemeGroup";
 import { SurfacesGroup } from "../sections/SurfacesGroup";
 import { HeroesGroup } from "../sections/HeroesGroup";
 import { AppBlocksGroup } from "../sections/AppBlocksGroup";
+import { DataGroup } from "../sections/DataGroup";
 import { PwaGroup } from "../sections/PwaGroup";
 
+function initialUiTab() {
+  if (typeof window === "undefined") return "formularios";
+  const hash = window.location.hash.slice(1);
+  return UI_SECTION_TO_SUBSECTION[hash] ?? "formularios";
+}
+
 export default function PlaygroundPage() {
+  const [uiTab, setUiTab] = useState(initialUiTab);
+
   return (
     <div className="min-h-screen bg-surface text-foreground">
       <Header />
@@ -25,32 +35,35 @@ export default function PlaygroundPage() {
         <Hero />
 
         <div className="flex gap-10">
-          <SideNav />
+          <SideNav activeUiTab={uiTab} onUiTabChange={setUiTab} />
           <div className="flex-1 min-w-0">
             <IntroSection />
 
-            <GroupHeader group={GROUPS[0]} count="18 componentes" />
-            <AtomsGroup />
+            <GroupHeader group={groupById("ui")} count="15 componentes" />
+            <UiGroup tab={uiTab} onTabChange={setUiTab} />
 
-            <GroupHeader group={GROUPS[1]} count="6 componentes" />
+            <GroupHeader group={groupById("navigation")} count="3 componentes" />
+            <NavigationGroup />
+
+            <GroupHeader group={groupById("interaction")} count="6 componentes" />
             <InteractionGroup />
 
-            <GroupHeader group={GROUPS[2]} count="3 componentes" />
-            <DataGroup />
-
-            <GroupHeader group={GROUPS[3]} count="2 componentes · 1 hook" />
+            <GroupHeader group={groupById("theme-group")} count="2 componentes · 1 hook" />
             <ThemeGroup />
 
-            <GroupHeader group={GROUPS[4]} count="6 componentes" />
+            <GroupHeader group={groupById("surfaces")} count="6 componentes" />
             <SurfacesGroup />
 
-            <GroupHeader group={GROUPS[5]} count="4 componentes" />
+            <GroupHeader group={groupById("heroes")} count="4 componentes" />
             <HeroesGroup />
 
-            <GroupHeader group={GROUPS[6]} count="7 componentes" />
+            <GroupHeader group={groupById("app-blocks")} count="7 componentes" />
             <AppBlocksGroup />
 
-            <GroupHeader group={GROUPS[7]} count="7 componentes · varios hooks" />
+            <GroupHeader group={groupById("data")} count="3 componentes" />
+            <DataGroup />
+
+            <GroupHeader group={groupById("pwa-group")} count="7 componentes · varios hooks" />
             <PwaGroup />
           </div>
         </div>

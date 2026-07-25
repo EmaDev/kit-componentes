@@ -63,4 +63,38 @@ export const I = {
   heart: (
     <Icon d={<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />} />
   ),
+  sliders: (
+    <Icon
+      d={
+        <g>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+          <circle cx="9" cy="6" r="2" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="12" r="2" fill="currentColor" stroke="none" />
+          <circle cx="10" cy="18" r="2" fill="currentColor" stroke="none" />
+        </g>
+      }
+    />
+  ),
+  bell: (
+    <Icon
+      d={
+        <g>
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </g>
+      }
+    />
+  ),
+  stack: (
+    <Icon
+      d={
+        <g>
+          <rect x="3" y="3" width="13" height="13" rx="2.5" />
+          <path d="M8 21h10a2 2 0 0 0 2-2V8" />
+        </g>
+      }
+    />
+  ),
 };

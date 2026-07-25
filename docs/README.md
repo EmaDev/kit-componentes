@@ -131,7 +131,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
 | [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
-| [ScrollArea](components/ScrollArea.md) | Scroll con barra propia arrastrable — 3 variantes de grosor/animación. |
+| [ScrollArea](components/ScrollArea.md) | Scroll con barra propia arrastrable — 4 variantes de grosor/animación. |
 | [Footer](components/Footer.md) | Pie de página con marca, columnas de links, redes y newsletter. |
 
 ### Heroes

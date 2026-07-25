@@ -308,6 +308,7 @@ const SCROLLAREA_VARIANTS: { id: ScrollAreaVariant; label: string; hint: string 
   { id: "thin", label: "thin", hint: "Invisible en reposo, aparece con fade al hacer hover o scrollear." },
   { id: "pill", label: "pill", hint: "Siempre visible atenuada; se ensancha y se pinta primary al activarse." },
   { id: "glow", label: "glow", hint: "Gradiente primary → accent con resplandor permanente." },
+  { id: "debounce", label: "debounce", hint: "Espera 160ms de hover/scroll sostenido antes de revelarse; el grosor rebota con un spring blando al asentarse." },
 ];
 
 const SCROLL_ITEMS = Array.from({ length: 24 }, (_, i) => `Elemento ${i + 1}`);
@@ -317,9 +318,9 @@ function ScrollAreaSection() {
     <Section
       id="scrollarea"
       title="ScrollArea"
-      description="Reemplaza el scroll nativo por una barra propia, arrastrable — 3 variantes de grosor y animación."
+      description="Reemplaza el scroll nativo por una barra propia, arrastrable — 4 variantes de grosor y animación."
     >
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
         {SCROLLAREA_VARIANTS.map(({ id, label, hint }) => (
           <PreviewCard key={id} title={label}>
             <ScrollArea variant={id} maxHeight={240} className="rounded-xl border border-border">

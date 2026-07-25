@@ -40,7 +40,7 @@ components/
   Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
   ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
-  ScrollArea.tsx         # scroll con barra propia arrastrable — 3 variantes de grosor/animación
+  ScrollArea.tsx         # scroll con barra propia arrastrable — 4 variantes de grosor/animación
   Footer.tsx             # pie de página: marca, columnas de links, redes y newsletter
   Hero.tsx               # HeroSearch · HeroImage · HeroTabs · HeroWelcome — cabeceras de pantalla completa
   ChipCarousel.tsx       # fila de chips con drag, snap y flechas — 4 variantes
@@ -390,7 +390,7 @@ toast({ title: "¡Listo!", variant: "success" });
 // CodeOTP
 <CodeOTP length={6} label="Código de verificación" onComplete={(code) => verifyCode(code)} />
 
-// ScrollArea — variant: thin | pill | glow
+// ScrollArea — variant: thin | pill | glow | debounce
 <ScrollArea variant="pill" maxHeight={280}>
   <div className="flex flex-col gap-3 p-1">…</div>
 </ScrollArea>
