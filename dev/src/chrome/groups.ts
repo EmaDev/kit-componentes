@@ -91,6 +91,23 @@ export const GROUPS: Group[] = [
     ],
   },
   {
+    id: "app-blocks",
+    label: "Bloques de app",
+    kicker: "Bloques",
+    tone: "success",
+    blurb:
+      "Pantallas y piezas listas de flujos típicos de app: chips de filtro, PIN/contraseña, carga de montos, redirección con cuenta atrás, compartir y grillas con columnas ajustables.",
+    sections: [
+      { id: "chipcarousel", label: "ChipCarousel" },
+      { id: "keypad", label: "Keypad" },
+      { id: "pinlock", label: "PinLock" },
+      { id: "amountpad", label: "AmountPad" },
+      { id: "redirecttimer", label: "RedirectTimer" },
+      { id: "sharebutton", label: "ShareButton" },
+      { id: "cardgrid", label: "CardGrid" },
+    ],
+  },
+  {
     id: "pwa-group",
     label: "PWA & Nativo",
     kicker: "Plataforma",

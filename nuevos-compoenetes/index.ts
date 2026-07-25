@@ -14,7 +14,7 @@ export type { BottomSheetSize } from "./BottomSheet";
 export { DataTable } from "./DataTable";
 export type { Column, SortDir } from "./DataTable";
 export { Spreadsheet } from "./Spreadsheet";
-export { useSpreadsheet, evaluateCell, cellId, colName, colIndex } from "../hooks/useSpreadsheet";
+export { useSpreadsheet, evaluateCell, cellId, colName, colIndex } from "@/hooks/useSpreadsheet";
 export { CalendarGrid } from "./CalendarGrid";
 export type { CalendarEvent } from "./CalendarGrid";
 export { Navbar } from "./Navbar";
@@ -34,27 +34,6 @@ export { FloatingButton } from "./FloatingButton";
 export type { FabAction } from "./FloatingButton";
 export { Stepper, AddButton } from "./Stepper";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
-export { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "./Skeleton";
-export type { SkeletonVariant, SkeletonAnimation } from "./Skeleton";
-
-// --- Personalización / multi-tenant ---
-export {
-  ThemeConfigurator,
-  DEFAULT_THEME_TOKENS,
-  DEFAULT_DARK_THEME_TOKENS,
-  THEME_TOKEN_VARS,
-  THEME_TOKEN_KEYS,
-} from "./ThemeConfigurator";
-export type { ThemeTokens, ThemePreset } from "./ThemeConfigurator";
-export {
-  TenantThemeProvider,
-  useTenantTheme,
-  resolveTenantByHost,
-  resolveTenantTokens,
-  tenantThemeCss,
-  hostMatches,
-} from "./TenantTheme";
-export type { TenantTheme, ThemeMode } from "./TenantTheme";
 
 // --- Superficies & media ---
 export { Card, CardMedia, CardHeader, CardFooter, StatCard, MediaCard, ProfileCard, PricingCard } from "./Card";
@@ -69,7 +48,6 @@ export type { TabItem, TabsVariant, TabsSize } from "./Tabs";
 export { ChipCarousel } from "./ChipCarousel";
 export type { Chip, ChipVariant, ChipSize } from "./ChipCarousel";
 export { Keypad } from "./Keypad";
-export type { KeypadKey } from "./Keypad";
 export { PinLock } from "./PinLock";
 export { AmountPad } from "./AmountPad";
 export { RedirectTimer, buildRedirectHref } from "./RedirectTimer";
@@ -89,21 +67,21 @@ export type { SplashVariant } from "./SplashScreen";
 export { ViewportLock } from "./ViewportLock";
 export { NativeShell } from "./NativeShell";
 export { SafeArea, SafeAreaSpacer } from "./SafeArea";
-export { useSplash } from "../hooks/useSplash";
-export { useSafeArea } from "../hooks/useSafeArea";
-export type { SafeAreaInsets } from "../hooks/useSafeArea";
-export { useImmersive } from "../hooks/useImmersive";
-export { useKeyboardInset } from "../hooks/useKeyboardInset";
-export { useHaptics } from "../hooks/useHaptics";
-export type { HapticPattern } from "../hooks/useHaptics";
-export { useStatusBarColor } from "../hooks/useStatusBarColor";
-export { usePwaInstall } from "../hooks/usePwaInstall";
-export type { PwaPlatform } from "../hooks/usePwaInstall";
-export { usePlatform } from "../hooks/usePlatform";
-export type { PlatformInfo, OS, Browser, FormFactor, DisplayMode } from "../hooks/usePlatform";
-export { useNativeFeel } from "../hooks/useNativeFeel";
-export type { NativeFeelOptions } from "../hooks/useNativeFeel";
-export { useOnlineStatus } from "../hooks/useOnlineStatus";
-export { useServiceWorker } from "../hooks/useServiceWorker";
-export { useNotificationPermission } from "../hooks/useNotificationPermission";
-export type { NotificationStatus } from "../hooks/useNotificationPermission";
+export { useSplash } from "@/hooks/useSplash";
+export { useSafeArea } from "@/hooks/useSafeArea";
+export type { SafeAreaInsets } from "@/hooks/useSafeArea";
+export { useImmersive } from "@/hooks/useImmersive";
+export { useKeyboardInset } from "@/hooks/useKeyboardInset";
+export { useHaptics } from "@/hooks/useHaptics";
+export type { HapticPattern } from "@/hooks/useHaptics";
+export { useStatusBarColor } from "@/hooks/useStatusBarColor";
+export { usePwaInstall } from "@/hooks/usePwaInstall";
+export type { PwaPlatform } from "@/hooks/usePwaInstall";
+export { usePlatform } from "@/hooks/usePlatform";
+export type { PlatformInfo, OS, Browser, FormFactor, DisplayMode } from "@/hooks/usePlatform";
+export { useNativeFeel } from "@/hooks/useNativeFeel";
+export type { NativeFeelOptions } from "@/hooks/useNativeFeel";
+export { useOnlineStatus } from "@/hooks/useOnlineStatus";
+export { useServiceWorker } from "@/hooks/useServiceWorker";
+export { useNotificationPermission } from "@/hooks/useNotificationPermission";
+export type { NotificationStatus } from "@/hooks/useNotificationPermission";

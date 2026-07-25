@@ -32,6 +32,13 @@ components/
   Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
   ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
+  ChipCarousel.tsx       # fila de chips con drag, snap y flechas — 4 variantes
+  Keypad.tsx             # teclado numérico táctil 3×4, tecla extra + borrado long-press
+  PinLock.tsx            # pantalla de bloqueo por PIN o contraseña
+  AmountPad.tsx          # carga de montos a pantalla completa, estilo billetera
+  RedirectTimer.tsx      # cuenta atrás con redirección a WhatsApp/Telegram/SMS/mail/URL
+  ShareButton.tsx        # compartir con hoja nativa del sistema o sheet propio
+  CardGrid.tsx           # grilla de cards con columnas ajustables en tiempo real
   DataTable.tsx          # orden, búsqueda, selección, paginado, sticky header
   Spreadsheet.tsx        # hoja de cálculo editable con fórmulas y atajos
   CalendarGrid.tsx       # grilla mensual con eventos
@@ -198,6 +205,48 @@ Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la 
 ```
 
 Gestos del visor: arrastrar = pan · rueda o pinch = zoom hacia el puntero · doble click = 250% ↔ reset · `+` / `−` / `0` · `←` `→` para recorrer la galería · `Esc` cierra. El pan está limitado para que la imagen nunca se escape de la pantalla.
+
+## 🧱 Bloques de app
+
+```tsx
+// Fila de chips — categorías, filtros (multi), personas, o "cover" con imagen de fondo
+<ChipCarousel chips={categorias} value={cat} onChange={setCat} variant="soft" size="md" />
+<ChipCarousel chips={filtros} value={tags} onChange={setTags} multi variant="outline" />
+
+// Bloqueo por PIN o contraseña al abrir la app
+<PinLock
+  open={locked} mode="pin" length={4} appName="Mi App"
+  onUnlock={async (code) => await verifyPin(code)}
+  onSuccess={() => setLocked(false)}
+  maxAttempts={5} onBiometric={() => webauthnLogin()}
+/>
+
+// Carga de montos a pantalla completa, estilo billetera
+<AmountPad
+  open={open} onClose={() => setOpen(false)}
+  balance={saldo} min={100} max={500000}
+  quickAmounts={[1000, 5000, 10000]}
+  onConfirm={async (amount) => await recargar(amount)}
+/>
+
+// Redirección con cuenta atrás — WhatsApp | Telegram | SMS | mail | URL
+<RedirectTimer
+  target="whatsapp" phone="5491122334455"
+  message="Hola 👋 quiero consultar por el plan Pro."
+  seconds={8} onRedirect={(href) => track("wa_redirect", href)}
+/>
+
+// Compartir — hoja nativa del sistema, o sheet propio de fallback
+<ShareButton title="Casa Aldama" text="Mirá esta propiedad" onShared={(m) => track("share", m)} />
+
+// Grilla de cards con columnas ajustables en tiempo real
+<CardGrid
+  items={propiedades} renderItem={(p) => <PropertyCard key={p.id} {...p} />}
+  defaultColumns={3} min={1} max={5} minCardWidth={190} storageKey="grid.cols"
+/>
+```
+
+`Keypad` es la pieza de bajo nivel detrás de `AmountPad` y `PinLock` (teclado numérico 3×4 con tecla extra y borrado en long-press) — usalo directo sólo si necesitás armar un flujo numérico propio.
 
 ## 🧪 Preview y desarrollo local
 

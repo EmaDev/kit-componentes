@@ -41,6 +41,13 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una galería de imágenes navegable (drag, flechas, dots, miniaturas, autoplay) | [Carousel](components/Carousel.md) |
 | Ampliar **una** imagen a pantalla completa con pan y zoom | [ImageZoom](components/ImageZoom.md) (`ZoomableImage`) |
 | Dividir contenido en pestañas dentro de una misma pantalla | [Tabs](components/Tabs.md) |
+| Una fila horizontal de chips (categorías, filtros, personas) con drag y snap | [ChipCarousel](components/ChipCarousel.md) |
+| Un teclado numérico propio a pantalla completa (no el del sistema) | [Keypad](components/Keypad.md) |
+| Una pantalla de bloqueo por PIN o contraseña al abrir la app | [PinLock](components/PinLock.md) |
+| Cargar un monto de dinero a pantalla completa, estilo billetera | [AmountPad](components/AmountPad.md) |
+| Redirigir a WhatsApp/Telegram/SMS/mail/URL con cuenta atrás y mensaje editable | [RedirectTimer](components/RedirectTimer.md) |
+| Compartir contenido con la hoja nativa del sistema (o un sheet propio de fallback) | [ShareButton](components/ShareButton.md) |
+| Una grilla de cards con columnas que el usuario ajusta en el momento | [CardGrid](components/CardGrid.md) |
 | Listar/explorar datos tabulares: orden, búsqueda, selección, paginado | [DataTable](components/DataTable.md) |
 | Una grilla **editable** tipo Excel/Sheets, con fórmulas | [Spreadsheet](components/Spreadsheet.md) |
 | Un calendario mensual con eventos | [CalendarGrid](components/CalendarGrid.md) |
@@ -106,6 +113,18 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
 | [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
+
+### Bloques de app
+
+| Componente | Descripción |
+|---|---|
+| [ChipCarousel](components/ChipCarousel.md) | Fila de chips con drag, snap y flechas — 4 variantes. |
+| [Keypad](components/Keypad.md) | Teclado numérico táctil 3×4, con tecla extra y borrado long-press. |
+| [PinLock](components/PinLock.md) | Pantalla de bloqueo por PIN o contraseña. |
+| [AmountPad](components/AmountPad.md) | Carga de montos a pantalla completa, estilo billetera. |
+| [RedirectTimer](components/RedirectTimer.md) | Cuenta atrás con redirección a WhatsApp/Telegram/SMS/mail/URL + `buildRedirectHref`. |
+| [ShareButton](components/ShareButton.md) | Compartir con la hoja nativa del sistema o un sheet propio. |
+| [CardGrid](components/CardGrid.md) | Grilla de cards con columnas ajustables en tiempo real. |
 
 ### Datos & grillas
 
