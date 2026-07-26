@@ -6,6 +6,9 @@ import { AddButton } from "../../../components/AddButton";
 import { AddToCartButton } from "../../../components/AddToCartButton";
 import { ProgressBar, ProgressRing, StepsProgress } from "../../../components/Progress";
 import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "../../../components/Skeleton";
+import { NotificationPanel, NotificationBell, type AppNotification } from "../../../components/NotificationPanel";
+import { useLongPress } from "../../../hooks/useLongPress";
+import { useSwipe, type SwipeDirection } from "../../../hooks/useSwipe";
 import { Section, Card } from "../chrome/Section";
 
 const CRUMBS: Crumb[] = [
@@ -262,6 +265,102 @@ function SkeletonSection() {
   );
 }
 
+const SEED_NOTIFICATIONS: AppNotification[] = [
+  {
+    id: "1",
+    title: "Lucía comentó tu publicación",
+    description: "«Me encanta cómo quedó el balcón»",
+    date: Date.now() - 5 * 60_000,
+    tone: "info",
+    action: { label: "Responder", onClick: () => {} },
+  },
+  {
+    id: "2",
+    title: "Pago confirmado",
+    description: "Tu pedido #A-1042 fue acreditado.",
+    date: Date.now() - 3 * 3600_000,
+    tone: "success",
+  },
+  {
+    id: "3",
+    title: "No pudimos procesar tu tarjeta",
+    date: Date.now() - 26 * 3600_000,
+    tone: "danger",
+    read: true,
+  },
+  {
+    id: "4",
+    title: "Nueva versión disponible",
+    description: "Actualizá para ver las últimas novedades.",
+    date: Date.now() - 5 * 86400_000,
+    tone: "neutral",
+    read: true,
+  },
+];
+
+function NotificationPanelSection() {
+  const [items, setItems] = useState<AppNotification[]>(SEED_NOTIFICATIONS);
+  return (
+    <Section
+      id="notificationpanel"
+      title="NotificationPanel"
+      description="Historial agrupado por fecha (Hoy / Ayer / Esta semana / Anteriores), con filtro, marcar todo como leído y descartar. NotificationBell es el mismo panel dentro de una campana con popover."
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card title="NotificationPanel">
+          <NotificationPanel
+            items={items}
+            onRead={(id) => setItems((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n)))}
+            onReadAll={() => setItems((l) => l.map((n) => ({ ...n, read: true })))}
+            onDismiss={(id) => setItems((l) => l.filter((n) => n.id !== id))}
+            onClear={() => setItems([])}
+          />
+        </Card>
+        <Card title="NotificationBell">
+          <p className="text-xs text-muted mb-4">Campana con badge de no leídas — abre el mismo panel en un popover anclado.</p>
+          <NotificationBell items={items} onRead={(id) => setItems((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n)))} onReadAll={() => setItems((l) => l.map((n) => ({ ...n, read: true })))} />
+        </Card>
+      </div>
+    </Section>
+  );
+}
+
+function GestosSection() {
+  const [pressed, setPressed] = useState(0);
+  const [lastSwipe, setLastSwipe] = useState<SwipeDirection | null>(null);
+  const longPress = useLongPress(() => setPressed((n) => n + 1));
+  const swipe = useSwipe({ onSwipe: setLastSwipe });
+
+  return (
+    <Section
+      id="gestos"
+      title="Gestos — useLongPress · useSwipe"
+      description="Devuelven props de puntero listos para pegar en cualquier elemento: mantener presionado (cancela si el dedo se mueve) y swipe en las 4 direcciones (distingue el eje dominante)."
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card title="useLongPress">
+          <div
+            {...longPress}
+            className="h-24 rounded-xl border-2 border-dashed border-border grid place-items-center text-sm text-muted select-none cursor-pointer"
+          >
+            Mantené presionado…
+          </div>
+          <p className="mt-3 text-xs text-muted">Disparado {pressed} {pressed === 1 ? "vez" : "veces"}.</p>
+        </Card>
+        <Card title="useSwipe">
+          <div
+            {...swipe}
+            className="h-24 rounded-xl border-2 border-dashed border-border grid place-items-center text-sm text-muted select-none touch-none"
+          >
+            Arrastrá en cualquier dirección…
+          </div>
+          <p className="mt-3 text-xs text-muted">Último swipe: {lastSwipe ?? "ninguno todavía"}.</p>
+        </Card>
+      </div>
+    </Section>
+  );
+}
+
 export function InteractionGroup() {
   return (
     <>
@@ -271,6 +370,8 @@ export function InteractionGroup() {
       <AddButtonSection />
       <ProgressSection />
       <SkeletonSection />
+      <NotificationPanelSection />
+      <GestosSection />
     </>
   );
 }

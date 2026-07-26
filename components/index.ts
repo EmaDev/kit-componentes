@@ -49,6 +49,8 @@ export { AddToCartButton } from "./AddToCartButton";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
 export { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "./Skeleton";
 export type { SkeletonVariant, SkeletonAnimation } from "./Skeleton";
+export { NotificationPanel, NotificationBell, relativeTime, groupLabel } from "./NotificationPanel";
+export type { AppNotification, NotificationTone, NotificationPanelProps, NotificationBellProps } from "./NotificationPanel";
 
 // --- Personalización / multi-tenant ---
 export {
@@ -79,6 +81,8 @@ export { Tabs } from "./Tabs";
 export type { TabItem, TabsVariant, TabsSize } from "./Tabs";
 export { ScrollArea } from "./ScrollArea";
 export type { ScrollAreaVariant, ScrollAreaOrientation } from "./ScrollArea";
+export { VideoPlayer, formatTime } from "./VideoPlayer";
+export type { VideoPlayerProps, PlayerOrientation } from "./VideoPlayer";
 
 // --- Heroes ---
 export { HeroSearch, HeroImage, HeroTabs, HeroWelcome, greetingFor } from "./Hero";
@@ -160,3 +164,73 @@ export { useOnlineStatus } from "../hooks/useOnlineStatus";
 export { useServiceWorker } from "../hooks/useServiceWorker";
 export { useNotificationPermission } from "../hooks/useNotificationPermission";
 export type { NotificationStatus } from "../hooks/useNotificationPermission";
+
+// --- Layouts ---
+export { PackageApp, useAppSheet } from "./PackageApp";
+export type {
+  PackageAppProps,
+  PackageAppNotifications,
+  PackageAppPermission,
+  PackageAppSplashProps,
+  AppSheetOptions,
+} from "./PackageApp";
+
+// --- Offline, datos & sincronización ---
+export { AppHeader } from "./AppHeader";
+export type { HeaderAction } from "./AppHeader";
+export { SyncStatus } from "./SyncStatus";
+export { OfflineFallback } from "./OfflineFallback";
+export { PermissionGate } from "./PermissionGate";
+export { CameraCapture } from "./CameraCapture";
+export { LocationPicker } from "./LocationPicker";
+export { BiometricGate } from "./BiometricGate";
+export { useOfflineQueue } from "../hooks/useOfflineQueue";
+export type { QueuedItem, QueueItemStatus } from "../hooks/useOfflineQueue";
+export { useCachedFetch } from "../hooks/useCachedFetch";
+export { usePersistentState } from "../hooks/usePersistentState";
+export { idb, ls, idbAvailable } from "../hooks/idb";
+export { usePushSubscription } from "../hooks/usePushSubscription";
+export { useAppBadge } from "../hooks/useAppBadge";
+export { useAppLifecycle } from "../hooks/useAppLifecycle";
+export { useBackButton } from "../hooks/useBackButton";
+export { useStorageEstimate, formatBytes } from "../hooks/useStorageEstimate";
+export { usePermission } from "../hooks/usePermission";
+export type { PermissionKind, PermissionState } from "../hooks/usePermission";
+export { useCamera } from "../hooks/useCamera";
+export type { CameraFacing } from "../hooks/useCamera";
+export { useBarcodeScanner } from "../hooks/useBarcodeScanner";
+export type { ScanResult } from "../hooks/useBarcodeScanner";
+export { useGeolocation } from "../hooks/useGeolocation";
+export type { Coords } from "../hooks/useGeolocation";
+export { useWebAuthn } from "../hooks/useWebAuthn";
+export { useClipboard } from "../hooks/useClipboard";
+export { useFilePicker } from "../hooks/useFilePicker";
+export { useContactPicker } from "../hooks/useContactPicker";
+export type { PickedContact } from "../hooks/useContactPicker";
+export { useNfc } from "../hooks/useNfc";
+export type { NfcTag } from "../hooks/useNfc";
+export { useWebOTP } from "../hooks/useWebOTP";
+export { usePeriodicSync } from "../hooks/usePeriodicSync";
+
+// --- Gestos & entrada ---
+export { useLongPress } from "../hooks/useLongPress";
+export { useSwipe } from "../hooks/useSwipe";
+export type { SwipeDirection } from "../hooks/useSwipe";
+
+// --- Utilidades & rendimiento ---
+export { useDebounce, useDebouncedCallback, useThrottledCallback } from "../hooks/useDebounce";
+export { useIdle } from "../hooks/useIdle";
+export {
+  useMediaQuery,
+  useIsMobile,
+  useIsTablet,
+  useIsDesktop,
+  usePrefersDark,
+  usePrefersReducedMotion,
+  useIsLandscape,
+  useIsStandalone,
+} from "../hooks/useMediaQuery";
+export { useNetworkQuality } from "../hooks/useNetworkQuality";
+export type { Quality } from "../hooks/useNetworkQuality";
+export { useViewTransition, useScreenStack } from "../hooks/useViewTransition";
+export { useVirtualList } from "../hooks/useVirtualList";

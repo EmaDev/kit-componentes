@@ -105,6 +105,8 @@ export const GROUPS: Group[] = [
       { id: "addbutton", label: "AddButton" },
       { id: "progress", label: "Progress" },
       { id: "skeleton", label: "Skeleton" },
+      { id: "notificationpanel", label: "NotificationPanel" },
+      { id: "gestos", label: "Gestos" },
     ],
   },
   {
@@ -133,6 +135,7 @@ export const GROUPS: Group[] = [
       { id: "tabs", label: "Tabs" },
       { id: "scrollarea", label: "ScrollArea" },
       { id: "footer", label: "Footer" },
+      { id: "videoplayer", label: "VideoPlayer" },
     ],
   },
   {
@@ -236,6 +239,50 @@ export const GROUPS: Group[] = [
       { id: "splash", label: "SplashScreen" },
       { id: "safearea", label: "Safe area · Shell" },
       { id: "platform", label: "Platform · Native" },
+    ],
+  },
+  {
+    id: "offline",
+    label: "Offline, datos & sincronización",
+    kicker: "Offline",
+    tone: "success",
+    blurb:
+      "Header de app, cola de mutaciones offline con reintentos, fallback sin conexión, permisos con contexto, cámara, ubicación, biometría y hooks de persistencia.",
+    sections: [
+      { id: "appheader", label: "AppHeader" },
+      { id: "syncstatus", label: "SyncStatus · useOfflineQueue" },
+      { id: "offlinefallback", label: "OfflineFallback" },
+      { id: "permissiongate", label: "PermissionGate" },
+      { id: "cameracapture", label: "CameraCapture" },
+      { id: "locationpicker", label: "LocationPicker" },
+      { id: "biometricgate", label: "BiometricGate" },
+      { id: "datahooks", label: "Hooks de datos" },
+      { id: "deviceapis", label: "Web APIs de dispositivo" },
+    ],
+  },
+  {
+    id: "layouts",
+    label: "Layouts",
+    kicker: "Layout",
+    tone: "primary",
+    blurb:
+      "El organismo raíz que arma la base de una PWA de una: header, bottom nav, notificaciones, splash, instalación, conectividad, permisos y un BottomSheet global compuestos sobre el resto de la librería.",
+    sections: [{ id: "packageapp", label: "PackageApp" }],
+  },
+  {
+    id: "utils",
+    label: "Utilidades & rendimiento",
+    kicker: "Utilidades",
+    tone: "primary",
+    blurb:
+      "Control de frecuencia, inactividad, media queries reactivas, calidad de conexión, transiciones nativas entre pantallas y virtualización de listas largas.",
+    sections: [
+      { id: "usedebounce", label: "useDebounce" },
+      { id: "useidle", label: "useIdle" },
+      { id: "usemediaquery", label: "useMediaQuery" },
+      { id: "usenetworkquality", label: "useNetworkQuality" },
+      { id: "useviewtransition", label: "useViewTransition" },
+      { id: "usevirtuallist", label: "useVirtualList" },
     ],
   },
 ];

@@ -1,6 +1,6 @@
 # Scaffolding · Atomic Components
 
-58 componentes + 13 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
+67 componentes + 39 hooks para Next.js + React + Tailwind v4 + Framer Motion, con soporte de tema claro/oscuro vía la clase `.dark` (compatible con `next-themes`).
 
 > 📖 **[Guía completa de uso de cada componente y hook →](docs/README.md)** — cuándo usar cada uno, todas sus props, ejemplos y comportamiento no obvio. Pensada para vos o para que la lea una IA antes de implementar.
 
@@ -34,6 +34,7 @@ components/
   AddToCartButton.tsx    # botón "agregar" con estados idle → loading → hecho
   Progress.tsx           # <ProgressBar/> <ProgressRing/> <StepsProgress/>
   Skeleton.tsx           # placeholders animados: primitivo + Text/Avatar/Card/List/Table
+  NotificationPanel.tsx  # historial agrupado por fecha + <NotificationBell/> con popover
   ThemeConfigurator.tsx  # editor en vivo de los tokens de color del tema, con export CSS/JSON
   TenantTheme.tsx        # paleta multi-tenant por dominio/sesión: <TenantThemeProvider/> + useTenantTheme()
   Card.tsx               # Card base + StatCard · MediaCard · ProfileCard · PricingCard
@@ -42,6 +43,7 @@ components/
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
   ScrollArea.tsx         # scroll con barra propia arrastrable — 4 variantes de grosor/animación
   Footer.tsx             # pie de página: marca, columnas de links, redes y newsletter
+  VideoPlayer.tsx        # scrub, marcadores, atajos de teclado y modo portrait tipo reels
   Hero.tsx               # HeroSearch · HeroImage · HeroTabs · HeroWelcome — cabeceras de pantalla completa
   ChipCarousel.tsx       # fila de chips con drag, snap y flechas — 4 variantes
   Keypad.tsx             # teclado numérico táctil 3×4, tecla extra + borrado long-press
@@ -82,6 +84,14 @@ components/
   SafeArea.tsx           # + <SafeAreaSpacer/>: notch, island, home indicator
   NativeShell.tsx        # raíz todo-en-uno para experiencia nativa
   ViewportLock.tsx       # bloquea zoom/overscroll/long-press (sin UI)
+  PackageApp.tsx         # organismo raíz: header + bottom nav + splash + PWA + permisos + BottomSheet global
+  AppHeader.tsx          # header de app: volver, título grande colapsable, acciones, buscador
+  SyncStatus.tsx         # estado visual de una cola offline (chip o panel)
+  OfflineFallback.tsx    # pantalla de "sin conexión" cuando un fetch falla sin caché
+  PermissionGate.tsx     # pide un permiso del navegador con contexto
+  CameraCapture.tsx      # foto a pantalla completa: preview, cambio de cámara, revisión
+  LocationPicker.tsx     # GPS actual + dirección con sugerencias (sin mapa)
+  BiometricGate.tsx      # desbloqueo por Face ID / huella / Windows Hello (WebAuthn)
   index.ts               # barrel export
 hooks/
   useSpreadsheet.ts            # motor de fórmulas + selección + undo/redo
@@ -97,6 +107,34 @@ hooks/
   useKeyboardInset.ts          # altura del teclado virtual (--kb-inset)
   useHaptics.ts                # feedback táctil con nombres semánticos
   useStatusBarColor.ts         # tiñe la barra de estado (theme-color)
+  idb.ts                       # wrapper mínimo de IndexedDB + fallback a localStorage
+  useOfflineQueue.ts           # cola de mutaciones offline con reintentos y backoff
+  useCachedFetch.ts            # stale-while-revalidate con persistencia en IndexedDB
+  usePersistentState.ts        # useState que sobrevive recargas y cierres de la app
+  usePushSubscription.ts       # suscripción a Web Push (VAPID)
+  useAppBadge.ts                # contador en el ícono de la app instalada
+  useAppLifecycle.ts           # foreground/background + último gancho fiable para persistir
+  useBackButton.ts             # captura el botón atrás de Android para overlays propios
+  useStorageEstimate.ts        # espacio usado, persistencia y limpieza de Cache Storage
+  usePermission.ts             # estado reactivo de un permiso del navegador
+  useCamera.ts                 # stream de cámara, cambio de cámara y captura a Blob
+  useBarcodeScanner.ts         # lectura de QR/códigos de barra sobre un <video> en vivo
+  useGeolocation.ts            # ubicación del dispositivo, una vez o en vivo
+  useWebAuthn.ts                # biometría vía WebAuthn (Face ID / huella / Windows Hello)
+  useClipboard.ts              # copiar/leer el portapapeles con feedback temporizado
+  useFilePicker.ts             # elegir/guardar archivos (File System Access + fallback)
+  useContactPicker.ts          # selector de contactos del sistema (Android/Chrome)
+  useNfc.ts                    # lectura y escritura de tags NFC (Web NFC)
+  useWebOTP.ts                  # autocompleta el código de un SMS de verificación
+  usePeriodicSync.ts           # actualización en segundo plano (PWA instalada)
+  useLongPress.ts              # gesto de mantener presionado, listo para pegar como props
+  useSwipe.ts                  # gestos de swipe en las 4 direcciones
+  useDebounce.ts               # useDebounce + useDebouncedCallback + useThrottledCallback
+  useIdle.ts                   # inactividad del usuario, con aviso previo
+  useMediaQuery.ts             # media query reactiva + useIsMobile/usePrefersDark/etc.
+  useNetworkQuality.ts         # calidad de conexión para carga adaptativa
+  useViewTransition.ts         # View Transitions API + useScreenStack
+  useVirtualList.ts            # virtualización de listas largas
 docs/                     # guía de uso de cada componente y hook (ver enlace arriba)
 dev/                      # playground Next.js que importa components/ real (ver sección Preview)
 ```
@@ -154,6 +192,186 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 Todos los imports de ejemplo en este README (`@/components/...`) pasan a importarse directo desde `"lib-kit-components"` una vez instalado como paquete.
+
+## 🏗️ Guía: setup de una app nueva desde cero (SSR-first)
+
+Checklist completa para arrancar un proyecto nuevo con Next.js + `lib-kit-components`, con arquitectura atómica en el consumidor y **Server Components por default** — el cliente se reserva sólo para lo que de verdad necesita interactividad (el shell de `PackageApp`, formularios, hooks de estado).
+
+### 1. Crear el proyecto
+
+```bash
+npx create-next-app@latest mi-app --typescript --tailwind --app --src-dir --import-alias "@/*"
+cd mi-app
+```
+
+`create-next-app` ya scaffoldea Tailwind v4 (sin `tailwind.config.js`/`postcss.config.js` manual, todo vía `@import "tailwindcss"` en CSS) — verificá `"tailwindcss": "^4"` en `package.json`. App Router (`--app`) es obligatorio: la librería y esta guía asumen Server Components, que no existen en Pages Router.
+
+### 2. Instalar la librería y sus peer dependencies
+
+```bash
+npm i github:EmaDev/kit-componentes
+npm i framer-motion next-themes
+```
+
+(`react`/`react-dom` ya vienen con `create-next-app`; `next` sólo hace falta si usás `Navbar`/`SideBar`/`BottomNav`, y ya está.)
+
+### 3. Conectar estilos, tema y providers globales
+
+`src/app/globals.css`:
+
+```css
+@import "tailwindcss";
+@import "lib-kit-components/styles.css";
+@source "../node_modules/lib-kit-components/dist";
+```
+
+`src/app/layout.tsx` — **se queda como Server Component** (no lleva `"use client"`): `ThemeProvider` y `ToastProvider` son client components por dentro, pero envolver `children` con ellos no obliga a que el layout raíz lo sea también.
+
+```tsx
+// src/app/layout.tsx
+import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import { ToastProvider } from "lib-kit-components";
+
+export const metadata = { title: "Mi App", description: "…" };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="es" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ToastProvider>{children}</ToastProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+Mantener el `RootLayout` como Server Component es lo que permite exportar `metadata`/`generateMetadata` (SEO) desde acá y desde cada `page.tsx` — un layout con `"use client"` no puede exportarlos.
+
+### 4. Arquitectura atómica del proyecto consumidor
+
+La librería ya te da los átomos y moléculas de UI (`Button`, `Input`, `Card`, `Hero`, …). Lo que arma el proyecto consumidor son las capas que **combinan** esos átomos con datos y navegación reales, separando claramente qué corre en el servidor y qué necesita el cliente:
+
+```
+src/
+  app/
+    layout.tsx                 # Server · providers globales (paso 3)
+    (app)/
+      layout.tsx               # Server · sólo arma <AppShell>{children}</AppShell>
+      page.tsx                 # Server · fetch de datos + <HomeTemplate data={...}/>
+      productos/[id]/page.tsx  # Server · fetch por id + <ProductTemplate/>
+    (app)/AppShell.tsx          # Client · único punto donde se monta <PackageApp>
+  components/
+    atoms/                     # primitivos 100% propios que no existen en la librería
+    molecules/                 # combinación de átomos con un propósito (ProductPrice, RatingStars)
+    organisms/                 # bloques de pantalla con estado/interacción (ProductGrid, FiltersBar)
+    templates/                 # arman una pantalla completa a partir de organisms; reciben datos ya
+                                # resueltos por props — NO hacen fetch, así pueden ser Server Components
+  lib/
+    data/                      # funciones de acceso a datos (fetch/DB/ORM) — se importan sólo desde
+                                # Server Components (page.tsx, layout.tsx)
+```
+
+- **atoms/molecules**: úsalos sólo para lo que la librería no cubre. Todo lo que ya exporta `lib-kit-components` (ver [Estructura](#-estructura)) es tu capa de átomos — no la reimplementes.
+- **organisms**: llevan `"use client"` en cuanto usan un hook (`useState`, `useCart`, `useDebounce`, etc.) o un componente client de la librería (`DataTable`, `Carousel`, `Chatbot`...). Reciben datos ya cargados por props, no hacen su propio fetch.
+- **templates**: pura composición de layout (grid, secciones, orden de organisms). Si no usan hooks, quedan como Server Components — eso es lo que le permite a Next.js streamear el HTML de la pantalla completa antes de que hidrate un solo organism.
+- **pages** (`page.tsx`): siempre Server Components `async`. Son el único lugar autorizado para `await fetch(...)`/queries a la base de datos — nunca en un `organism`/`template` client.
+
+### 5. El shell de la app con `PackageApp` (el único límite cliente/servidor que importa)
+
+`PackageApp` es `"use client"` (usa `useSplash`, `useOnlineStatus`, estado del `BottomSheet` global) — pero **no** hace falta que tu `layout.tsx` también lo sea. El patrón es aislar `PackageApp` en un componente cliente propio (`AppShell`) que recibe `children` como prop: ese `children` lo sigue resolviendo el Server Component que lo llama, así que las páginas debajo del shell pueden seguir siendo 100% Server Components con fetch en el servidor.
+
+```tsx
+// src/app/(app)/AppShell.tsx
+"use client";
+import type { ReactNode } from "react";
+import { PackageApp } from "lib-kit-components";
+import { HomeIcon, SearchIcon, UserIcon } from "@/components/atoms/icons";
+
+export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <PackageApp
+      appName="Mi App"
+      header={{ title: "Inicio", largeTitle: true, searchable: true }}
+      navItems={[
+        { label: "Inicio", href: "/", icon: <HomeIcon /> },
+        { label: "Buscar", href: "/buscar", icon: <SearchIcon /> },
+        { label: "Perfil", href: "/perfil", icon: <UserIcon /> },
+      ]}
+    >
+      {children}
+    </PackageApp>
+  );
+}
+```
+
+```tsx
+// src/app/(app)/layout.tsx — Server Component: no hace fetch, sólo delega
+import { AppShell } from "./AppShell";
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return <AppShell>{children}</AppShell>;
+}
+```
+
+```tsx
+// src/app/(app)/page.tsx — Server Component: fetch en el servidor, cero JS de datos al cliente
+import { getHomeData } from "@/lib/data/home";
+import { HomeTemplate } from "@/components/templates/HomeTemplate";
+
+export default async function HomePage() {
+  const data = await getHomeData(); // DB/fetch directo, sin API route intermedia
+  return <HomeTemplate data={data} />;
+}
+```
+
+```tsx
+// src/components/templates/HomeTemplate.tsx — Server Component (sin "use client")
+import { HeroWelcome } from "lib-kit-components";
+import { ProductGrid } from "@/components/organisms/ProductGrid";
+import type { HomeData } from "@/lib/data/home";
+
+export function HomeTemplate({ data }: { data: HomeData }) {
+  return (
+    <>
+      <HeroWelcome name={data.user.name} highlight={data.highlight} tone="brand" />
+      <ProductGrid products={data.products} />
+    </>
+  );
+}
+```
+
+`ProductGrid` (un `organism`) recién ahí lleva `"use client"` si necesita `useCart()`, `useState` para filtros, etc. — pero ya recibe `products` resuelto, sin volver a pedirlo al cliente.
+
+### 6. Por qué este patrón mantiene SSR real
+
+- El HTML de `HomeTemplate` (hero + grilla con datos reales) se renderiza en el servidor y llega completo en la respuesta inicial — no depende de que hidrate `AppShell`/`PackageApp`.
+- El único JS que el cliente hidrata "de arriba" es el shell (header, bottom nav, splash, sheet global); el contenido de cada pantalla hidrata sólo los organisms puntuales que lo necesitan (islas de interactividad), no la página entera.
+- Evitá el error común de poner `"use client"` en `layout.tsx`/`page.tsx` "porque `PackageApp` lo pide" — el límite cliente va en `AppShell`, no en la ruta.
+- Para confirmarlo: `view-source:` sobre la página en el navegador debe mostrar el contenido de `HomeTemplate` ya resuelto en el HTML crudo (sin JS), no un `<div id="__next">` vacío.
+
+### 7. PWA mínima (si vas a usar `installPrompt`/`updatePrompt` de `PackageApp`)
+
+- `public/manifest.json` con `name`, `icons`, `start_url`, `display: "standalone"`.
+- `public/sw.js` con al menos el handler que necesita `UpdatePrompt`:
+
+```js
+self.addEventListener("message", (e) => {
+  if (e.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+```
+
+- Registrarlo con `useServiceWorker()` (ver [docs/hooks](docs/hooks/useAppLifecycle.md) y la sección [📱 PWA](#-pwa) más abajo).
+
+### 8. Checklist final
+
+- [ ] `npx tsc --noEmit` sin errores.
+- [ ] `RootLayout` y `(app)/layout.tsx` sin `"use client"`.
+- [ ] Todo `await fetch/DB` vive en un `page.tsx` (o una función en `lib/data/`), nunca en un `organism`.
+- [ ] `view-source` de cada pantalla muestra el contenido real, no sólo el shell.
+- [ ] `manifest.json` + `sw.js` si activaste `installPrompt`/`updatePrompt`.
 
 ## 🎨 Tokens
 
@@ -229,6 +447,19 @@ Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la 
 <Tabs items={items} value={tab} onChange={setTab}
   variant="segmented" size="md" fitted scrollable
   panels={{ resumen: <Resumen/>, actividad: <Actividad/> }}/>
+
+// VideoPlayer — scrub con buffer y marcadores, atajos de teclado, doble-tap para saltar
+<VideoPlayer
+  src="/videos/keynote.mp4" poster="/videos/keynote-poster.jpg"
+  title="Keynote 2025" resumeKey="video-keynote-2025"
+  markers={[{ at: 120, label: "Intro" }]}
+/>
+
+// …o modo portrait, feed vertical tipo reels
+<VideoPlayer src={clip.url} orientation="portrait" loop autoPlay muted
+  onNext={nextClip} onPrev={prevClip}
+  overlay={<ClipActions clip={clip} />}
+/>
 ```
 
 Gestos del visor: arrastrar = pan · rueda o pinch = zoom hacia el puntero · doble click = 250% ↔ reset · `+` / `−` / `0` · `←` `→` para recorrer la galería · `Esc` cierra. El pan está limitado para que la imagen nunca se escape de la pantalla.
@@ -416,6 +647,14 @@ toast({ title: "¡Listo!", variant: "success" });
   brand={<span>Mi Tienda</span>}
   groups={[{ title: "Producto", links: [{ label: "Catálogo", href: "/catalogo" }] }]}
   bottomLinks={[{ label: "Privacidad", href: "/privacidad" }]}
+/>
+
+// NotificationPanel / NotificationBell — historial agrupado por fecha
+<NotificationBell
+  items={notifications}
+  onRead={markAsRead}
+  onReadAll={markAllAsRead}
+  onDismiss={dismiss}
 />
 ```
 
@@ -730,3 +969,122 @@ Las CSS vars quedan disponibles sin JS:
 ```
 
 Y hay utilidades listas en `globals.css`: `.h-app`, `.min-h-app`, `.pinned-bottom`, `.scroll-native`.
+
+## 🧩 Layout base de una PWA (`PackageApp`)
+
+```tsx
+// app/(app)/layout.tsx — organismo raíz: header + bottom nav + splash + PWA + permisos + sheet global
+import { PackageApp, useAppSheet } from "lib-kit-components";
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <PackageApp
+      appName="Mi App"
+      header={{ title: "Inicio", largeTitle: true, searchable: true }}
+      navItems={[
+        { label: "Inicio", href: "/", icon: <HomeIcon /> },
+        { label: "Perfil", href: "/perfil", icon: <UserIcon /> },
+      ]}
+      notifications={{ items: notifications, onRead: markAsRead, onReadAll: markAllAsRead }}
+      requiredPermissions={[{ kind: "camera", reason: "Para escanear tu cupón necesitamos la cámara." }]}
+      offline="fallback"       // banner | fallback | false
+      splash={{ variant: "zoom", background: "brand" }}
+    >
+      {children}
+    </PackageApp>
+  );
+}
+
+// …y desde cualquier pantalla hija, sin estado propio
+const { openSheet, closeSheet } = useAppSheet();
+openSheet(<FiltrosForm onApply={closeSheet} />, { title: "Filtros" });
+```
+
+Compone, en un solo componente: `SplashScreen`, `PwaInstallPrompt`, `OfflineBanner`/`OfflineFallback`, `AppHeader` (con campana de notificaciones opcional → `NotificationPanel` en un `BottomSheet`), `BottomNav`, `PermissionGate` encadenado (`requiredPermissions`), `SnackbarProvider` y un `BottomSheet` global reusable (`useAppSheet`). Detalles y gotchas: [PackageApp](docs/components/PackageApp.md).
+
+## 📡 Offline, datos y sincronización
+
+```tsx
+// AppHeader — volver, título grande colapsable, acciones con badge, buscador expandible
+<AppHeader
+  title="Inicio" largeTitle searchable onSearch={setQuery}
+  actions={[{ id: "notif", label: "Notificaciones", icon: <BellIcon/>, badge: 3, onClick: openNotifs }]}
+/>
+
+// Cola de mutaciones offline — se persiste en IndexedDB y reintenta con backoff al volver la conexión
+const queue = useOfflineQueue<Comment>({ send: (item) => api.postComment(item.payload) });
+await queue.enqueue("create-comment", { postId, text }); // UI optimista, se ve al toque
+
+// Estado de la cola — chip compacto o panel con detalle
+<SyncStatus pending={queue.pending} failed={queue.failed} flushing={queue.flushing} onRetry={() => queue.retry()} />
+
+// Lectura con caché (stale-while-revalidate) — pinta lo último visto aunque estés offline
+const { data, error, fromCache, refetch } = useCachedFetch<Product>(`/api/products/${id}`);
+if (error && !data) return <OfflineFallback onRetry={refetch} />;
+
+// useState que sobrevive recargas y cierres de la app (IndexedDB, con fallback a localStorage)
+const [filtros, setFiltros, { hydrated }] = usePersistentState("filtros.productos", DEFAULT_FILTERS);
+
+// Pedir un permiso del navegador con contexto — nunca al cargar la app
+<PermissionGate kind="camera" reason="Para escanear tu cupón necesitamos la cámara.">
+  <CameraCapture open={open} onClose={close} onCapture={(blob) => upload(blob)} guide="document" />
+</PermissionGate>
+
+// Ubicación: GPS actual + dirección con sugerencias (sin mapa incluido)
+<LocationPicker reverseGeocode={reverseGeocode} onSearch={searchAddresses} onChange={setLocation} />
+
+// Desbloqueo biométrico (Face ID / huella / Windows Hello) vía WebAuthn
+<BiometricGate open={locked} onUnlock={() => setLocked(false)} onFallback={() => setShowPinLock(true)} />
+
+// Piezas sueltas: badge del ícono de la app, ciclo de vida, botón atrás de Android,
+// espacio en disco, portapapeles y selector de archivos
+useAppBadge(unreadCount);
+const { isStale } = useAppLifecycle({ onPersist: saveDraft, staleAfter: 60_000 });
+useBackButton({ active: sheetOpen, onBack: closeSheet });
+const { usage, quota, clearCaches } = useStorageEstimate();
+const { copy, copied } = useClipboard();
+const { pick } = useFilePicker({ accept: "image/*", maxSize: 5 * 1024 * 1024 });
+```
+
+`idb`/`ls` son la capa de persistencia mínima (IndexedDB + fallback a `localStorage`) detrás de `usePersistentState`, `useOfflineQueue` y `useCachedFetch` — usalos directo sólo si necesitás una forma de guardar distinta a esas tres. `usePushSubscription` (Web Push/VAPID), `useCamera`/`useBarcodeScanner` (motor de `CameraCapture`) y `useWebAuthn` (motor de `BiometricGate`) son los hooks de bajo nivel detrás de sus componentes respectivos — usalos directo si necesitás una UI completamente propia.
+
+## 🖐 Gestos, rendimiento & Web APIs sueltas
+
+```tsx
+// Gestos — devuelven props listos para pegar en cualquier elemento
+const longPress = useLongPress(() => openContextMenu(item), { onClick: () => openItem(item) });
+const swipe = useSwipe({ onSwipeLeft: dismiss, onSwipeRight: dismiss });
+<div {...longPress}>{/* … */}</div>
+
+// Control de frecuencia
+const debouncedQuery = useDebounce(query, 400);              // retrasa un valor
+const saveDraft = useDebouncedCallback(api.saveDraft, 800);  // retrasa una función
+const onScroll = useThrottledCallback(updateScrollState, 150); // limita la frecuencia
+
+// Inactividad — cerrar sesión o bloquear con aviso previo
+const { warning, secondsLeft, reset } = useIdle({ timeout: 10 * 60_000, onIdle: logout });
+
+// Media queries — SSR-safe
+const isDesktop = useIsDesktop();
+const reduceMotion = usePrefersReducedMotion();
+
+// Carga adaptativa según la calidad de conexión
+const { quality, allowHeavy, imageWidth } = useNetworkQuality();
+<VideoPlayer src={clip.url} autoPlay={allowHeavy} />
+
+// Transición nativa entre pantallas/estados (con degradación limpia sin soporte)
+const { transition } = useViewTransition();
+<button onClick={() => transition(() => setFilter("activos"))}>Ver activos</button>
+
+// Pila de pantallas en memoria — push/pop con soporte del botón atrás
+const { current, push, pop, depth } = useScreenStack<"inicio" | "datos" | "listo">("inicio");
+
+// Listas de miles de filas — renderiza sólo lo visible
+const { scrollRef, virtualItems, totalHeight } = useVirtualList({ count: rows.length, itemHeight: 72 });
+
+// Web APIs puntuales de dispositivo
+const { pick } = useContactPicker();                 // selector de contactos del sistema
+const { scan, tag } = useNfc();                       // lectura/escritura de tags NFC
+useWebOTP((code) => setOtp(code));                    // autocompleta el SMS de verificación (Android)
+const { register } = usePeriodicSync("refresh-feed"); // refresco en segundo plano (PWA instalada)
+```

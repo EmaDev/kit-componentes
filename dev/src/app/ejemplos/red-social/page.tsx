@@ -1,8 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SocialPost } from "../../../../../components/SocialPost";
 import { Poll } from "../../../../../components/Poll";
+import { Card } from "../../../../../components/Card";
+import { Button } from "../../../../../components/Button";
+import { PermissionGate } from "../../../../../components/PermissionGate";
+import { CameraCapture } from "../../../../../components/CameraCapture";
 import { useToast } from "../../../../../components/Toast";
 import { POSTS } from "./_data/posts";
 import { useFeedStore } from "./_store/feed";
@@ -18,12 +23,48 @@ export default function FeedPage() {
   const toggleSave = useFeedStore((s) => s.toggleSave);
   const vote = useFeedStore((s) => s.vote);
 
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [draftPhoto, setDraftPhoto] = useState<string | null>(null);
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Feed</h1>
         <p className="mt-1 text-sm text-muted">Mini app de red social — posts, encuestas y comentarios con hilos.</p>
       </div>
+
+      <Card className="mb-5">
+        <p className="text-sm font-semibold text-foreground">Compartí un momento del taller</p>
+        <p className="mt-1 text-xs text-muted">Sacá una foto para sumarla a tu próxima publicación.</p>
+        <div className="mt-3">
+          <PermissionGate
+            kind="camera"
+            reason="La necesitamos para que puedas sacar una foto y compartirla en tu feed."
+            cta="Habilitar cámara"
+          >
+            <Button variant="secondary" onClick={() => setCameraOpen(true)}>
+              Sacar foto
+            </Button>
+          </PermissionGate>
+        </div>
+        {draftPhoto && (
+          <div className="mt-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-2">Lista para publicar</p>
+            <img src={draftPhoto} alt="Foto capturada" className="w-full max-w-60 rounded-xl object-cover aspect-square" />
+          </div>
+        )}
+      </Card>
+
+      <CameraCapture
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        guide="square"
+        title="Foto para tu post"
+        onCapture={(_blob, dataUrl) => {
+          setDraftPhoto(dataUrl);
+          toast({ title: "Foto lista", description: "Se agregó a tu próxima publicación.", variant: "success" });
+        }}
+      />
 
       <div className="flex flex-col gap-5">
         {POSTS.map((post) => {

@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { Navbar, type NavLink } from "../../../../../components/Navbar";
 import { BottomNav, type BottomNavItem } from "../../../../../components/BottomNav";
+import { Footer } from "../../../../../components/Footer";
 import { CartHydrator } from "./_store/CartHydrator";
 import { useCartCount } from "./_store/cart";
 import { CartIcon } from "./_components/icons";
@@ -28,6 +30,7 @@ function CartLink({ count }: { count: number }) {
 }
 
 export default function EcommerceLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const count = useCartCount();
 
   const BOTTOM_ITEMS: BottomNavItem[] = [
@@ -55,6 +58,24 @@ export default function EcommerceLayout({ children }: { children: ReactNode }) {
         }
       />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">{children}</main>
+
+      <Footer
+        brand="Tienda demo"
+        description="Catálogo, ficha de producto y checkout de ejemplo armados con lib-kit-components."
+        groups={[
+          {
+            title: "Tienda",
+            links: [
+              { label: "Catálogo", href: "/ejemplos/ecommerce" },
+              { label: "Carrito", href: "/ejemplos/ecommerce/carrito" },
+              { label: "Otros ejemplos", href: "/ejemplos" },
+            ],
+          },
+        ]}
+        onNavigate={(href) => router.push(href)}
+        bottomText={`© ${new Date().getFullYear()} — Demo de lib-kit-components.`}
+      />
+
       <BottomNav items={BOTTOM_ITEMS} />
     </div>
   );

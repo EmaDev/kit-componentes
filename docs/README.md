@@ -89,8 +89,37 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una encuesta (única, múltiple, estrellas o NPS) | [Poll](components/Poll.md) |
 | Confeti para celebrar una acción puntual | [Confetti](components/Confetti.md) |
 | Una pantalla de éxito completa tras una operación | [SuccessPage](components/SuccessPage.md) |
+| Un historial de notificaciones agrupado por fecha, o una campana con popover en el header | [NotificationPanel](components/NotificationPanel.md) (`NotificationBell`) |
+| Un reproductor de video con controles propios, o un feed vertical tipo reels | [VideoPlayer](components/VideoPlayer.md) |
+| Armar la base completa de una PWA (header, bottom nav, splash, instalación, conectividad, permisos, sheet global) de una | [PackageApp](components/PackageApp.md) (`useAppSheet`) |
+| Una cabecera de pantalla con flecha de volver, título grande colapsable y buscador expandible | [AppHeader](components/AppHeader.md) |
+| Mostrar cuántos cambios offline faltan enviar (junto a `useOfflineQueue`) | [SyncStatus](components/SyncStatus.md) |
+| Una pantalla de "sin conexión" cuando un fetch falla y no hay caché | [OfflineFallback](components/OfflineFallback.md) |
+| Pedir un permiso del navegador (cámara, ubicación, notificaciones) con contexto | [PermissionGate](components/PermissionGate.md) |
+| Tomar una foto con la cámara del dispositivo, dentro de la propia app | [CameraCapture](components/CameraCapture.md) |
+| Elegir una ubicación: GPS actual + dirección con sugerencias | [LocationPicker](components/LocationPicker.md) |
+| Desbloquear la app con Face ID / huella / Windows Hello | [BiometricGate](components/BiometricGate.md) |
+| Retrasar un valor o una función (buscador, autoguardado) | [useDebounce / useDebouncedCallback](hooks/useDebounce.md) |
+| Limitar la frecuencia de un handler de scroll/resize/drag | [useThrottledCallback](hooks/useDebounce.md) |
+| Cerrar sesión o bloquear la app tras inactividad, con aviso previo | [useIdle](hooks/useIdle.md) |
+| Un gesto de mantener presionado (menú contextual, drag) | [useLongPress](hooks/useLongPress.md) |
+| Un gesto de swipe en cualquier dirección sobre un elemento propio | [useSwipe](hooks/useSwipe.md) |
+| Saber si es mobile/tablet/desktop, o leer cualquier media query | [useMediaQuery](hooks/useMediaQuery.md) |
+| Adaptar la carga (imágenes, autoplay, prefetch) según la calidad de conexión | [useNetworkQuality](hooks/useNetworkQuality.md) |
+| Animar un cambio de pantalla/estado con la View Transitions API | [useViewTransition](hooks/useViewTransition.md) (`useScreenStack`) |
+| Renderizar sólo lo visible de una lista larga (cientos/miles de filas) | [useVirtualList](hooks/useVirtualList.md) |
+| Elegir un contacto de la agenda del sistema | [useContactPicker](hooks/useContactPicker.md) |
+| Leer o escribir un tag NFC | [useNfc](hooks/useNfc.md) |
+| Autocompletar un código de verificación por SMS (Android) | [useWebOTP](hooks/useWebOTP.md) |
+| Refrescar datos en segundo plano cada tantas horas (PWA instalada) | [usePeriodicSync](hooks/usePeriodicSync.md) |
 
 ## Componentes
+
+### Layouts
+
+| Componente | Descripción |
+|---|---|
+| [PackageApp](components/PackageApp.md) | Organismo raíz para la base de una PWA: header, bottom nav, notificaciones, splash, instalación, conectividad, permisos y `BottomSheet` global (`useAppSheet`). |
 
 ### UI — formularios, feedback y overlays
 
@@ -131,6 +160,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [AddToCartButton](components/AddToCartButton.md) | Botón "agregar" con estados idle → loading → hecho. |
 | [Progress](components/Progress.md) | `ProgressBar`, `ProgressRing`, `StepsProgress`. |
 | [Skeleton](components/Skeleton.md) | Placeholders animados: primitivo + `SkeletonText`/`Avatar`/`Card`/`List`/`Table`. |
+| [NotificationPanel](components/NotificationPanel.md) | Historial de notificaciones agrupado por fecha + `NotificationBell` (campana con popover). |
 
 ### Personalización
 
@@ -149,6 +179,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
 | [ScrollArea](components/ScrollArea.md) | Scroll con barra propia arrastrable — 4 variantes de grosor/animación. |
 | [Footer](components/Footer.md) | Pie de página con marca, columnas de links, redes y newsletter. |
+| [VideoPlayer](components/VideoPlayer.md) | Reproductor con scrub, marcadores, atajos de teclado y modo `portrait` tipo reels. |
 
 ### Heroes
 
@@ -225,6 +256,18 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Confetti](components/Confetti.md) | Confeti en canvas puro — burst, rain o center. |
 | [SuccessPage](components/SuccessPage.md) | Pantalla de éxito con confeti, detalles y CTA. |
 
+### Offline, datos & sincronización
+
+| Componente | Descripción |
+|---|---|
+| [AppHeader](components/AppHeader.md) | Header de app con volver, título grande colapsable, acciones con badge y buscador expandible. |
+| [SyncStatus](components/SyncStatus.md) | Estado visual de una cola offline (`useOfflineQueue`) — chip o panel de detalle. |
+| [OfflineFallback](components/OfflineFallback.md) | Pantalla de "sin conexión" cuando un fetch falla y no hay caché. |
+| [PermissionGate](components/PermissionGate.md) | Pide un permiso del navegador con contexto, y contempla el estado bloqueado. |
+| [CameraCapture](components/CameraCapture.md) | Captura de foto a pantalla completa: preview, cambio de cámara y revisión. |
+| [LocationPicker](components/LocationPicker.md) | GPS actual + dirección con sugerencias (sin mapa incluido). |
+| [BiometricGate](components/BiometricGate.md) | Desbloqueo por Face ID / huella / Windows Hello vía WebAuthn. |
+
 ## Hooks
 
 | Hook | Descripción |
@@ -242,6 +285,34 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [useKeyboardInset](hooks/useKeyboardInset.md) | Altura del teclado virtual (`--kb-inset`). |
 | [useHaptics](hooks/useHaptics.md) | Feedback táctil con patrones con nombre. |
 | [useStatusBarColor](hooks/useStatusBarColor.md) | Tiñe la barra de estado (`theme-color`). |
+| [idb / ls](hooks/idb.md) | Wrapper mínimo de IndexedDB (+ fallback a `localStorage`) detrás de la persistencia offline. |
+| [useOfflineQueue](hooks/useOfflineQueue.md) | Cola de mutaciones offline con reintentos y backoff — motor de `SyncStatus`. |
+| [useCachedFetch](hooks/useCachedFetch.md) | Stale-while-revalidate con persistencia en IndexedDB. |
+| [usePersistentState](hooks/usePersistentState.md) | `useState` que sobrevive recargas y cierres de la app. |
+| [usePushSubscription](hooks/usePushSubscription.md) | Suscripción a Web Push (VAPID), sincronizada con tu backend. |
+| [useAppBadge](hooks/useAppBadge.md) | Contador en el ícono de la app instalada. |
+| [useAppLifecycle](hooks/useAppLifecycle.md) | Foreground/background, tiempo fuera y el último gancho fiable para persistir. |
+| [useBackButton](hooks/useBackButton.md) | Captura el botón atrás de Android para cerrar overlays propios. |
+| [useStorageEstimate](hooks/useStorageEstimate.md) | Espacio usado por la app, persistencia y limpieza de Cache Storage. |
+| [usePermission](hooks/usePermission.md) | Estado reactivo de un permiso del navegador — motor de `PermissionGate`. |
+| [useCamera](hooks/useCamera.md) | Stream de cámara, cambio frontal/trasera y captura a `Blob`. |
+| [useBarcodeScanner](hooks/useBarcodeScanner.md) | Lectura de QR/códigos de barra sobre un `<video>` en vivo. |
+| [useGeolocation](hooks/useGeolocation.md) | Ubicación del dispositivo, una vez o en vivo (`watch`). |
+| [useWebAuthn](hooks/useWebAuthn.md) | Biometría vía WebAuthn — motor de `BiometricGate`. |
+| [useClipboard](hooks/useClipboard.md) | Copiar/leer el portapapeles con feedback temporizado. |
+| [useFilePicker](hooks/useFilePicker.md) | Elegir/guardar archivos (File System Access API + fallback de `<input>`). |
+| [useContactPicker](hooks/useContactPicker.md) | Selector de contactos del sistema (Android/Chrome). |
+| [useNfc](hooks/useNfc.md) | Lectura y escritura de tags NFC (Web NFC). |
+| [useWebOTP](hooks/useWebOTP.md) | Autocompleta el código de un SMS de verificación (Android/Chrome). |
+| [usePeriodicSync](hooks/usePeriodicSync.md) | Actualización en segundo plano cada tantas horas (PWA instalada). |
+| [useLongPress](hooks/useLongPress.md) | Gesto de mantener presionado, listo para pegar como props. |
+| [useSwipe](hooks/useSwipe.md) | Gestos de swipe en las 4 direcciones sobre un elemento propio. |
+| [useDebounce](hooks/useDebounce.md) | Retrasa un valor · `useDebouncedCallback` / `useThrottledCallback`. |
+| [useIdle](hooks/useIdle.md) | Inactividad del usuario, con aviso previo configurable. |
+| [useMediaQuery](hooks/useMediaQuery.md) | Media query reactiva + `useIsMobile`/`usePrefersDark`/etc. |
+| [useNetworkQuality](hooks/useNetworkQuality.md) | Calidad de conexión para carga adaptativa. |
+| [useViewTransition](hooks/useViewTransition.md) | View Transitions API + `useScreenStack` (pila de pantallas en memoria). |
+| [useVirtualList](hooks/useVirtualList.md) | Virtualización de listas largas — renderiza sólo lo visible. |
 
 ## Notas transversales
 

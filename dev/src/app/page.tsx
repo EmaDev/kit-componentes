@@ -20,6 +20,9 @@ import { ListsGroup } from "../sections/ListsGroup";
 import { CommerceGroup } from "../sections/CommerceGroup";
 import { SocialGroup } from "../sections/SocialGroup";
 import { PwaGroup } from "../sections/PwaGroup";
+import { OfflineGroup } from "../sections/OfflineGroup";
+import { LayoutsGroup } from "../sections/LayoutsGroup";
+import { UtilsGroup } from "../sections/UtilsGroup";
 
 function initialUiTab() {
   if (typeof window === "undefined") return "formularios";
@@ -77,6 +80,15 @@ export default function PlaygroundPage() {
 
             <GroupHeader group={groupById("pwa-group")} count="7 componentes · varios hooks" />
             <PwaGroup />
+
+            <GroupHeader group={groupById("offline")} count="9 componentes · varios hooks" />
+            <OfflineGroup />
+
+            <GroupHeader group={groupById("layouts")} count="1 organismo" />
+            <LayoutsGroup />
+
+            <GroupHeader group={groupById("utils")} count="6 hooks" />
+            <UtilsGroup />
           </div>
         </div>
       </div>

@@ -1,22 +1,30 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "../../../../../components/Card";
 import { CardGrid } from "../../../../../components/CardGrid";
-import { ChipCarousel, type Chip } from "../../../../../components/ChipCarousel";
+import { HeroTabs, type HeroTab } from "../../../../../components/Hero";
 import { Input } from "../../../../../components/Input";
 import { CountdownBanner } from "../../../../../components/CountdownBanner";
 import { PromoPopup } from "../../../../../components/PromoPopup";
 import { Pagination } from "../../../../../components/Pagination";
+import { FloatingButton } from "../../../../../components/FloatingButton";
 import { useToast } from "../../../../../components/Toast";
 import { CATEGORIES, PRODUCTS } from "./_data/products";
 import { ProductCard } from "./_components/ProductCard";
-import { SearchIcon } from "./_components/icons";
+import { SearchIcon, CartIcon } from "./_components/icons";
+import { useCartCount } from "./_store/cart";
 
-const CHIPS: Chip[] = [{ id: "all", label: "Todos" }, ...CATEGORIES.map((c) => ({ id: c, label: c }))];
+const TABS: HeroTab[] = [
+  { id: "all", label: "Todos", count: PRODUCTS.length },
+  ...CATEGORIES.map((c) => ({ id: c, label: c, count: PRODUCTS.filter((p) => p.category === c).length })),
+];
 const PAGE_SIZE = 6;
 
 export default function EcommerceCatalogPage() {
+  const router = useRouter();
+  const cartCount = useCartCount();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
   const [page, setPage] = useState(1);
@@ -60,14 +68,17 @@ export default function EcommerceCatalogPage() {
         expiredMessage="La promoción terminó, pero el catálogo sigue disponible."
       />
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Catálogo</h1>
-        <p className="mt-1 text-sm text-muted">
-          {PRODUCTS.length} productos · carrito compartido entre catálogo, ficha y checkout con Zustand.
-        </p>
-      </div>
+      <HeroTabs
+        title="Catálogo"
+        description={`${PRODUCTS.length} productos · carrito compartido entre catálogo, ficha y checkout con Zustand.`}
+        tabs={TABS}
+        value={category}
+        onChange={setCategory}
+        variant="pill"
+        className="-mx-4 sm:-mx-6 mb-6"
+      />
 
-      <div className="flex flex-col gap-4 mb-6">
+      <div className="mb-6">
         <Input
           placeholder="Buscar productos…"
           value={query}
@@ -75,7 +86,6 @@ export default function EcommerceCatalogPage() {
           leftIcon={<SearchIcon />}
           className="max-w-sm"
         />
-        <ChipCarousel chips={CHIPS} value={category} onChange={(v) => setCategory(v as string)} clearable={false} />
       </div>
 
       {filtered.length === 0 ? (
@@ -120,6 +130,16 @@ export default function EcommerceCatalogPage() {
           note: "Es una demo: no se envía ningún email real.",
         }}
       />
+
+      {cartCount > 0 && (
+        <FloatingButton
+          icon={<CartIcon />}
+          label={`Ver carrito (${cartCount})`}
+          extended
+          tone="primary"
+          onClick={() => router.push("/ejemplos/ecommerce/carrito")}
+        />
+      )}
     </div>
   );
 }

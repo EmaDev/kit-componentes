@@ -12,6 +12,7 @@ import { ImageZoom, ZoomableImage } from "../../../components/ImageZoom";
 import { Tabs, type TabItem, type TabsVariant } from "../../../components/Tabs";
 import { ScrollArea, type ScrollAreaVariant } from "../../../components/ScrollArea";
 import { Footer } from "../../../components/Footer";
+import { VideoPlayer } from "../../../components/VideoPlayer";
 import { Button } from "../../../components/Button";
 import { Section, Card as PreviewCard } from "../chrome/Section";
 
@@ -381,6 +382,34 @@ function XIcon() {
   );
 }
 
+const SAMPLE_VIDEO = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+function VideoPlayerSection() {
+  return (
+    <Section
+      id="videoplayer"
+      title="VideoPlayer"
+      description="Scrub con buffer y marcadores, volumen, velocidad, fullscreen, atajos de teclado y doble-tap para saltar 10s. orientation='portrait' arma un feed vertical tipo reels."
+    >
+      <div className="grid lg:grid-cols-2 gap-4">
+        <PreviewCard title="landscape">
+          <VideoPlayer
+            src={SAMPLE_VIDEO}
+            title="Flor en cámara rápida"
+            subtitle="Clip de muestra · MDN"
+            markers={[{ at: 3, label: "Apertura" }]}
+          />
+        </PreviewCard>
+        <PreviewCard title="portrait">
+          <div className="max-w-55 mx-auto">
+            <VideoPlayer src={SAMPLE_VIDEO} orientation="portrait" loop muted />
+          </div>
+        </PreviewCard>
+      </div>
+    </Section>
+  );
+}
+
 export function SurfacesGroup() {
   return (
     <>
@@ -390,6 +419,7 @@ export function SurfacesGroup() {
       <TabsSection />
       <ScrollAreaSection />
       <FooterSection />
+      <VideoPlayerSection />
     </>
   );
 }
