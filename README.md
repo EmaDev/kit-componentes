@@ -41,6 +41,9 @@ components/
   Carousel.tsx           # carrusel de imágenes: drag, dots, thumbs, autoplay, zoom
   ImageZoom.tsx          # visor pan + zoom a pantalla completa (bloquea el resto) + <ZoomableImage/>
   Tabs.tsx               # 5 estilos: underline · pill · segmented · enclosed · vertical
+  TabsGlow.tsx           # pastilla flotante con overshoot elástico + glow primario
+  TabsCarousel.tsx       # línea corta centrada + panel que se desliza como carrusel
+  TabsDock.tsx           # iconos con rebote elástico estilo dock + punto indicador
   ScrollArea.tsx         # scroll con barra propia arrastrable — 4 variantes de grosor/animación
   Footer.tsx             # pie de página: marca, columnas de links, redes y newsletter
   VideoPlayer.tsx        # scrub, marcadores, atajos de teclado y modo portrait tipo reels
@@ -86,12 +89,83 @@ components/
   ViewportLock.tsx       # bloquea zoom/overscroll/long-press (sin UI)
   PackageApp.tsx         # organismo raíz: header + bottom nav + splash + PWA + permisos + BottomSheet global
   AppHeader.tsx          # header de app: volver, título grande colapsable, acciones, buscador
+  AppHeaderIsland.tsx    # cápsula flotante desprendida de los bordes, estilo dynamic island
+  AppHeaderWave.tsx      # hero con degradado y esquina inferior muy redondeada
+  AppHeaderCard.tsx      # tarjeta flotante con sombra que se eleva al scrollear
+  AppHeaderNotch.tsx     # muesca circular con botón flotante centrado
+  AppHeaderPill.tsx      # barra minimalista + píldora de búsqueda siempre visible
+  AppHeaderCardSlot.tsx  # hero con card flotante vacía centrada, para contenido propio
+  AppIdentityConfig.tsx  # editor en vivo de nombre/colores/íconos de instalación + export manifest.json
   SyncStatus.tsx         # estado visual de una cola offline (chip o panel)
   OfflineFallback.tsx    # pantalla de "sin conexión" cuando un fetch falla sin caché
   PermissionGate.tsx     # pide un permiso del navegador con contexto
   CameraCapture.tsx      # foto a pantalla completa: preview, cambio de cámara, revisión
   LocationPicker.tsx     # GPS actual + dirección con sugerencias (sin mapa)
   BiometricGate.tsx      # desbloqueo por Face ID / huella / Windows Hello (WebAuthn)
+  ActivityTimeline.tsx   # línea de tiempo vertical de eventos con estado
+  BranchingTimeline.tsx  # línea de tiempo con ramificaciones/nodos hijos
+  TrackingStepper.tsx    # pasos de seguimiento tipo envío/pedido
+  TimelineComments.tsx   # línea de tiempo de eventos con notas/comentarios
+  GroupedActivityFeed.tsx # feed de actividad agrupado por fecha
+  AuditLog.tsx           # historial de auditoría con cambios de campo (from → to)
+  Roadmap.tsx            # roadmap de producto por trimestre
+  HowItWorksTimeline.tsx # pasos numerados "cómo funciona", horizontal o vertical
+  KanbanBoard.tsx        # tablero Kanban de escritorio con drag & drop nativo
+  KanbanBoardMobile.tsx  # Kanban táctil, una columna visible a la vez
+  ItineraryTimeline.tsx  # itinerario día por día: tira de días + timeline de actividades
+  TripRouteMap.tsx       # resumen de ruta: destinos encadenados con fechas y noches
+  TripBudgetSummary.tsx  # presupuesto de viaje: anillo total + categorías
+  TripChecklist.tsx      # checklist simple con progreso (equipaje, pendientes)
+  GroupedTaskList.tsx    # tareas agrupadas por día/categoría, colapsables
+  TaskCard.tsx           # tarea con subtareas, prioridad y fecha límite
+  KpiCard.tsx             # tarjeta de KPI con sparkline y variación
+  WalletBalanceCard.tsx  # saldo multi-moneda con enviar/recibir/convertir
+  CurrencySelector.tsx   # selector de moneda con tasa de cambio
+  RateComparator.tsx     # comparador de cotizaciones entre proveedores
+  ValueHistoryChart.tsx  # gráfico de evolución de un valor por período
+  JsonChartViewer.tsx    # visor de datos JSON como tabla o gráfico
+  TransactionList.tsx    # lista de transacciones agrupadas por categoría
+  SendMoneyFlow.tsx      # flujo de envío de dinero a un contacto
+  PaymentQrCard.tsx      # tarjeta de cobro con QR y monto editable
+  BillSplitter.tsx       # divisor de cuenta entre participantes
+  BudgetCategoryProgress.tsx # progreso de gasto por categoría de presupuesto
+  PaymentMethodPicker.tsx # selector de tarjetas guardadas + alta de tarjeta nueva
+  SearchFilters.tsx      # filtros de búsqueda agrupados + resultados en vivo
+  BookingCalendar.tsx    # calendario de reservas con horarios disponibles por día
+  ProfileEditor.tsx      # editor de perfil: avatar, datos de contacto y bio
+  LanguagePicker.tsx     # selector de idioma/región
+  DateRangePicker.tsx    # selector de rango de fechas con presets
+  TagInput.tsx           # input de etiquetas con sugerencias
+  CollapsibleFormSections.tsx # formulario largo dividido en secciones colapsables
+  DualRangeSlider.tsx    # slider de rango doble (mínimo–máximo)
+  ColorPicker.tsx        # selector de color con paleta + color personalizado
+  RichTextEditor.tsx     # editor de texto enriquecido básico
+  BeforeAfterSlider.tsx  # comparador de imágenes antes/después con slider
+  StarRatingWidget.tsx   # calificación por estrellas, con promedio y distribución
+  OnboardingWizard.tsx   # wizard multi-paso con validación y pasos opcionales
+  UnitConverter.tsx      # conversor de unidades por grupo
+  PricingTable.tsx       # tabla comparativa de planes, precio mensual/anual
+  ShippingMethodPicker.tsx # selector de método de envío con precio y ETA
+  ProductComparisonTable.tsx # tabla comparativa de especificaciones entre productos
+  StockLimitedStepper.tsx # stepper de cantidad limitado por stock disponible
+  ReferralProgram.tsx    # panel de programa de referidos
+  ApprovalChecklist.tsx  # checklist de aprobación/rechazo por ítem
+  RolePermissionsTable.tsx # matriz de permisos por rol, editable
+  SecurityAlertBanner.tsx # banner de alerta de seguridad de cuenta
+  IdentityVerification.tsx # flujo de verificación de identidad (KYC) por pasos
+  BranchSelector.tsx     # selector de sucursal, con distancia y estado
+  PageStatusScreen.tsx   # pantalla de estado: 404, 403, 500 o vacío
+  MaintenancePage.tsx    # pantalla de mantenimiento o "próximamente"
+  CardFan.tsx            # abanico de cartas interactivo
+  SwipeableCardStack.tsx # pila de tarjetas swipeable, tipo Tinder
+  FlipRevealGrid.tsx     # grilla de cartas que se voltean para revelar/emparejar
+  AnimatedCounter.tsx    # contador numérico animado hacia un valor
+  SkeletonMorph.tsx      # transición morph entre skeleton y contenido real
+  ParallaxScrollCards.tsx # cards con efecto parallax al scrollear
+  TiltHoverCard.tsx      # tarjeta con inclinación 3D al mover el mouse + glare
+  AnimatedProgressRing.tsx # anillo de progreso animado hacia un valor
+  DragReorderList.tsx    # lista reordenable por drag & drop
+  VideoCallGrid.tsx      # grilla de participantes de videollamada
   index.ts               # barrel export
 hooks/
   useSpreadsheet.ts            # motor de fórmulas + selección + undo/redo
@@ -101,6 +175,7 @@ hooks/
   useNotificationPermission.ts # permiso + notificación local
   usePlatform.ts               # OS, navegador, form factor, display mode, safe areas
   useNativeFeel.ts             # bloqueos para experiencia nativa
+  useAppIdentity.ts            # nombre/colores/íconos de instalación, persistidos + export manifest.json
   useSplash.ts                 # duración mínima + espera de recursos + progreso
   useSafeArea.ts               # insets reactivas + CSS vars --sa-*
   useImmersive.ts              # esconde la barra del navegador, fullscreen, wake lock
@@ -447,6 +522,18 @@ Detalles (precedencia de resolución, herencia claro→oscuro, tenants desde la 
 <Tabs items={items} value={tab} onChange={setTab}
   variant="segmented" size="md" fitted scrollable
   panels={{ resumen: <Resumen/>, actividad: <Actividad/> }}/>
+
+// TabsGlow — pastilla flotante con overshoot elástico + glow
+<TabsGlow items={items} value={tab} onChange={setTab} size="md" panels={panels}/>
+
+// TabsCarousel — línea corta centrada, panel se desliza según la dirección
+<TabsCarousel items={items} value={tab} onChange={setTab} panels={panels}/>
+
+// TabsDock — iconos con rebote elástico y punto indicador, estilo dock
+<TabsDock
+  items={[{ id: "inicio", label: "Inicio", icon: <HomeIcon/> }]}
+  value={tab} onChange={setTab} panels={panels}
+/>
 
 // VideoPlayer — scrub con buffer y marcadores, atajos de teclado, doble-tap para saltar
 <VideoPlayer
@@ -1011,6 +1098,19 @@ Compone, en un solo componente: `SplashScreen`, `PwaInstallPrompt`, `OfflineBann
   actions={[{ id: "notif", label: "Notificaciones", icon: <BellIcon/>, badge: 3, onClick: openNotifs }]}
 />
 
+// Variantes visuales de AppHeader — misma idea, otro layout
+<AppHeaderIsland title="Inicio" searchable onSearch={setQuery} />       // cápsula flotante, dynamic island
+<AppHeaderWave title="Hola, Lucía" subtitle="Tenés 3 pedidos nuevos" />  // hero degradado, esquina curva
+<AppHeaderCard title="Ajustes" onBack={() => router.back()} />          // tarjeta flotante, sombra al scrollear
+<AppHeaderNotch title="Cámara" center={<Avatar src={user.photo} />} />  // muesca circular + botón central
+<AppHeaderPill title="Explorar" onSearch={setQuery} />                 // barra + píldora de búsqueda fija
+<AppHeaderCardSlot title="Mi cuenta" card={<WalletBalanceCard balances={saldos} />} /> // hero + card flotante
+
+// Identidad de la PWA — nombre/colores/íconos con preview en vivo + export de manifest.json
+<AppIdentityConfig baseManifest={manifestJson} />
+const { identity, update, buildManifest, downloadManifest } = useAppIdentity();
+update({ name: "Café Aldama", themeColor: "#7c3aed" });
+
 // Cola de mutaciones offline — se persiste en IndexedDB y reintenta con backoff al volver la conexión
 const queue = useOfflineQueue<Comment>({ send: (item) => api.postComment(item.payload) });
 await queue.enqueue("create-comment", { postId, text }); // UI optimista, se ve al toque
@@ -1047,6 +1147,255 @@ const { pick } = useFilePicker({ accept: "image/*", maxSize: 5 * 1024 * 1024 });
 ```
 
 `idb`/`ls` son la capa de persistencia mínima (IndexedDB + fallback a `localStorage`) detrás de `usePersistentState`, `useOfflineQueue` y `useCachedFetch` — usalos directo sólo si necesitás una forma de guardar distinta a esas tres. `usePushSubscription` (Web Push/VAPID), `useCamera`/`useBarcodeScanner` (motor de `CameraCapture`) y `useWebAuthn` (motor de `BiometricGate`) son los hooks de bajo nivel detrás de sus componentes respectivos — usalos directo si necesitás una UI completamente propia.
+
+## 🕒 Timelines, actividad & procesos
+
+```tsx
+// Línea de tiempo vertical de eventos
+<ActivityTimeline events={[{ id: "1", title: "Pedido creado", time: "10:02", status: "done" }]} />
+
+// Con ramificaciones (árbol de decisiones / flujo)
+<BranchingTimeline nodes={[{ id: "1", title: "Inicio", time: "09:00", status: "done", children: [...] }]} />
+
+// Pasos de seguimiento tipo envío/pedido
+<TrackingStepper steps={[{ id: "1", label: "Preparando", time: "09:10", status: "done" }]} />
+
+// Eventos con notas/comentarios inline
+<TimelineComments events={events} currentUser="Lucía" onAddNote={(eventId, text) => addNote(eventId, text)} />
+
+// Feed de actividad agrupado por fecha
+<GroupedActivityFeed events={[{ id: "1", date: new Date(), title: "Actualizó el perfil" }]} />
+
+// Historial de auditoría — cambios de campo (from → to)
+<AuditLog entries={[{ id: "1", actor: "Ana", action: "Editó precio", time: "hace 2h", changes: [{ field: "precio", from: "$100", to: "$120" }] }]} />
+
+// Roadmap de producto por trimestre
+<Roadmap items={[{ id: "1", title: "Modo offline", quarter: "Q3 2026", status: "in-progress" }]} />
+
+// Pasos numerados "cómo funciona"
+<HowItWorksTimeline steps={[{ id: "1", title: "Creá tu cuenta", description: "..." }]} orientation="horizontal" />
+
+// Kanban de escritorio — drag & drop nativo
+<KanbanBoard columns={[{ id: "todo", title: "Por hacer", cards: [{ id: "1", title: "Diseñar login" }] }]} onChange={setColumns} />
+
+// Kanban táctil — una columna a la vez, long-press para mover
+<KanbanBoardMobile columns={columns} onChange={setColumns} />
+```
+
+## ✈️ Itinerarios de viaje & tareas
+
+```tsx
+// Itinerario día por día
+<ItineraryTimeline
+  days={[{ date: new Date("2026-08-10"), activities: [
+    { id: "1", kind: "flight", title: "Vuelo a Lisboa", time: "08:40", endTime: "14:10", location: "EZE → LIS" },
+    { id: "2", kind: "hotel", title: "Check-in Hotel Alfama", time: "16:00" },
+  ] }]}
+  onActivityClick={(a) => openDetail(a)}
+/>
+
+// Resumen de ruta — destinos encadenados, sin mapa real
+<TripRouteMap
+  stops={[
+    { id: "lis", name: "Lisboa", country: "Portugal", startDate: new Date("2026-08-10"), endDate: new Date("2026-08-14") },
+    { id: "por", name: "Oporto", country: "Portugal", startDate: new Date("2026-08-14"), endDate: new Date("2026-08-17") },
+  ]}
+  value={activeStop} onSelect={setActiveStop}
+/>
+
+// Presupuesto del viaje — anillo total + categorías
+<TripBudgetSummary
+  categories={[
+    { id: "alojamiento", label: "Alojamiento", spent: 420000, planned: 500000 },
+    { id: "comida", label: "Comida", spent: 180000, planned: 150000 },
+  ]}
+  currency="ARS"
+/>
+
+// Checklist simple con progreso (equipaje, pendientes)
+<TripChecklist
+  title="Equipaje de mano"
+  items={[{ id: "1", label: "Pasaporte", checked: true }, { id: "2", label: "Cargador", checked: false }]}
+  onToggle={(id) => toggleItem(id)}
+/>
+
+// Tareas agrupadas por día o categoría, colapsables
+<GroupedTaskList
+  groups={[{ id: "d1", label: "Día 1", sublabel: "10 de agosto", items: [
+    { id: "t1", label: "Confirmar traslado al aeropuerto", checked: false },
+  ] }]}
+  onToggle={(groupId, itemId) => toggleGroupItem(groupId, itemId)}
+/>
+
+// Tarea con subtareas, prioridad y vencimiento
+<TaskCard
+  task={{ id: "1", title: "Armar valija", priority: "high", dueDate: new Date("2026-08-09"),
+    subtasks: [{ id: "s1", label: "Ropa de abrigo", done: true }, { id: "s2", label: "Adaptador de enchufe", done: false }] }}
+  onToggleDone={toggleTask} onToggleSubtask={toggleSubtask}
+/>
+```
+
+## 💰 Finanzas & billetera
+
+```tsx
+// KPI con sparkline
+<KpiCard label="MRR" value="$48.2k" delta={{ value: "+12.4%", direction: "up" }} trend={[8, 10, 9, 13, 15]} />
+
+// Saldo multi-moneda con acciones
+<WalletBalanceCard balances={[{ code: "ARS", symbol: "$", amount: 248320 }]} primaryCode="ARS" onSend={goSend} onReceive={goReceive} />
+
+// Selector de moneda con tasa
+<CurrencySelector options={[{ code: "USD", name: "Dólar" }, { code: "ARS", name: "Peso" }]} value={code} onChange={setCode} baseCode="ARS" />
+
+// Comparador de cotizaciones
+<RateComparator from="ARS" to="USD" amount={100000} quotes={[{ provider: "Banco", rate: 1050, best: true }]} onSelect={pick} />
+
+// Evolución de un valor por período
+<ValueHistoryChart periods={[{ id: "6m", label: "6 meses", points: [{ date: new Date(), value: 1200 }] }]} currency="USD" />
+
+// Datos JSON como tabla o gráfico
+<JsonChartViewer data={ventasPorMes} defaultView="table" defaultChartType="bar" />
+
+// Transacciones agrupadas por categoría
+<TransactionList transactions={[{ id: "1", date: new Date(), title: "Supermercado", category: "Comida", amount: -12500 }]} currency="ARS" />
+
+// Envío de dinero a un contacto
+<SendMoneyFlow contacts={[{ id: "1", name: "Lucía Marín" }]} balance={saldo} currency="ARS" onSend={enviar} />
+
+// Cobro con QR y monto editable
+<PaymentQrCard name="Lucía Marín" handle="@lucia" qrValue={qrData} onAmountChange={setAmount} />
+
+// Divisor de cuenta
+<BillSplitter total={45000} participants={[{ id: "1", name: "Ana" }, { id: "2", name: "Bruno" }]} onConfirm={confirmar} />
+
+// Progreso de gasto por categoría de presupuesto
+<BudgetCategoryProgress categories={[{ id: "comida", label: "Comida", spent: 32000, limit: 40000 }]} currency="ARS" />
+
+// Tarjetas guardadas + alta de tarjeta
+<PaymentMethodPicker cards={[{ id: "1", brand: "visa", last4: "4242", expiry: "08/28" }]} value={cardId} onChange={setCardId} onAddCard={addCard} />
+```
+
+## 📋 Formularios avanzados
+
+```tsx
+// Filtros de búsqueda + resultados en vivo
+<SearchFilters groups={[{ id: "categoria", label: "Categoría", options: [{ id: "ropa", label: "Ropa" }] }]} onSearch={setQuery} results={results} />
+
+// Calendario de reservas
+<BookingCalendar days={[{ date: new Date(), slots: [{ time: "10:00", available: true }] }]} value={slot} onChange={setSlot} onConfirm={reservar} />
+
+// Editor de perfil
+<ProfileEditor value={{ avatar: null, name: "Lucía", email: "lucia@mail.com", phone: "", bio: "" }} onSave={guardar} />
+
+// Selector de idioma
+<LanguagePicker options={[{ code: "es", label: "Español", flag: "🇦🇷" }]} value={lang} onChange={setLang} />
+
+// Rango de fechas con presets
+<DateRangePicker value={range} onChange={setRange} presets={[{ label: "Últimos 7 días", value: () => ({ from: hace7, to: hoy }) }]} />
+
+// Etiquetas con sugerencias
+<TagInput value={tags} onChange={setTags} suggestions={["react", "next.js", "tailwind"]} maxTags={5} />
+
+// Formulario largo en secciones colapsables
+<CollapsibleFormSections sections={[{ id: "envio", title: "Envío", content: <FormularioEnvio /> }]} />
+
+// Slider de rango doble
+<DualRangeSlider min={0} max={1000} value={[100, 800]} onChange={setRange} format={(v) => `$${v}`} />
+
+// Selector de color
+<ColorPicker value={color} onChange={setColor} palette={["#2563eb", "#8b5cf6", "#ef4444"]} allowCustom />
+
+// Editor de texto enriquecido
+<RichTextEditor value={html} onChange={setHtml} placeholder="Escribí acá…" />
+
+// Comparador antes/después
+<BeforeAfterSlider before="/casa-antes.jpg" after="/casa-despues.jpg" />
+
+// Calificación por estrellas
+<StarRatingWidget value={rating} onChange={setRating} average={4.6} count={128} />
+
+// Wizard multi-paso
+<OnboardingWizard steps={[{ id: "1", title: "Bienvenida", content: <Paso1 /> }]} onFinish={finalizar} />
+
+// Conversor de unidades
+<UnitConverter groups={[{ id: "longitud", label: "Longitud", units: [{ id: "m", label: "Metros", toBase: 1 }, { id: "km", label: "Kilómetros", toBase: 1000 }] }]} />
+```
+
+## 🤝 Comercio, confianza & estado
+
+```tsx
+// Tabla comparativa de planes
+<PricingTable plans={[{ id: "pro", name: "Pro", price: { monthly: 29, yearly: 290 }, features: ["Todo ilimitado"] }]} onSelect={elegirPlan} />
+
+// Método de envío
+<ShippingMethodPicker options={[{ id: "express", label: "Express", price: 1500, eta: "24-48h" }]} value={shipping} onChange={setShipping} />
+
+// Comparación de especificaciones entre productos
+<ProductComparisonTable products={[{ id: "1", name: "Plan A", price: "$29" }]} specs={[{ id: "storage", label: "Almacenamiento", values: { "1": "50GB" } }]} />
+
+// Stepper limitado por stock
+<StockLimitedStepper value={qty} onChange={setQty} stock={4} lowStockThreshold={5} />
+
+// Programa de referidos
+<ReferralProgram code="LUCIA10" invited={12} joined={5} goal={10} reward="1 mes gratis" shareUrl="https://app.com/r/LUCIA10" onShare={compartir} />
+
+// Checklist de aprobación
+<ApprovalChecklist items={[{ id: "1", label: "Verificar identidad" }]} onApprove={aprobar} onReject={rechazar} />
+
+// Matriz de permisos por rol
+<RolePermissionsTable roles={[{ id: "admin", label: "Admin" }]} permissions={[{ id: "billing", label: "Facturación", access: { admin: true } }]} onChange={setPermissions} />
+
+// Alerta de seguridad de cuenta
+<SecurityAlertBanner kind="new-device" detail="Chrome en Windows · Buenos Aires" onReview={revisar} />
+
+// Verificación de identidad (KYC)
+<IdentityVerification onSubmit={async (files) => enviarKyc(files)} />
+
+// Selector de sucursal
+<BranchSelector branches={[{ id: "1", name: "Palermo", address: "Av. Santa Fe 3253", open: true, distanceKm: 1.2 }]} value={branch} onChange={setBranch} />
+
+// Pantalla de estado — 404 / 403 / 500 / vacío
+<PageStatusScreen status="404" primary={{ label: "Volver al inicio", href: "/" }} />
+
+// Mantenimiento o "próximamente"
+<MaintenancePage kind="maintenance" eta="Volvemos a las 14:00" onNotify={avisarme} />
+```
+
+## ✨ Efectos visuales & superficies
+
+```tsx
+// Abanico de cartas interactivo
+<CardFan cards={[{ id: "1", label: "Corazones" }, { id: "2", label: "Picas" }]} onPick={elegir} allowShuffle />
+
+// Pila de tarjetas swipeable, tipo Tinder
+<SwipeableCardStack cards={[{ id: "1", title: "Depto en Palermo" }]} onSwipe={(id, dir) => reaccionar(id, dir)} onEmpty={cargarMas} />
+
+// Grilla de cartas que se voltean para revelar/emparejar
+<FlipRevealGrid items={cartas} columns={4} memoryMode onMatch={onMatch} onComplete={onComplete} />
+
+// Contador numérico animado
+<AnimatedCounter value={total} format={(n) => `$${Math.round(n).toLocaleString()}`} />
+
+// Morph entre skeleton y contenido real
+<SkeletonMorph loading={loading} skeleton={<CardSkeleton />}>
+  <Card>{data}</Card>
+</SkeletonMorph>
+
+// Cards con parallax al scrollear
+<ParallaxScrollCards items={[{ id: "1", title: "Océano", image: "/ocean.jpg", depth: 0.3 }]} />
+
+// Tarjeta con inclinación 3D + glare
+<TiltHoverCard><Card>Pasá el mouse</Card></TiltHoverCard>
+
+// Anillo de progreso animado
+<AnimatedProgressRing value={72} />
+
+// Lista reordenable por drag & drop
+<DragReorderList items={playlist} onChange={setPlaylist} />
+
+// Grilla de videollamada
+<VideoCallGrid participants={[{ id: "1", name: "Ana Torres", speaking: true, videoOn: true }]} onToggleMute={toggleMute} onToggleVideo={toggleVideo} onLeave={salir} />
+```
 
 ## 🖐 Gestos, rendimiento & Web APIs sueltas
 

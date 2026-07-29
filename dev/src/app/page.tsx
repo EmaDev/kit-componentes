@@ -18,6 +18,12 @@ import { AppBlocksGroup } from "../sections/AppBlocksGroup";
 import { DataGroup } from "../sections/DataGroup";
 import { ListsGroup } from "../sections/ListsGroup";
 import { CommerceGroup } from "../sections/CommerceGroup";
+import { FinanceGroup } from "../sections/FinanceGroup";
+import { TrustGroup } from "../sections/TrustGroup";
+import { AdvancedFormsGroup } from "../sections/AdvancedFormsGroup";
+import { TimelinesGroup } from "../sections/TimelinesGroup";
+import { TripTasksGroup } from "../sections/TripTasksGroup";
+import { EffectsGroup } from "../sections/EffectsGroup";
 import { SocialGroup } from "../sections/SocialGroup";
 import { PwaGroup } from "../sections/PwaGroup";
 import { OfflineGroup } from "../sections/OfflineGroup";
@@ -57,7 +63,7 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("theme-group")} count="2 componentes · 1 hook" />
             <ThemeGroup />
 
-            <GroupHeader group={groupById("surfaces")} count="6 componentes" />
+            <GroupHeader group={groupById("surfaces")} count="9 componentes" />
             <SurfacesGroup />
 
             <GroupHeader group={groupById("heroes")} count="4 componentes" />
@@ -75,13 +81,31 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("commerce")} count="4 componentes" />
             <CommerceGroup />
 
+            <GroupHeader group={groupById("finance")} count="12 componentes" />
+            <FinanceGroup />
+
+            <GroupHeader group={groupById("trust")} count="12 componentes" />
+            <TrustGroup />
+
+            <GroupHeader group={groupById("advanced-forms")} count="14 componentes" />
+            <AdvancedFormsGroup />
+
+            <GroupHeader group={groupById("timelines")} count="10 componentes" />
+            <TimelinesGroup />
+
+            <GroupHeader group={groupById("trip-tasks")} count="6 componentes" />
+            <TripTasksGroup />
+
+            <GroupHeader group={groupById("effects")} count="10 componentes" />
+            <EffectsGroup />
+
             <GroupHeader group={groupById("social")} count="7 componentes" />
             <SocialGroup />
 
-            <GroupHeader group={groupById("pwa-group")} count="7 componentes · varios hooks" />
+            <GroupHeader group={groupById("pwa-group")} count="8 componentes · varios hooks" />
             <PwaGroup />
 
-            <GroupHeader group={groupById("offline")} count="9 componentes · varios hooks" />
+            <GroupHeader group={groupById("offline")} count="15 componentes · varios hooks" />
             <OfflineGroup />
 
             <GroupHeader group={groupById("layouts")} count="1 organismo" />

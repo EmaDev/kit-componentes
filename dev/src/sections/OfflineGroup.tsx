@@ -1,5 +1,11 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { AppHeader, type HeaderAction } from "../../../components/AppHeader";
+import { AppHeaderIsland } from "../../../components/AppHeaderIsland";
+import { AppHeaderWave } from "../../../components/AppHeaderWave";
+import { AppHeaderCard } from "../../../components/AppHeaderCard";
+import { AppHeaderNotch } from "../../../components/AppHeaderNotch";
+import { AppHeaderPill } from "../../../components/AppHeaderPill";
+import { AppHeaderCardSlot } from "../../../components/AppHeaderCardSlot";
 import { SyncStatus } from "../../../components/SyncStatus";
 import { OfflineFallback } from "../../../components/OfflineFallback";
 import { PermissionGate } from "../../../components/PermissionGate";
@@ -45,6 +51,74 @@ function AppHeaderSection() {
           </div>
         </div>
       </Card>
+    </Section>
+  );
+}
+
+function MiniHeaderDemo({ label, render }: { label: string; render: (ref: RefObject<HTMLDivElement | null>) => ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <Card title={label}>
+      <div ref={ref} className="relative rounded-2xl border border-border overflow-hidden h-56 overflow-y-auto">
+        {render(ref)}
+        <div className="p-4 flex flex-col gap-2">
+          {Array.from({ length: 10 }, (_, i) => (
+            <div key={i} className="h-10 rounded-lg bg-surface-alt" />
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function AppHeaderVariantsSection() {
+  return (
+    <Section
+      id="appheadervariants"
+      title="Variantes de AppHeader"
+      description="Mismo trabajo (header con volver, título y acciones) resuelto con 6 formas distintas. Todas escuchan el scroll del contenedor pasado en scrollRef."
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <MiniHeaderDemo
+          label="AppHeaderIsland"
+          render={(ref) => <AppHeaderIsland title="Inicio" searchable onSearch={() => {}} scrollRef={ref} />}
+        />
+        <MiniHeaderDemo
+          label="AppHeaderWave"
+          render={(ref) => <AppHeaderWave title="Hola, Lucía" subtitle="Tenés 3 pedidos nuevos" scrollRef={ref} />}
+        />
+        <MiniHeaderDemo
+          label="AppHeaderCard"
+          render={(ref) => <AppHeaderCard title="Ajustes" onBack={() => {}} scrollRef={ref} />}
+        />
+        <MiniHeaderDemo
+          label="AppHeaderNotch"
+          render={(ref) => (
+            <AppHeaderNotch
+              title="Cámara"
+              center={<span className="text-sm font-bold text-white">LM</span>}
+              scrollRef={ref}
+            />
+          )}
+        />
+        <MiniHeaderDemo
+          label="AppHeaderPill"
+          render={(ref) => <AppHeaderPill title="Explorar" onSearch={() => {}} scrollRef={ref} />}
+        />
+        <MiniHeaderDemo
+          label="AppHeaderCardSlot"
+          render={() => (
+            <AppHeaderCardSlot
+              card={
+                <div className="p-4">
+                  <p className="text-xs text-muted font-semibold uppercase tracking-wider">Saldo</p>
+                  <p className="text-2xl font-black text-foreground">$248.320</p>
+                </div>
+              }
+            />
+          )}
+        />
+      </div>
     </Section>
   );
 }
@@ -299,6 +373,7 @@ export function OfflineGroup() {
   return (
     <>
       <AppHeaderSection />
+      <AppHeaderVariantsSection />
       <OfflineQueueSection />
       <OfflineFallbackSection />
       <PermissionSection />

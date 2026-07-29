@@ -47,6 +47,9 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una galería de imágenes navegable (drag, flechas, dots, miniaturas, autoplay) | [Carousel](components/Carousel.md) |
 | Ampliar **una** imagen a pantalla completa con pan y zoom | [ImageZoom](components/ImageZoom.md) (`ZoomableImage`) |
 | Dividir contenido en pestañas dentro de una misma pantalla | [Tabs](components/Tabs.md) |
+| Pestañas con pastilla flotante animada y glow alrededor del tab activo | [TabsGlow](components/TabsGlow.md) |
+| Pestañas minimalistas con línea animada y paneles que se deslizan según la dirección | [TabsCarousel](components/TabsCarousel.md) |
+| Pestañas con íconos que rebotan, estilo dock/tab bar nativo | [TabsDock](components/TabsDock.md) |
 | Reemplazar el scroll nativo por una barra propia (grosor/animación custom, arrastrable) | [ScrollArea](components/ScrollArea.md) |
 | Un pie de página con columnas de links, redes y newsletter | [Footer](components/Footer.md) |
 | Una cabecera de pantalla completa con buscador y sugerencias en vivo | [HeroSearch](components/Hero.md) |
@@ -93,6 +96,13 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Un reproductor de video con controles propios, o un feed vertical tipo reels | [VideoPlayer](components/VideoPlayer.md) |
 | Armar la base completa de una PWA (header, bottom nav, splash, instalación, conectividad, permisos, sheet global) de una | [PackageApp](components/PackageApp.md) (`useAppSheet`) |
 | Una cabecera de pantalla con flecha de volver, título grande colapsable y buscador expandible | [AppHeader](components/AppHeader.md) |
+| Una cabecera cápsula flotante desprendida de los bordes, estilo dynamic island | [AppHeaderIsland](components/AppHeaderIsland.md) |
+| Una cabecera hero con degradado y esquina inferior muy redondeada | [AppHeaderWave](components/AppHeaderWave.md) |
+| Una cabecera como tarjeta flotante que gana sombra al scrollear | [AppHeaderCard](components/AppHeaderCard.md) |
+| Una cabecera con muesca circular y botón flotante centrado | [AppHeaderNotch](components/AppHeaderNotch.md) |
+| Una cabecera minimalista con píldora de búsqueda siempre visible | [AppHeaderPill](components/AppHeaderPill.md) |
+| Una cabecera hero con una card flotante vacía centrada para contenido propio | [AppHeaderCardSlot](components/AppHeaderCardSlot.md) |
+| Configurar nombre/colores/íconos de instalación de la PWA con preview en vivo y export de manifest.json | [AppIdentityConfig](components/AppIdentityConfig.md) |
 | Mostrar cuántos cambios offline faltan enviar (junto a `useOfflineQueue`) | [SyncStatus](components/SyncStatus.md) |
 | Una pantalla de "sin conexión" cuando un fetch falla y no hay caché | [OfflineFallback](components/OfflineFallback.md) |
 | Pedir un permiso del navegador (cámara, ubicación, notificaciones) con contexto | [PermissionGate](components/PermissionGate.md) |
@@ -177,6 +187,9 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Carousel](components/Carousel.md) | Carrusel de imágenes: drag, flechas, dots, miniaturas, autoplay y zoom. |
 | [ImageZoom](components/ImageZoom.md) | Visor pan + zoom a pantalla completa + `ZoomableImage`. |
 | [Tabs](components/Tabs.md) | 5 estilos: underline · pill · segmented · enclosed · vertical. |
+| [TabsGlow](components/TabsGlow.md) | Pastilla flotante animada con resplandor (glow) primario alrededor del tab activo. |
+| [TabsCarousel](components/TabsCarousel.md) | Línea corta centrada + panel que se desliza como carrusel según la dirección. |
+| [TabsDock](components/TabsDock.md) | Íconos con rebote elástico y punto indicador, estilo dock/tab bar nativo. |
 | [ScrollArea](components/ScrollArea.md) | Scroll con barra propia arrastrable — 4 variantes de grosor/animación. |
 | [Footer](components/Footer.md) | Pie de página con marca, columnas de links, redes y newsletter. |
 | [VideoPlayer](components/VideoPlayer.md) | Reproductor con scrub, marcadores, atajos de teclado y modo `portrait` tipo reels. |
@@ -221,6 +234,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [NotificationOptIn](components/NotificationOptIn.md) | Opt-in de notificaciones push. |
 | [PwaStatus](components/PwaStatus.md) | Panel de diagnóstico PWA. |
 | [SplashScreen](components/SplashScreen.md) | Pantalla de carga inicial, 6 variantes de animación. |
+| [AppIdentityConfig](components/AppIdentityConfig.md) | Editor en vivo de nombre/colores/íconos de instalación + export de `manifest.json`. Incluye `useAppIdentity()`. |
 | [SafeArea](components/SafeArea.md) | `SafeArea` + `SafeAreaSpacer`, respeta insets del dispositivo. |
 | [NativeShell](components/NativeShell.md) | Raíz todo-en-uno para experiencia nativa. |
 | [ViewportLock](components/ViewportLock.md) | Bloquea zoom/overscroll/long-press, sin UI. |
@@ -261,12 +275,112 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Componente | Descripción |
 |---|---|
 | [AppHeader](components/AppHeader.md) | Header de app con volver, título grande colapsable, acciones con badge y buscador expandible. |
+| [AppHeaderIsland](components/AppHeaderIsland.md) | Cápsula flotante desprendida de los bordes, estilo dynamic island. |
+| [AppHeaderWave](components/AppHeaderWave.md) | Hero con degradado y esquina inferior muy redondeada. |
+| [AppHeaderCard](components/AppHeaderCard.md) | Tarjeta flotante con sombra que se eleva al scrollear. |
+| [AppHeaderNotch](components/AppHeaderNotch.md) | Muesca circular con botón flotante centrado. |
+| [AppHeaderPill](components/AppHeaderPill.md) | Barra minimalista + píldora de búsqueda siempre visible. |
+| [AppHeaderCardSlot](components/AppHeaderCardSlot.md) | Hero con una card flotante vacía centrada, para contenido propio. |
 | [SyncStatus](components/SyncStatus.md) | Estado visual de una cola offline (`useOfflineQueue`) — chip o panel de detalle. |
 | [OfflineFallback](components/OfflineFallback.md) | Pantalla de "sin conexión" cuando un fetch falla y no hay caché. |
 | [PermissionGate](components/PermissionGate.md) | Pide un permiso del navegador con contexto, y contempla el estado bloqueado. |
 | [CameraCapture](components/CameraCapture.md) | Captura de foto a pantalla completa: preview, cambio de cámara y revisión. |
 | [LocationPicker](components/LocationPicker.md) | GPS actual + dirección con sugerencias (sin mapa incluido). |
 | [BiometricGate](components/BiometricGate.md) | Desbloqueo por Face ID / huella / Windows Hello vía WebAuthn. |
+
+### Timelines, actividad & procesos
+
+| Componente | Descripción |
+|---|---|
+| [ActivityTimeline](components/ActivityTimeline.md) | Línea de tiempo vertical de eventos con estado (done/current/pending/error). |
+| [BranchingTimeline](components/BranchingTimeline.md) | Línea de tiempo con ramificaciones/nodos hijos (árbol de decisiones o flujo). |
+| [TrackingStepper](components/TrackingStepper.md) | Pasos de seguimiento tipo envío/pedido, con hora y estado. |
+| [TimelineComments](components/TimelineComments.md) | Línea de tiempo de eventos con notas/comentarios por evento. |
+| [GroupedActivityFeed](components/GroupedActivityFeed.md) | Feed de actividad agrupado por fecha. |
+| [AuditLog](components/AuditLog.md) | Historial de auditoría con cambios de campo (`from` → `to`) por entrada. |
+| [Roadmap](components/Roadmap.md) | Roadmap de producto por trimestre, con estado shipped/in-progress/planned. |
+| [HowItWorksTimeline](components/HowItWorksTimeline.md) | Pasos numerados "cómo funciona", horizontal o vertical. |
+| [KanbanBoard](components/KanbanBoard.md) | Tablero Kanban de escritorio con drag & drop nativo, columnas lado a lado. |
+| [KanbanBoardMobile](components/KanbanBoardMobile.md) | Kanban táctil: una columna visible a la vez, long-press para reordenar. |
+
+### Itinerarios de viaje & tareas
+
+| Componente | Descripción |
+|---|---|
+| [ItineraryTimeline](components/ItineraryTimeline.md) | Itinerario día por día: tira de días + timeline de actividades. |
+| [TripRouteMap](components/TripRouteMap.md) | Resumen de ruta: destinos encadenados con fechas y noches, sin mapa real. |
+| [TripBudgetSummary](components/TripBudgetSummary.md) | Presupuesto de viaje: anillo total + categorías. |
+| [TripChecklist](components/TripChecklist.md) | Checklist simple con progreso (equipaje, pendientes). |
+| [GroupedTaskList](components/GroupedTaskList.md) | Tareas agrupadas por día/categoría, colapsables. |
+| [TaskCard](components/TaskCard.md) | Tarea con subtareas, prioridad y fecha límite. |
+
+### Finanzas & billetera
+
+| Componente | Descripción |
+|---|---|
+| [KpiCard](components/KpiCard.md) | Tarjeta de KPI con sparkline y variación, para dashboards. |
+| [WalletBalanceCard](components/WalletBalanceCard.md) | Saldo multi-moneda con acciones enviar/recibir/convertir. |
+| [CurrencySelector](components/CurrencySelector.md) | Selector de moneda con tasa de cambio. |
+| [RateComparator](components/RateComparator.md) | Comparador de cotizaciones entre proveedores. |
+| [ValueHistoryChart](components/ValueHistoryChart.md) | Gráfico de evolución de un valor por período. |
+| [JsonChartViewer](components/JsonChartViewer.md) | Visor de datos JSON como tabla o gráfico. |
+| [TransactionList](components/TransactionList.md) | Lista de transacciones agrupadas por categoría. |
+| [SendMoneyFlow](components/SendMoneyFlow.md) | Flujo de envío de dinero a un contacto. |
+| [PaymentQrCard](components/PaymentQrCard.md) | Tarjeta de cobro con QR y monto editable. |
+| [BillSplitter](components/BillSplitter.md) | Divisor de cuenta entre participantes. |
+| [BudgetCategoryProgress](components/BudgetCategoryProgress.md) | Progreso de gasto por categoría de presupuesto. |
+| [PaymentMethodPicker](components/PaymentMethodPicker.md) | Selector de tarjetas guardadas + alta de tarjeta nueva. |
+
+### Formularios avanzados
+
+| Componente | Descripción |
+|---|---|
+| [SearchFilters](components/SearchFilters.md) | Filtros de búsqueda agrupados + resultados en vivo. |
+| [BookingCalendar](components/BookingCalendar.md) | Calendario de reservas con horarios disponibles por día. |
+| [ProfileEditor](components/ProfileEditor.md) | Editor de perfil: avatar, datos de contacto y bio. |
+| [LanguagePicker](components/LanguagePicker.md) | Selector de idioma/región. |
+| [DateRangePicker](components/DateRangePicker.md) | Selector de rango de fechas con presets. |
+| [TagInput](components/TagInput.md) | Input de etiquetas con sugerencias. |
+| [CollapsibleFormSections](components/CollapsibleFormSections.md) | Formulario largo dividido en secciones colapsables. |
+| [DualRangeSlider](components/DualRangeSlider.md) | Slider de rango doble (mínimo–máximo). |
+| [ColorPicker](components/ColorPicker.md) | Selector de color con paleta + color personalizado. |
+| [RichTextEditor](components/RichTextEditor.md) | Editor de texto enriquecido básico (negrita, listas, links). |
+| [BeforeAfterSlider](components/BeforeAfterSlider.md) | Comparador de imágenes antes/después con slider arrastrable. |
+| [StarRatingWidget](components/StarRatingWidget.md) | Calificación por estrellas, con promedio y distribución. |
+| [OnboardingWizard](components/OnboardingWizard.md) | Wizard multi-paso con validación y pasos opcionales. |
+| [UnitConverter](components/UnitConverter.md) | Conversor de unidades por grupo (longitud, peso, etc.). |
+
+### Comercio, confianza & estado
+
+| Componente | Descripción |
+|---|---|
+| [PricingTable](components/PricingTable.md) | Tabla comparativa de planes, con precio mensual/anual. |
+| [ShippingMethodPicker](components/ShippingMethodPicker.md) | Selector de método de envío con precio y ETA. |
+| [ProductComparisonTable](components/ProductComparisonTable.md) | Tabla comparativa de especificaciones entre productos. |
+| [StockLimitedStepper](components/StockLimitedStepper.md) | Stepper de cantidad limitado por el stock disponible. |
+| [ReferralProgram](components/ReferralProgram.md) | Panel de programa de referidos con progreso hacia una recompensa. |
+| [ApprovalChecklist](components/ApprovalChecklist.md) | Checklist de aprobación/rechazo por ítem. |
+| [RolePermissionsTable](components/RolePermissionsTable.md) | Matriz de permisos por rol, editable. |
+| [SecurityAlertBanner](components/SecurityAlertBanner.md) | Banner de alerta de seguridad (nuevo dispositivo, login sospechoso…). |
+| [IdentityVerification](components/IdentityVerification.md) | Flujo de verificación de identidad (KYC) por pasos. |
+| [BranchSelector](components/BranchSelector.md) | Selector de sucursal, con distancia y estado abierta/cerrada. |
+| [PageStatusScreen](components/PageStatusScreen.md) | Pantalla de estado: 404, 403, 500 o vacío. |
+| [MaintenancePage](components/MaintenancePage.md) | Pantalla de mantenimiento o "próximamente". |
+
+### Efectos visuales & superficies
+
+| Componente | Descripción |
+|---|---|
+| [CardFan](components/CardFan.md) | Abanico de cartas interactivo, para elegir una entre varias. |
+| [SwipeableCardStack](components/SwipeableCardStack.md) | Pila de tarjetas swipeable, tipo Tinder. |
+| [FlipRevealGrid](components/FlipRevealGrid.md) | Grilla de cartas que se voltean para revelar o emparejar. |
+| [AnimatedCounter](components/AnimatedCounter.md) | Contador numérico animado hacia un valor. |
+| [SkeletonMorph](components/SkeletonMorph.md) | Transición morph entre un skeleton y el contenido real. |
+| [ParallaxScrollCards](components/ParallaxScrollCards.md) | Cards con efecto parallax al scrollear. |
+| [TiltHoverCard](components/TiltHoverCard.md) | Tarjeta con inclinación 3D al mover el mouse + glare. |
+| [AnimatedProgressRing](components/AnimatedProgressRing.md) | Anillo de progreso animado hacia un valor. |
+| [DragReorderList](components/DragReorderList.md) | Lista reordenable por drag & drop. |
+| [VideoCallGrid](components/VideoCallGrid.md) | Grilla de participantes de videollamada, con mute/video toggle. |
 
 ## Hooks
 

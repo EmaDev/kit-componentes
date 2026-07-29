@@ -10,6 +10,9 @@ import {
 import { Carousel, type CarouselImage } from "../../../components/Carousel";
 import { ImageZoom, ZoomableImage } from "../../../components/ImageZoom";
 import { Tabs, type TabItem, type TabsVariant } from "../../../components/Tabs";
+import { TabsGlow } from "../../../components/TabsGlow";
+import { TabsCarousel } from "../../../components/TabsCarousel";
+import { TabsDock } from "../../../components/TabsDock";
 import { ScrollArea, type ScrollAreaVariant } from "../../../components/ScrollArea";
 import { Footer } from "../../../components/Footer";
 import { VideoPlayer } from "../../../components/VideoPlayer";
@@ -305,6 +308,84 @@ function TabsSection() {
   );
 }
 
+const DOCK_ITEMS: TabItem[] = [
+  { id: "inicio", label: "Inicio", icon: <HomeIcon /> },
+  { id: "buscar", label: "Buscar", icon: <SearchDockIcon /> },
+  { id: "alertas", label: "Alertas", icon: <BellDockIcon />, badge: 3 },
+  { id: "perfil", label: "Perfil", icon: <UserDockIcon /> },
+];
+
+function HomeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m3 11 9-8 9 8" />
+      <path d="M5 10v10h14V10" />
+    </svg>
+  );
+}
+function SearchDockIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.3-3.3" />
+    </svg>
+  );
+}
+function BellDockIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 8a6 6 0 0 1 12 0c0 4.5 1.5 6 1.5 6h-15S6 12.5 6 8Z" />
+      <path d="M10.5 20a1.6 1.6 0 0 0 3 0" />
+    </svg>
+  );
+}
+function UserDockIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="3.6" />
+      <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+    </svg>
+  );
+}
+
+function TabsAltSection() {
+  const [glowTab, setGlowTab] = useState("resumen");
+  const [carouselTab, setCarouselTab] = useState("resumen");
+  const [dockTab, setDockTab] = useState("inicio");
+  const panels = {
+    resumen: <p className="text-sm text-muted">Vista general de la cuenta.</p>,
+    actividad: <p className="text-sm text-muted">Últimos 3 eventos registrados.</p>,
+    archivado: <p className="text-sm text-muted">Sin elementos archivados.</p>,
+  };
+  const dockPanels = {
+    inicio: <p className="text-sm text-muted">Feed principal.</p>,
+    buscar: <p className="text-sm text-muted">Buscador con sugerencias.</p>,
+    alertas: <p className="text-sm text-muted">3 alertas nuevas.</p>,
+    perfil: <p className="text-sm text-muted">Datos de la cuenta.</p>,
+  };
+  return (
+    <Section
+      id="tabsalt"
+      title="TabsGlow · TabsCarousel · TabsDock"
+      description="Tres variantes alternativas a Tabs para pantallas de app: pastilla flotante con glow, panel que se desliza como carrusel, y dock con íconos y rebote elástico."
+    >
+      <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <PreviewCard title="TabsGlow">
+          <TabsGlow items={TAB_ITEMS} value={glowTab} onChange={setGlowTab} panels={panels} />
+        </PreviewCard>
+        <PreviewCard title="TabsCarousel">
+          <TabsCarousel items={TAB_ITEMS} value={carouselTab} onChange={setCarouselTab} panels={panels} />
+        </PreviewCard>
+      </div>
+      <PreviewCard title="TabsDock">
+        <div className="max-w-sm mx-auto">
+          <TabsDock items={DOCK_ITEMS} value={dockTab} onChange={setDockTab} panels={dockPanels} />
+        </div>
+      </PreviewCard>
+    </Section>
+  );
+}
+
 const SCROLLAREA_VARIANTS: { id: ScrollAreaVariant; label: string; hint: string }[] = [
   { id: "thin", label: "thin", hint: "Invisible en reposo, aparece con fade al hacer hover o scrollear." },
   { id: "pill", label: "pill", hint: "Siempre visible atenuada; se ensancha y se pinta primary al activarse." },
@@ -417,6 +498,7 @@ export function SurfacesGroup() {
       <CarouselSection />
       <ImageZoomSection />
       <TabsSection />
+      <TabsAltSection />
       <ScrollAreaSection />
       <FooterSection />
       <VideoPlayerSection />

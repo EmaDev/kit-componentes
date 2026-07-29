@@ -8,6 +8,7 @@ import { NotificationOptIn } from "../../../components/NotificationOptIn";
 import { PwaStatus } from "../../../components/PwaStatus";
 import { SplashScreen, type SplashVariant } from "../../../components/SplashScreen";
 import { SafeArea } from "../../../components/SafeArea";
+import { AppIdentityConfig } from "../../../components/AppIdentityConfig";
 import { usePlatform } from "../../../hooks/usePlatform";
 import { useHaptics, type HapticPattern } from "../../../hooks/useHaptics";
 import { Section, Card, Row } from "../chrome/Section";
@@ -85,6 +86,20 @@ function PwaMoleculesSection() {
           <PwaStatus observeOnly />
         </Card>
       </div>
+    </Section>
+  );
+}
+
+function AppIdentitySection() {
+  return (
+    <Section
+      id="appidentity"
+      title="AppIdentityConfig"
+      description="Editor en vivo de nombre/colores/íconos de instalación, persistido localmente vía useAppIdentity() — con preview y export de manifest.json."
+    >
+      <Card>
+        <AppIdentityConfig />
+      </Card>
     </Section>
   );
 }
@@ -193,6 +208,7 @@ export function PwaGroup() {
     <>
       <PwaInstallSection />
       <PwaMoleculesSection />
+      <AppIdentitySection />
       <SplashSection />
       <SafeAreaSection />
       <PlatformSection />
