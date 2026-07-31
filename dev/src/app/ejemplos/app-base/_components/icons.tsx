@@ -77,6 +77,17 @@ export const ShareIcon = () => (
   />
 );
 
+export const BellIcon = () => (
+  <Svg
+    d={
+      <g>
+        <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </g>
+    }
+  />
+);
+
 export const BoltIcon = () => <Svg d={<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />} />;
 
 export const TargetIcon = () => (

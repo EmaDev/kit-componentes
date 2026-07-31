@@ -9,10 +9,11 @@ import { AddButton } from "../../../components/AddButton";
 import { AddToCartButton } from "../../../components/AddToCartButton";
 import { ProgressBar, ProgressRing, StepsProgress } from "../../../components/Progress";
 import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "../../../components/Skeleton";
-import { NotificationPanel, NotificationBell, type AppNotification } from "../../../components/NotificationPanel";
+import { NotificationPanel, NotificationSidebar, NotificationBell, type AppNotification } from "../../../components/NotificationPanel";
 import { useLongPress } from "../../../hooks/useLongPress";
 import { useSwipe, type SwipeDirection } from "../../../hooks/useSwipe";
-import { Section, Card } from "../chrome/Section";
+import { Button } from "../../../components/Button";
+import { Section, Card, Row } from "../chrome/Section";
 
 const CRUMBS: Crumb[] = [
   { label: "Inicio", href: "#" },
@@ -389,27 +390,64 @@ const SEED_NOTIFICATIONS: AppNotification[] = [
 
 function NotificationPanelSection() {
   const [items, setItems] = useState<AppNotification[]>(SEED_NOTIFICATIONS);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarSide, setSidebarSide] = useState<"left" | "right">("right");
+
+  const read = (id: string) => setItems((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  const readAll = () => setItems((l) => l.map((n) => ({ ...n, read: true })));
+  const dismiss = (id: string) => setItems((l) => l.filter((n) => n.id !== id));
+
   return (
     <Section
       id="notificationpanel"
       title="NotificationPanel"
-      description="Historial agrupado por fecha (Hoy / Ayer / Esta semana / Anteriores), con filtro, marcar todo como leído y descartar. NotificationBell es el mismo panel dentro de una campana con popover."
+      description="Historial agrupado por fecha (Hoy / Ayer / Esta semana / Anteriores), con filtro, marcar todo como leído y descartar. NotificationBell es el mismo panel dentro de una campana con popover; NotificationSidebar es el mismo panel como drawer de altura completa con backdrop."
     >
       <div className="grid md:grid-cols-2 gap-4">
         <Card title="NotificationPanel">
           <NotificationPanel
             items={items}
-            onRead={(id) => setItems((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n)))}
-            onReadAll={() => setItems((l) => l.map((n) => ({ ...n, read: true })))}
-            onDismiss={(id) => setItems((l) => l.filter((n) => n.id !== id))}
+            onRead={read}
+            onReadAll={readAll}
+            onDismiss={dismiss}
             onClear={() => setItems([])}
           />
         </Card>
-        <Card title="NotificationBell">
-          <p className="text-xs text-muted mb-4">Campana con badge de no leídas — abre el mismo panel en un popover anclado.</p>
-          <NotificationBell items={items} onRead={(id) => setItems((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n)))} onReadAll={() => setItems((l) => l.map((n) => ({ ...n, read: true })))} />
-        </Card>
+        <div className="flex flex-col gap-4">
+          <Card title="NotificationBell">
+            <p className="text-xs text-muted mb-4">Campana con badge de no leídas — abre el mismo panel en un popover anclado.</p>
+            <NotificationBell items={items} onRead={read} onReadAll={readAll} />
+          </Card>
+          <Card title="NotificationSidebar">
+            <p className="text-xs text-muted mb-4">
+              Drawer de altura completa con backdrop, para un centro de notificaciones dedicado en vez de un popover chico.
+              Cierra con Escape, con el backdrop o con la ×.
+            </p>
+            <Row>
+              <Button size="sm" onClick={() => { setSidebarSide("right"); setSidebarOpen(true); }}>
+                Abrir desde la derecha
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => { setSidebarSide("left"); setSidebarOpen(true); }}>
+                Desde la izquierda
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setItems(SEED_NOTIFICATIONS)}>
+                Reiniciar
+              </Button>
+            </Row>
+          </Card>
+        </div>
       </div>
+
+      <NotificationSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        side={sidebarSide}
+        items={items}
+        onRead={read}
+        onReadAll={readAll}
+        onDismiss={dismiss}
+        onClear={() => setItems([])}
+      />
     </Section>
   );
 }

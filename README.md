@@ -34,7 +34,7 @@ components/
   AddToCartButton.tsx    # botón "agregar" con estados idle → loading → hecho
   Progress.tsx           # <ProgressBar/> <ProgressRing/> <StepsProgress/>
   Skeleton.tsx           # placeholders animados: primitivo + Text/Avatar/Card/List/Table
-  NotificationPanel.tsx  # historial agrupado por fecha + <NotificationBell/> con popover
+  NotificationPanel.tsx  # historial agrupado por fecha + <NotificationBell/> (popover) y <NotificationSidebar/> (drawer)
   ThemeConfigurator.tsx  # editor en vivo de los tokens de color del tema, con export CSS/JSON
   TenantTheme.tsx        # paleta multi-tenant por dominio/sesión: <TenantThemeProvider/> + useTenantTheme()
   Card.tsx               # Card base + StatCard · MediaCard · ProfileCard · PricingCard
@@ -91,6 +91,7 @@ components/
   ViewportLock.tsx       # bloquea zoom/overscroll/long-press (sin UI)
   AppHeader.tsx          # header de app: volver, título grande colapsable, acciones, buscador
   AppHeaderIsland.tsx    # cápsula flotante desprendida de los bordes, estilo dynamic island
+  AppHeaderTabs.tsx      # header + fila de tabs scrolables (underline o pastilla) con panels
   AppHeaderWave.tsx      # hero con degradado y esquina inferior muy redondeada
   AppHeaderCard.tsx      # tarjeta flotante con sombra que se eleva al scrollear
   AppHeaderNotch.tsx     # muesca circular con botón flotante centrado
@@ -773,6 +774,12 @@ toast({ title: "¡Listo!", variant: "success" });
   onReadAll={markAllAsRead}
   onDismiss={dismiss}
 />
+
+// …el mismo panel como centro de notificaciones lateral, con backdrop y Escape
+<NotificationSidebar
+  open={open} onClose={() => setOpen(false)} side="right" width={420}
+  items={notifications} onRead={markAsRead} onReadAll={markAllAsRead}
+/>
 ```
 
 ## 📊 Datos y grillas
@@ -1159,6 +1166,7 @@ Guía completa (por qué ese orden, el mapa de z-index, los paddings sobre el `B
 
 // Variantes visuales de AppHeader — misma idea, otro layout
 <AppHeaderIsland title="Inicio" searchable onSearch={setQuery} />       // cápsula flotante, dynamic island
+<AppHeaderTabs title="Bandeja" tabs={tabs} panels={panels} />          // fila de tabs scrolables pegada arriba
 <AppHeaderWave title="Hola, Lucía" subtitle="Tenés 3 pedidos nuevos" />  // hero degradado, esquina curva
 <AppHeaderCard title="Ajustes" onBack={() => router.back()} />          // tarjeta flotante, sombra al scrollear
 <AppHeaderNotch title="Cámara" center={<Avatar src={user.photo} />} />  // muesca circular + botón central

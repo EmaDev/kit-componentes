@@ -1,6 +1,7 @@
 import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { AppHeader, type HeaderAction } from "../../../components/AppHeader";
 import { AppHeaderIsland } from "../../../components/AppHeaderIsland";
+import { AppHeaderTabs } from "../../../components/AppHeaderTabs";
 import { AppHeaderWave } from "../../../components/AppHeaderWave";
 import { AppHeaderCard } from "../../../components/AppHeaderCard";
 import { AppHeaderNotch } from "../../../components/AppHeaderNotch";
@@ -119,6 +120,80 @@ function AppHeaderVariantsSection() {
           )}
         />
       </div>
+    </Section>
+  );
+}
+
+const HEADER_TABS = [
+  { id: "todos", label: "Todos" },
+  { id: "pendientes", label: "Pendientes", count: 12 },
+  { id: "camino", label: "En camino", count: 3 },
+  { id: "entregados", label: "Entregados" },
+  { id: "cancelados", label: "Cancelados" },
+  { id: "devueltos", label: "Devueltos", count: 1 },
+];
+
+function AppHeaderTabsSection() {
+  const [tabVariant, setTabVariant] = useState<"underline" | "pill">("underline");
+  const [tab, setTab] = useState("todos");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const panels = Object.fromEntries(
+    HEADER_TABS.map((t) => [
+      t.id,
+      <p key={t.id} className="text-sm text-muted">
+        Contenido de <b className="text-foreground">{t.label}</b>
+        {t.count != null && ` — ${t.count} pedidos`}.
+      </p>,
+    ]),
+  );
+
+  return (
+    <Section
+      id="appheadertabs"
+      title="AppHeaderTabs"
+      description="Header con una fila de tabs scrolables pegada arriba: degradados en los bordes sólo cuando queda contenido fuera de vista, el tab activo siempre se trae a la vista, y panels con transición. Hay más tabs de los que entran a propósito — deslizá el track."
+    >
+      <Card>
+        <Row className="mb-3">
+          <Button
+            size="sm"
+            variant={tabVariant === "underline" ? "primary" : "secondary"}
+            onClick={() => setTabVariant("underline")}
+          >
+            underline
+          </Button>
+          <Button
+            size="sm"
+            variant={tabVariant === "pill" ? "primary" : "secondary"}
+            onClick={() => setTabVariant("pill")}
+          >
+            pill
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setTab("devueltos")}>
+            Ir al último tab
+          </Button>
+        </Row>
+        <div ref={scrollRef} className="rounded-2xl border border-border overflow-hidden h-72 overflow-y-auto">
+          <AppHeaderTabs
+            title="Pedidos"
+            subtitle="Sucursal Centro"
+            onBack={() => {}}
+            tabs={HEADER_TABS}
+            tabVariant={tabVariant}
+            value={tab}
+            onChange={setTab}
+            panels={panels}
+            scrollRef={scrollRef}
+            actions={[{ id: "new", label: "Nuevo", icon: <BellIcon />, badge: 2, tone: "primary", onClick: () => {} }]}
+          />
+          <div className="p-4 flex flex-col gap-2">
+            {Array.from({ length: 10 }, (_, i) => (
+              <div key={i} className="h-10 rounded-lg bg-surface-alt" />
+            ))}
+          </div>
+        </div>
+      </Card>
     </Section>
   );
 }
@@ -374,6 +449,7 @@ export function OfflineGroup() {
     <>
       <AppHeaderSection />
       <AppHeaderVariantsSection />
+      <AppHeaderTabsSection />
       <OfflineQueueSection />
       <OfflineFallbackSection />
       <PermissionSection />

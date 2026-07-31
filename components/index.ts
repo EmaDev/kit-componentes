@@ -56,8 +56,8 @@ export { AddToCartButton } from "./AddToCartButton";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
 export { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard, SkeletonList, SkeletonTable } from "./Skeleton";
 export type { SkeletonVariant, SkeletonAnimation } from "./Skeleton";
-export { NotificationPanel, NotificationBell, relativeTime, groupLabel } from "./NotificationPanel";
-export type { AppNotification, NotificationTone, NotificationPanelProps, NotificationBellProps } from "./NotificationPanel";
+export { NotificationPanel, NotificationSidebar, NotificationBell, relativeTime, groupLabel } from "./NotificationPanel";
+export type { AppNotification, NotificationTone, NotificationPanelProps, NotificationSidebarProps, NotificationBellProps } from "./NotificationPanel";
 
 // --- Personalización / multi-tenant ---
 export {
@@ -184,6 +184,8 @@ export type { NotificationStatus } from "../hooks/useNotificationPermission";
 export { AppHeader } from "./AppHeader";
 export type { HeaderAction } from "./AppHeader";
 export { AppHeaderIsland } from "./AppHeaderIsland";
+export { AppHeaderTabs } from "./AppHeaderTabs";
+export type { AppHeaderTab } from "./AppHeaderTabs";
 export { AppHeaderWave } from "./AppHeaderWave";
 export { AppHeaderCard } from "./AppHeaderCard";
 export { AppHeaderNotch } from "./AppHeaderNotch";

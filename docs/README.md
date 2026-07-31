@@ -93,11 +93,12 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una encuesta (única, múltiple, estrellas o NPS) | [Poll](components/Poll.md) |
 | Confeti para celebrar una acción puntual | [Confetti](components/Confetti.md) |
 | Una pantalla de éxito completa tras una operación | [SuccessPage](components/SuccessPage.md) |
-| Un historial de notificaciones agrupado por fecha, o una campana con popover en el header | [NotificationPanel](components/NotificationPanel.md) (`NotificationBell`) |
+| Un historial de notificaciones agrupado por fecha, una campana con popover en el header, o un centro de notificaciones como drawer lateral | [NotificationPanel](components/NotificationPanel.md) (`NotificationBell`, `NotificationSidebar`) |
 | Un reproductor de video con controles propios, o un feed vertical tipo reels | [VideoPlayer](components/VideoPlayer.md) |
-| Armar la base completa de una app/PWA (safe areas, splash, instalación, conectividad, nav superior + inferior, FAB con acciones) | [Guía: la base de una app](guides/app-base.md) |
+| Armar la base completa de una app/PWA (safe areas, splash, instalación, conectividad, nav superior + inferior, FAB con acciones, snackbars y centro de notificaciones) | [Guía: la base de una app](guides/app-base.md) |
 | Una cabecera de pantalla con flecha de volver, título grande colapsable y buscador expandible | [AppHeader](components/AppHeader.md) |
 | Una cabecera cápsula flotante desprendida de los bordes, estilo dynamic island | [AppHeaderIsland](components/AppHeaderIsland.md) |
+| Una cabecera con fila de tabs scrolables pegada arriba (más tabs de los que entran en pantalla) | [AppHeaderTabs](components/AppHeaderTabs.md) |
 | Una cabecera hero con degradado y esquina inferior muy redondeada | [AppHeaderWave](components/AppHeaderWave.md) |
 | Una cabecera como tarjeta flotante que gana sombra al scrollear | [AppHeaderCard](components/AppHeaderCard.md) |
 | Una cabecera con muesca circular y botón flotante centrado | [AppHeaderNotch](components/AppHeaderNotch.md) |
@@ -195,7 +196,7 @@ Recetas que combinan varios componentes para un objetivo completo, en vez de doc
 | [AddToCartButton](components/AddToCartButton.md) | Botón "agregar" con estados idle → loading → hecho. |
 | [Progress](components/Progress.md) | `ProgressBar`, `ProgressRing`, `StepsProgress`. |
 | [Skeleton](components/Skeleton.md) | Placeholders animados: primitivo + `SkeletonText`/`Avatar`/`Card`/`List`/`Table`. |
-| [NotificationPanel](components/NotificationPanel.md) | Historial de notificaciones agrupado por fecha + `NotificationBell` (campana con popover). |
+| [NotificationPanel](components/NotificationPanel.md) | Historial de notificaciones agrupado por fecha + `NotificationBell` (campana con popover) y `NotificationSidebar` (drawer de altura completa). |
 
 ### Personalización
 
@@ -303,6 +304,7 @@ Recetas que combinan varios componentes para un objetivo completo, en vez de doc
 |---|---|
 | [AppHeader](components/AppHeader.md) | Header de app con volver, título grande colapsable, acciones con badge y buscador expandible. |
 | [AppHeaderIsland](components/AppHeaderIsland.md) | Cápsula flotante desprendida de los bordes, estilo dynamic island. |
+| [AppHeaderTabs](components/AppHeaderTabs.md) | Header + fila de tabs scrolables (underline o pastilla), con degradados de borde y panels por tab. |
 | [AppHeaderWave](components/AppHeaderWave.md) | Hero con degradado y esquina inferior muy redondeada. |
 | [AppHeaderCard](components/AppHeaderCard.md) | Tarjeta flotante con sombra que se eleva al scrollear. |
 | [AppHeaderNotch](components/AppHeaderNotch.md) | Muesca circular con botón flotante centrado. |

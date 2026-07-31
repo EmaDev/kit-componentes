@@ -1,30 +1,37 @@
 # NotificationPanel
 
-> Panel de notificaciones agrupadas por fecha (Hoy / Ayer / Esta semana / Anteriores), con filtro Todas/No leídas, marcar todo como leído, descartar individual y vaciar. `NotificationBell` es el mismo panel dentro de un botón de campana con popover y badge de no leídas.
+> Panel de notificaciones agrupadas por fecha (Hoy / Ayer / Esta semana / Anteriores), con filtro Todas/No leídas, marcar todo como leído, descartar individual y vaciar. `NotificationBell` es el mismo panel dentro de un botón de campana con popover y badge de no leídas; `NotificationSidebar` es el mismo panel como drawer de altura completa con backdrop.
 
 **Import**
 ```tsx
 import {
   NotificationPanel,
+  NotificationSidebar,
   NotificationBell,
   relativeTime,
   groupLabel,
   type AppNotification,
   type NotificationTone,
   type NotificationPanelProps,
+  type NotificationSidebarProps,
   type NotificationBellProps,
 } from "lib-kit-components";
 ```
 
 ## Cuándo usarlo
 
-`NotificationPanel` para una pantalla o sección dedicada a notificaciones (tab "Notificaciones", panel lateral). `NotificationBell` cuando necesitás el patrón típico de header: ícono de campana con badge de no leídas que abre el mismo panel en un popover anclado, con click-outside y `Escape` para cerrar.
+Los tres comparten exactamente la misma lista, el mismo agrupado y las mismas props de datos — cambia sólo la superficie:
+
+- **`NotificationPanel`** — embebido en una pantalla o sección dedicada a notificaciones (tab "Notificaciones", columna de un dashboard). Tiene alto acotado por `maxHeight`.
+- **`NotificationBell`** — el patrón típico de header: campana con badge de no leídas que abre el panel en un popover anclado, con click-outside y `Escape`.
+- **`NotificationSidebar`** — un centro de notificaciones dedicado: drawer de altura completa que entra desde un costado con backdrop, bloquea el scroll del body y cierra con `Escape`. Elegilo cuando la lista es larga, tiene acciones por item, o el popover de la campana queda demasiado chico — sobre todo en mobile, donde un popover de 380px no entra cómodo.
 
 ## Cuándo NO usarlo / alternativas
 
 - Para feedback transitorio de una acción puntual ("Guardado", "Error al subir"), usá `Toast`, no `NotificationPanel` (que es para un historial persistente).
 - Si necesitás una sola notificación a la vez con "deshacer" (no un historial), usá `Snackbar`.
 - `AppHeader` ya tiene su propio slot de `actions` con badge — podés usar `NotificationBell` como uno de esos `actions` si necesitás también otros botones de icono en la misma fila.
+- Si el drawer no es de notificaciones sino de navegación o filtros genéricos, usá `SideBar` o `BottomSheet` — `NotificationSidebar` trae la lista de notificaciones cableada adentro.
 
 ## Props — NotificationPanel
 
@@ -44,6 +51,18 @@ import {
 | `footer` | `ReactNode` | `undefined` | Contenido fijo al pie del panel. |
 | `maxHeight` | `number \| string` | `380` | Alto máximo del área con scroll. |
 | `className` | `string` | `""` | Clases adicionales para el contenedor. |
+
+## Props — NotificationSidebar
+
+Todas las de `NotificationPanel` **menos `maxHeight`** (el drawer siempre ocupa el alto disponible) más:
+
+| Prop | Tipo | Default | Descripción |
+|---|---|---|---|
+| `open` | `boolean` | — (requerido) | Si el drawer está abierto. Siempre controlado. |
+| `onClose` | `() => void` | — (requerido) | Se llama al tocar el backdrop, el botón × o `Escape`. |
+| `side` | `"left" \| "right"` | `"right"` | Lado desde el que se despliega. |
+| `width` | `number` | `400` | Ancho en px. Se limita a `calc(100vw - 2.5rem)` en pantallas chicas. |
+| `className` | `string` | `""` | Clases adicionales para el panel del drawer (no para el backdrop). |
 
 ## Props — NotificationBell
 
@@ -111,6 +130,32 @@ const [items, setItems] = useState<AppNotification[]>(notifications);
 />
 ```
 
+### Centro de notificaciones como drawer
+```tsx
+const [open, setOpen] = useState(false);
+
+<>
+  <button onClick={() => setOpen(true)}>Ver notificaciones</button>
+
+  <NotificationSidebar
+    open={open}
+    onClose={() => setOpen(false)}
+    side="right"
+    width={420}
+    items={items}
+    onRead={markAsRead}
+    onReadAll={markAllAsRead}
+    onDismiss={(id) => setItems((l) => l.filter((n) => n.id !== id))}
+    onClear={() => setItems([])}
+    footer={
+      <button className="w-full h-9 text-xs font-semibold text-primary">
+        Ver todas
+      </button>
+    }
+  />
+</>
+```
+
 ### Con acción inline y avatar
 ```tsx
 const items: AppNotification[] = [
@@ -134,12 +179,15 @@ const items: AppNotification[] = [
 
 ## Requisitos / dependencias
 
-- Usa `framer-motion` para la entrada/salida de filas, el badge animado y el popover de `NotificationBell`.
+- Usa `framer-motion` para la entrada/salida de filas, el badge animado, el popover de `NotificationBell` y el deslizamiento de `NotificationSidebar`.
 - Marcado como `"use client"`. No requiere ningún Provider.
+- `NotificationSidebar` respeta `--sa-top` / `--sa-bottom` (o `env(safe-area-inset-*)` como fallback) en su fila de cierre y en el `footer` — ver `SafeArea` / `useSafeArea` si tu app los define.
 
 ## Notas y comportamiento
 
 - El agrupado (`groupLabel`) y el orden (más reciente primero) se recalculan en un `useMemo` cada vez que cambian `items` o `filter` — no hace falta ordenar el array vos mismo.
+- Los tres componentes comparten el mismo header y la misma lista internamente, así que el filtro, el agrupado, el estado vacío y el comportamiento de cada fila son idénticos. Cada instancia tiene su propio estado de filtro: abrir el sidebar no hereda el filtro del panel embebido (salvo que los controles vos con `filter`/`onFilterChange`).
+- `NotificationSidebar` es siempre controlado (`open` + `onClose`), bloquea el scroll del `body` mientras está abierto restaurando el valor previo al cerrar, y se anuncia como `role="dialog" aria-modal="true"`. No hace focus trap: si necesitás atrapar el foco, envolvelo vos.
 - `avatar` tiene prioridad total sobre `icon`: si `avatar` está presente, el icono (custom o del `tone`) no se renderiza en absoluto.
 - El punto de "no leída" (`!n.read`) se dibuja como un `<span>` absoluto independiente del ícono/avatar — no hace falta que vos lo agregues al `icon` custom.
 - `onDismiss` y `onClear` son opt-in: si no los pasás, no aparece ni el botón × por fila (aparece sólo con `hover`/`focus` vía `group-hover`) ni el botón de vaciar en el header del panel.

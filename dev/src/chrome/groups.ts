@@ -409,6 +409,7 @@ export const GROUPS: Group[] = [
     sections: [
       { id: "appheader", label: "AppHeader" },
       { id: "appheadervariants", label: "Variantes de AppHeader" },
+      { id: "appheadertabs", label: "AppHeaderTabs" },
       { id: "syncstatus", label: "SyncStatus · useOfflineQueue" },
       { id: "offlinefallback", label: "OfflineFallback" },
       { id: "permissiongate", label: "PermissionGate" },

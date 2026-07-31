@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import {
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -96,6 +97,150 @@ export function groupLabel(date: Date | string | number, now = new Date()): stri
   return "Anteriores";
 }
 
+/** Filtro + agrupado por fecha, compartido por el panel y el sidebar. */
+function useGroupedNotifications(items: AppNotification[], filter: "all" | "unread") {
+  return useMemo(() => {
+    const now = new Date();
+    const visible = [...items]
+      .filter((n) => (filter === "unread" ? !n.read : true))
+      .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime());
+    const map = new Map<string, AppNotification[]>();
+    for (const n of visible) {
+      const k = groupLabel(n.date, now);
+      const arr = map.get(k);
+      if (arr) arr.push(n);
+      else map.set(k, [n]);
+    }
+    return [...map.entries()];
+  }, [items, filter]);
+}
+
+/** Estado del filtro: controlado por `filter`/`onFilterChange`, o interno si no vienen. */
+function useNotificationFilter(
+  filterProp: "all" | "unread" | undefined,
+  onFilterChange: ((f: "all" | "unread") => void) | undefined,
+) {
+  const [inner, setInner] = useState<"all" | "unread">("all");
+  const filter = filterProp ?? inner;
+  const setFilter = (f: "all" | "unread") => {
+    setInner(f);
+    onFilterChange?.(f);
+  };
+  return [filter, setFilter] as const;
+}
+
+function NotificationHeader({
+  title, unread, filter, setFilter, onReadAll, onClear, showClear,
+}: {
+  title: string;
+  unread: number;
+  filter: "all" | "unread";
+  setFilter: (f: "all" | "unread") => void;
+  onReadAll?: () => void;
+  onClear?: () => void;
+  showClear: boolean;
+}) {
+  // Scopeado por instancia: si hay un panel y un sidebar montados a la vez,
+  // un layoutId global haría volar la pastilla de uno al otro.
+  const tabLayoutId = useId();
+
+  return (
+    <div className="px-4 pt-3.5 pb-3 border-b border-border">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-bold text-foreground flex items-center gap-2">
+          {title}
+          <AnimatePresence>
+            {unread > 0 && (
+              <motion.span
+                key="count"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary text-white text-[11px] font-bold tabular-nums"
+              >
+                {unread}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </p>
+        <div className="flex items-center gap-1">
+          {unread > 0 && (
+            <button type="button" onClick={onReadAll}
+              className="h-7 px-2 rounded-lg text-[11px] font-semibold text-primary hover:bg-primary/10 transition-colors">
+              Marcar todas
+            </button>
+          )}
+          {showClear && (
+            <button type="button" onClick={onClear} aria-label="Vaciar"
+              className="w-7 h-7 rounded-lg inline-flex items-center justify-center text-muted hover:text-danger hover:bg-danger/10 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 inline-flex p-0.5 rounded-lg bg-surface-alt border border-border">
+        {([["all", "Todas"], ["unread", `No leídas${unread ? ` (${unread})` : ""}`]] as const).map(([k, l]) => (
+          <button key={k} type="button" onClick={() => setFilter(k)}
+            className={cx(
+              "relative h-7 px-3 rounded-[7px] text-[11px] font-semibold transition-colors",
+              filter === k ? "text-foreground" : "text-muted hover:text-foreground"
+            )}>
+            {filter === k && (
+              <motion.span layoutId={tabLayoutId} transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                className="absolute inset-0 rounded-[7px] bg-surface shadow-sm"/>
+            )}
+            <span className="relative">{l}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NotificationList({
+  groups, emptyTitle, emptyHint, onRead, onDismiss, onItemClick, grow, maxHeight,
+}: {
+  groups: [string, AppNotification[]][];
+  emptyTitle: string;
+  emptyHint: string;
+  onRead?: (id: string) => void;
+  onDismiss?: (id: string) => void;
+  onItemClick?: (n: AppNotification) => void;
+  /** Ocupa el alto restante del contenedor flex (sidebar) en vez de limitarse con maxHeight. */
+  grow?: boolean;
+  maxHeight?: number | string;
+}) {
+  return (
+    <div
+      className={cx("overflow-y-auto overscroll-contain", grow && "flex-1 min-h-0")}
+      style={grow ? undefined : { maxHeight }}
+    >
+      {groups.length === 0 ? (
+        <EmptyState title={emptyTitle} hint={emptyHint}/>
+      ) : (
+        groups.map(([label, rows]) => (
+          <div key={label}>
+            <p className="sticky top-0 z-10 px-4 py-1.5 bg-surface/90 backdrop-blur text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
+              {label}
+            </p>
+            <ul className="px-2 pb-1">
+              <AnimatePresence initial={false}>
+                {rows.map((n) => (
+                  <NotificationRow
+                    key={n.id} n={n}
+                    onRead={onRead} onDismiss={onDismiss} onItemClick={onItemClick}
+                  />
+                ))}
+              </AnimatePresence>
+            </ul>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 export function NotificationPanel({
   items,
   filter: filterProp,
@@ -112,109 +257,121 @@ export function NotificationPanel({
   maxHeight = 380,
   className = "",
 }: NotificationPanelProps) {
-  const [inner, setInner] = useState<"all" | "unread">("all");
-  const filter = filterProp ?? inner;
-  const setFilter = (f: "all" | "unread") => {
-    setInner(f);
-    onFilterChange?.(f);
-  };
-
+  const [filter, setFilter] = useNotificationFilter(filterProp, onFilterChange);
   const unread = items.filter((n) => !n.read).length;
-
-  const groups = useMemo(() => {
-    const now = new Date();
-    const visible = [...items]
-      .filter((n) => (filter === "unread" ? !n.read : true))
-      .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime());
-    const map = new Map<string, AppNotification[]>();
-    for (const n of visible) {
-      const k = groupLabel(n.date, now);
-      const arr = map.get(k);
-      if (arr) arr.push(n);
-      else map.set(k, [n]);
-    }
-    return [...map.entries()];
-  }, [items, filter]);
+  const groups = useGroupedNotifications(items, filter);
 
   return (
     <div className={cx("flex flex-col rounded-2xl border border-border bg-surface shadow-xl shadow-black/10 overflow-hidden", className)}>
-      <div className="px-4 pt-3.5 pb-3 border-b border-border">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-sm font-bold text-foreground flex items-center gap-2">
-            {title}
-            <AnimatePresence>
-              {unread > 0 && (
-                <motion.span
-                  key="count"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary text-white text-[11px] font-bold tabular-nums"
-                >
-                  {unread}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </p>
-          <div className="flex items-center gap-1">
-            {unread > 0 && (
-              <button type="button" onClick={onReadAll}
-                className="h-7 px-2 rounded-lg text-[11px] font-semibold text-primary hover:bg-primary/10 transition-colors">
-                Marcar todas
-              </button>
-            )}
-            {onClear && items.length > 0 && (
-              <button type="button" onClick={onClear} aria-label="Vaciar"
-                className="w-7 h-7 rounded-lg inline-flex items-center justify-center text-muted hover:text-danger hover:bg-danger/10 transition-colors">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-3 inline-flex p-0.5 rounded-lg bg-surface-alt border border-border">
-          {([["all", "Todas"], ["unread", `No leídas${unread ? ` (${unread})` : ""}`]] as const).map(([k, l]) => (
-            <button key={k} type="button" onClick={() => setFilter(k)}
-              className={cx(
-                "relative h-7 px-3 rounded-[7px] text-[11px] font-semibold transition-colors",
-                filter === k ? "text-foreground" : "text-muted hover:text-foreground"
-              )}>
-              {filter === k && (
-                <motion.span layoutId="np-tab" transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="absolute inset-0 rounded-[7px] bg-surface shadow-sm"/>
-              )}
-              <span className="relative">{l}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="overflow-y-auto overscroll-contain" style={{ maxHeight }}>
-        {groups.length === 0 ? (
-          <EmptyState title={emptyTitle} hint={emptyHint}/>
-        ) : (
-          groups.map(([label, rows]) => (
-            <div key={label}>
-              <p className="sticky top-0 z-10 px-4 py-1.5 bg-surface/90 backdrop-blur text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
-                {label}
-              </p>
-              <ul className="px-2 pb-1">
-                <AnimatePresence initial={false}>
-                  {rows.map((n) => (
-                    <NotificationRow
-                      key={n.id} n={n}
-                      onRead={onRead} onDismiss={onDismiss} onItemClick={onItemClick}
-                    />
-                  ))}
-                </AnimatePresence>
-              </ul>
-            </div>
-          ))
-        )}
-      </div>
-
+      <NotificationHeader
+        title={title} unread={unread} filter={filter} setFilter={setFilter}
+        onReadAll={onReadAll} onClear={onClear} showClear={!!onClear && items.length > 0}
+      />
+      <NotificationList
+        groups={groups} emptyTitle={emptyTitle} emptyHint={emptyHint} maxHeight={maxHeight}
+        onRead={onRead} onDismiss={onDismiss} onItemClick={onItemClick}
+      />
       {footer && <div className="border-t border-border p-2">{footer}</div>}
     </div>
+  );
+}
+
+export interface NotificationSidebarProps extends Omit<NotificationPanelProps, "maxHeight"> {
+  open: boolean;
+  onClose: () => void;
+  /** Lado desde el que se despliega */
+  side?: "left" | "right";
+  width?: number;
+}
+
+export function NotificationSidebar({
+  open,
+  onClose,
+  side = "right",
+  width = 400,
+  items,
+  filter: filterProp,
+  onFilterChange,
+  onRead,
+  onReadAll,
+  onDismiss,
+  onClear,
+  onItemClick,
+  title = "Notificaciones",
+  emptyTitle = "Estás al día",
+  emptyHint = "No tenés notificaciones nuevas.",
+  footer,
+  className = "",
+}: NotificationSidebarProps) {
+  const [filter, setFilter] = useNotificationFilter(filterProp, onFilterChange);
+  const unread = items.filter((n) => !n.read).length;
+  const groups = useGroupedNotifications(items, filter);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, onClose]);
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={onClose}
+            className="fixed inset-0 z-50 bg-black/35 backdrop-blur-[1px]"
+          />
+          <motion.div
+            key="sidebar"
+            role="dialog" aria-modal="true" aria-label={title}
+            initial={{ x: side === "right" ? width : -width }}
+            animate={{ x: 0 }}
+            exit={{ x: side === "right" ? width : -width }}
+            transition={{ type: "spring", stiffness: 380, damping: 38 }}
+            style={{ width, maxWidth: "calc(100vw - 2.5rem)" }}
+            className={cx(
+              "fixed inset-y-0 z-50 flex flex-col bg-surface shadow-2xl shadow-black/20",
+              side === "right" ? "right-0 border-l border-border" : "left-0 border-r border-border",
+              className
+            )}
+          >
+            <div
+              className="flex items-center justify-end px-4"
+              style={{ paddingTop: "calc(1rem + var(--sa-top, env(safe-area-inset-top, 0px)))" }}
+            >
+              <button type="button" onClick={onClose} aria-label="Cerrar"
+                className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-alt transition-colors">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="-mt-1">
+              <NotificationHeader
+                title={title} unread={unread} filter={filter} setFilter={setFilter}
+                onReadAll={onReadAll} onClear={onClear} showClear={!!onClear && items.length > 0}
+              />
+            </div>
+            <NotificationList
+              grow groups={groups} emptyTitle={emptyTitle} emptyHint={emptyHint}
+              onRead={onRead} onDismiss={onDismiss} onItemClick={onItemClick}
+            />
+            {footer && (
+              <div className="border-t border-border p-3 pb-[calc(0.75rem+var(--sa-bottom,env(safe-area-inset-bottom,0px)))]">
+                {footer}
+              </div>
+            )}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 
