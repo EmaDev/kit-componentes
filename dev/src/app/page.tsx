@@ -23,11 +23,13 @@ import { TrustGroup } from "../sections/TrustGroup";
 import { AdvancedFormsGroup } from "../sections/AdvancedFormsGroup";
 import { TimelinesGroup } from "../sections/TimelinesGroup";
 import { TripTasksGroup } from "../sections/TripTasksGroup";
+import { GamesGroup } from "../sections/GamesGroup";
+import { StudyGroup } from "../sections/StudyGroup";
 import { EffectsGroup } from "../sections/EffectsGroup";
 import { SocialGroup } from "../sections/SocialGroup";
 import { PwaGroup } from "../sections/PwaGroup";
 import { OfflineGroup } from "../sections/OfflineGroup";
-import { LayoutsGroup } from "../sections/LayoutsGroup";
+import { AppBaseGroup } from "../sections/AppBaseGroup";
 import { UtilsGroup } from "../sections/UtilsGroup";
 
 function initialUiTab() {
@@ -57,7 +59,7 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("navigation")} count="3 componentes" />
             <NavigationGroup />
 
-            <GroupHeader group={groupById("interaction")} count="6 componentes" />
+            <GroupHeader group={groupById("interaction")} count="9 componentes" />
             <InteractionGroup />
 
             <GroupHeader group={groupById("theme-group")} count="2 componentes · 1 hook" />
@@ -72,7 +74,7 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("app-blocks")} count="7 componentes" />
             <AppBlocksGroup />
 
-            <GroupHeader group={groupById("data")} count="3 componentes" />
+            <GroupHeader group={groupById("data")} count="5 componentes" />
             <DataGroup />
 
             <GroupHeader group={groupById("lists")} count="5 componentes" />
@@ -96,6 +98,12 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("trip-tasks")} count="6 componentes" />
             <TripTasksGroup />
 
+            <GroupHeader group={groupById("games")} count="7 componentes" />
+            <GamesGroup />
+
+            <GroupHeader group={groupById("study")} count="7 componentes" />
+            <StudyGroup />
+
             <GroupHeader group={groupById("effects")} count="10 componentes" />
             <EffectsGroup />
 
@@ -108,8 +116,8 @@ export default function PlaygroundPage() {
             <GroupHeader group={groupById("offline")} count="15 componentes · varios hooks" />
             <OfflineGroup />
 
-            <GroupHeader group={groupById("layouts")} count="1 organismo" />
-            <LayoutsGroup />
+            <GroupHeader group={groupById("app-base")} count="guía + demo en vivo" />
+            <AppBaseGroup />
 
             <GroupHeader group={groupById("utils")} count="6 hooks" />
             <UtilsGroup />

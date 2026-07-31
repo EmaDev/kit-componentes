@@ -13,6 +13,8 @@ export { BottomSheet } from "./BottomSheet";
 export type { BottomSheetSize } from "./BottomSheet";
 export { DataTable } from "./DataTable";
 export type { Column, SortDir } from "./DataTable";
+export { AnimatedTable } from "./AnimatedTable";
+export { ExpandableTable } from "./ExpandableTable";
 export { Spreadsheet } from "./Spreadsheet";
 export { useSpreadsheet, evaluateCell, cellId, colName, colIndex } from "../hooks/useSpreadsheet";
 export { CalendarGrid } from "./CalendarGrid";
@@ -44,6 +46,11 @@ export { FlipCard, CreditCard, CreditCardStack } from "./FlipCard";
 export type { CreditCardData } from "./FlipCard";
 export { FloatingButton } from "./FloatingButton";
 export type { FabAction } from "./FloatingButton";
+export { FabActionSheets } from "./FabActionSheets";
+export type { FabSheetAction } from "./FabActionSheets";
+export { QuickNotePad } from "./QuickNotePad";
+export { DocumentEditor } from "./DocumentEditor";
+export type { EditorFormat, MarkdownViewMode } from "./DocumentEditor";
 export { AddButton } from "./AddButton";
 export { AddToCartButton } from "./AddToCartButton";
 export { ProgressBar, ProgressRing, StepsProgress } from "./Progress";
@@ -172,16 +179,6 @@ export { useOnlineStatus } from "../hooks/useOnlineStatus";
 export { useServiceWorker } from "../hooks/useServiceWorker";
 export { useNotificationPermission } from "../hooks/useNotificationPermission";
 export type { NotificationStatus } from "../hooks/useNotificationPermission";
-
-// --- Layouts ---
-export { PackageApp, useAppSheet } from "./PackageApp";
-export type {
-  PackageAppProps,
-  PackageAppNotifications,
-  PackageAppPermission,
-  PackageAppSplashProps,
-  AppSheetOptions,
-} from "./PackageApp";
 
 // --- Offline, datos & sincronización ---
 export { AppHeader } from "./AppHeader";
@@ -375,3 +372,32 @@ export { DragReorderList } from "./DragReorderList";
 export type { ReorderItem } from "./DragReorderList";
 export { VideoCallGrid } from "./VideoCallGrid";
 export type { CallParticipant } from "./VideoCallGrid";
+
+// --- Juegos & sorteos ---
+export { DiceRoller } from "./DiceRoller";
+export type { DiceRollerProps } from "./DiceRoller";
+export { RouletteWheel } from "./RouletteWheel";
+export type { RouletteWheelProps } from "./RouletteWheel";
+export { CoinFlip } from "./CoinFlip";
+export type { CoinFlipProps } from "./CoinFlip";
+export { NumberGenerator } from "./NumberGenerator";
+export type { NumberGeneratorProps } from "./NumberGenerator";
+export { TallyCounter } from "./TallyCounter";
+export type { TallyCounterProps, TallyPlayer } from "./TallyCounter";
+export { RaffleDraw } from "./RaffleDraw";
+export type { RaffleDrawProps } from "./RaffleDraw";
+export { TeamShuffler } from "./TeamShuffler";
+export type { TeamShufflerProps } from "./TeamShuffler";
+
+// --- Estudio & aprendizaje ---
+export { Flashcard } from "./Flashcard";
+export { FlashcardDeck } from "./FlashcardDeck";
+export type { FlashcardItem, FlashcardGrade } from "./FlashcardDeck";
+export { QuizCard } from "./QuizCard";
+export type { QuizOption } from "./QuizCard";
+export { StudyTimer } from "./StudyTimer";
+export { StreakTracker } from "./StreakTracker";
+export { ProgressByTopic } from "./ProgressByTopic";
+export type { TopicProgress } from "./ProgressByTopic";
+export { MatchingPairs } from "./MatchingPairs";
+export type { MatchPair } from "./MatchingPairs";

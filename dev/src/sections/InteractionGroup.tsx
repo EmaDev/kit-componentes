@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Breadcrumbs, type Crumb } from "../../../components/Breadcrumbs";
 import { CreditCard, CreditCardStack, type CreditCardData } from "../../../components/FlipCard";
 import { FloatingButton } from "../../../components/FloatingButton";
+import { FabActionSheets } from "../../../components/FabActionSheets";
+import { QuickNotePad } from "../../../components/QuickNotePad";
+import { DocumentEditor } from "../../../components/DocumentEditor";
 import { AddButton } from "../../../components/AddButton";
 import { AddToCartButton } from "../../../components/AddToCartButton";
 import { ProgressBar, ProgressRing, StepsProgress } from "../../../components/Progress";
@@ -86,6 +89,92 @@ function FloatingButtonSection() {
             ]}
           />
         </div>
+      </Card>
+    </Section>
+  );
+}
+
+function FabActionSheetsSection() {
+  return (
+    <Section
+      id="fabactionsheets"
+      title="FabActionSheets"
+      description="FAB con speed dial donde cada acción abre su propio BottomSheet con contenido libre. Compone FloatingButton + BottomSheet."
+    >
+      <Card>
+        <div className="relative h-40 rounded-xl border border-dashed border-border overflow-hidden">
+          <FabActionSheets
+            absolute
+            hideOnScroll={false}
+            mainIcon={<span>＋</span>}
+            mainLabel="Crear"
+            actions={[
+              {
+                icon: <span>💸</span>,
+                label: "Nuevo gasto",
+                sheetDescription: "Cargá el importe y la categoría.",
+                content: <p className="text-sm text-muted">Acá iría tu formulario de gasto.</p>,
+              },
+              {
+                icon: <span>🔍</span>,
+                label: "Filtros",
+                tone: "accent",
+                sheetSnapPoints: [0.4, 0.85],
+                content: <p className="text-sm text-muted">Sheet con snap points arrastrables.</p>,
+              },
+            ]}
+          />
+        </div>
+        <p className="mt-3 text-xs text-muted">
+          Ojo: monta todos los sheets a la vez (sólo uno abierto), así que el `content` se renderiza desde el arranque.
+        </p>
+      </Card>
+    </Section>
+  );
+}
+
+function QuickNotePadSection() {
+  const [guardada, setGuardada] = useState<string | null>(null);
+  return (
+    <Section
+      id="quicknotepad"
+      title="QuickNotePad"
+      description="FAB que abre un bloc de notas en un BottomSheet: viñetas y numeración con continuación automática al presionar Enter, y selector de emojis."
+    >
+      <Card>
+        <div className="relative h-40 rounded-xl border border-dashed border-border overflow-hidden">
+          <QuickNotePad absolute onSave={setGuardada} />
+        </div>
+        {guardada && (
+          <pre className="mt-3 rounded-xl bg-surface-alt/60 p-3 text-xs text-foreground whitespace-pre-wrap">{guardada}</pre>
+        )}
+      </Card>
+    </Section>
+  );
+}
+
+function DocumentEditorSection() {
+  const [markdown, setMarkdown] = useState("");
+  return (
+    <Section
+      id="documenteditor"
+      title="DocumentEditor"
+      description="Escritor de documentos con formato tradicional (WYSIWYG) o Markdown sobre la misma fuente. Acá montado con variant=embed; en producción es fullscreen."
+    >
+      <Card>
+        <div className="relative h-[560px] rounded-xl border border-border overflow-hidden">
+          <DocumentEditor
+            variant="embed"
+            defaultTitle="Notas de la reunión"
+            defaultValue={"# Kickoff del proyecto\n\nAcuerdos de la primera reunión:\n\n- Definir el alcance de la **fase 1**\n- Armar el backlog inicial\n\n> Próxima revisión: en dos semanas.\n"}
+            onChange={setMarkdown}
+            onSave={async () => {}}
+          />
+        </div>
+        <p className="mt-3 text-xs text-muted">
+          `onChange` siempre entrega Markdown ({markdown.length} caracteres), incluso editando en modo tradicional — y esa
+          conversión es con pérdida fuera del subset soportado.
+        </p>
       </Card>
     </Section>
   );
@@ -367,6 +456,9 @@ export function InteractionGroup() {
       <BreadcrumbsSection />
       <FlipCardSection />
       <FloatingButtonSection />
+      <FabActionSheetsSection />
+      <QuickNotePadSection />
+      <DocumentEditorSection />
       <AddButtonSection />
       <ProgressSection />
       <SkeletonSection />

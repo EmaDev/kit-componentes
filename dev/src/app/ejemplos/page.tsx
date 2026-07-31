@@ -13,6 +13,15 @@ interface Example {
 
 const EXAMPLES: Example[] = [
   {
+    id: "app-base",
+    title: "Base de app (PWA)",
+    description:
+      "La implementación de referencia de la guía de app base: splash con progreso, safe areas, instalador, HeroTabs underline como nav de pantalla, BottomNav de tres rutas y un FAB con tres acciones con sheet propio.",
+    href: "/ejemplos/app-base",
+    tags: ["NativeShell", "SafeArea", "SplashScreen", "PwaInstallPrompt", "HeroTabs", "BottomNav", "FabActionSheets"],
+    available: true,
+  },
+  {
     id: "ecommerce",
     title: "E-commerce",
     description:

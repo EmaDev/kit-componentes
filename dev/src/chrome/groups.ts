@@ -97,11 +97,14 @@ export const GROUPS: Group[] = [
     label: "Interacción",
     kicker: "UI",
     tone: "primary",
-    blurb: "Breadcrumbs, tarjetas 3D, acciones flotantes, stepper y barras/anillos de progreso.",
+    blurb: "Breadcrumbs, tarjetas 3D, acciones flotantes con sheets propios, bloc de notas rápido, escritor de documentos, stepper y barras/anillos de progreso.",
     sections: [
       { id: "breadcrumbs", label: "Breadcrumbs" },
       { id: "flipcard", label: "FlipCard" },
       { id: "floatingbutton", label: "FloatingButton" },
+      { id: "fabactionsheets", label: "FabActionSheets" },
+      { id: "quicknotepad", label: "QuickNotePad" },
+      { id: "documenteditor", label: "DocumentEditor" },
       { id: "addbutton", label: "AddButton" },
       { id: "progress", label: "Progress" },
       { id: "skeleton", label: "Skeleton" },
@@ -176,9 +179,11 @@ export const GROUPS: Group[] = [
     kicker: "Datos",
     tone: "success",
     blurb:
-      "Piezas de trabajo pesado: tabla con orden, búsqueda, selección y paginado; hoja de cálculo editable con fórmulas y atajos; y grilla de calendario mensual.",
+      "Piezas de trabajo pesado: tabla con orden, búsqueda, selección y paginado; tabla que reacomoda sus filas animadas y resalta lo que cambia en vivo; tabla con panel de detalle desplegable; hoja de cálculo editable con fórmulas y atajos; y grilla de calendario mensual.",
     sections: [
       { id: "datatable", label: "DataTable" },
+      { id: "animatedtable", label: "AnimatedTable" },
+      { id: "expandabletable", label: "ExpandableTable" },
       { id: "spreadsheet", label: "Spreadsheet" },
       { id: "calendar", label: "CalendarGrid" },
     ],
@@ -311,6 +316,40 @@ export const GROUPS: Group[] = [
     ],
   },
   {
+    id: "games",
+    label: "Juegos & sorteos",
+    kicker: "Juegos",
+    tone: "accent",
+    blurb:
+      "Herramientas de azar sin sesgo (Math.random) para usar en pantalla: dados 3D, ruleta editable, moneda, número en un rango, sorteo de N ganadores, armado de equipos y anotador de palitos. Todas corren en el cliente: si el resultado tiene consecuencias reales, sorteá en el backend.",
+    sections: [
+      { id: "diceroller", label: "DiceRoller" },
+      { id: "roulettewheel", label: "RouletteWheel" },
+      { id: "coinflip", label: "CoinFlip" },
+      { id: "numbergenerator", label: "NumberGenerator" },
+      { id: "raffledraw", label: "RaffleDraw" },
+      { id: "teamshuffler", label: "TeamShuffler" },
+      { id: "tallycounter", label: "TallyCounter" },
+    ],
+  },
+  {
+    id: "study",
+    label: "Estudio & aprendizaje",
+    kicker: "Estudio",
+    tone: "primary",
+    blurb:
+      "Flashcards sueltas y en mazo con calificación, opción múltiple que se corrige sola, Pomodoro, racha de constancia, dominio por materia y ejercicio de emparejar.",
+    sections: [
+      { id: "flashcard", label: "Flashcard" },
+      { id: "flashcarddeck", label: "FlashcardDeck" },
+      { id: "quizcard", label: "QuizCard" },
+      { id: "studytimer", label: "StudyTimer" },
+      { id: "streaktracker", label: "StreakTracker" },
+      { id: "progressbytopic", label: "ProgressByTopic" },
+      { id: "matchingpairs", label: "MatchingPairs" },
+    ],
+  },
+  {
     id: "effects",
     label: "Efectos visuales & superficies",
     kicker: "Efectos",
@@ -381,13 +420,17 @@ export const GROUPS: Group[] = [
     ],
   },
   {
-    id: "layouts",
-    label: "Layouts",
-    kicker: "Layout",
+    id: "app-base",
+    label: "Base de app",
+    kicker: "Base",
     tone: "primary",
     blurb:
-      "El organismo raíz que arma la base de una PWA de una: header, bottom nav, notificaciones, splash, instalación, conectividad, permisos y un BottomSheet global compuestos sobre el resto de la librería.",
-    sections: [{ id: "packageapp", label: "PackageApp" }],
+      "Guía de integración: qué componentes montar una vez (safe areas, splash, capa PWA, HeroTabs underline, BottomNav y un FAB con tres acciones) para que cualquier pantalla nueva ya nazca completa — con la implementación corriendo en vivo.",
+    sections: [
+      { id: "appbase", label: "Qué integrar" },
+      { id: "appbase-live", label: "Implementación en vivo" },
+      { id: "appbase-code", label: "El código" },
+    ],
   },
   {
     id: "utils",

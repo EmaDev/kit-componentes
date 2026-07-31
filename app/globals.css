@@ -140,6 +140,18 @@ a,
   overscroll-behavior: contain;
 }
 
+/* Placeholder del área editable de DocumentEditor (modo tradicional).
+   El contentEditable no soporta ::placeholder, así que se pinta desde
+   data-placeholder. :empty no alcanza: el navegador deja un <br> o un
+   <p><br></p> en cuanto el usuario escribe y borra, así que se usa el
+   marcador data-empty que el propio componente mantiene. */
+.prose-doc[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  color: var(--color-muted);
+  pointer-events: none;
+  display: block;
+}
+
 /* Flash de confirmación de PullToRefresh */
 @keyframes ptrFlash {
   0% {

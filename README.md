@@ -56,6 +56,8 @@ components/
   ShareButton.tsx        # compartir con hoja nativa del sistema o sheet propio
   CardGrid.tsx           # grilla de cards con columnas ajustables en tiempo real
   DataTable.tsx          # orden, búsqueda, selección, paginado, sticky header
+  AnimatedTable.tsx      # orden con reacomodo animado (FLIP) + resalte de celdas que cambian
+  ExpandableTable.tsx    # fila con panel de detalle desplegable animado
   Spreadsheet.tsx        # hoja de cálculo editable con fórmulas y atajos
   CalendarGrid.tsx       # grilla mensual con eventos
   Navbar.tsx             # usa next/link + next/navigation
@@ -87,7 +89,6 @@ components/
   SafeArea.tsx           # + <SafeAreaSpacer/>: notch, island, home indicator
   NativeShell.tsx        # raíz todo-en-uno para experiencia nativa
   ViewportLock.tsx       # bloquea zoom/overscroll/long-press (sin UI)
-  PackageApp.tsx         # organismo raíz: header + bottom nav + splash + PWA + permisos + BottomSheet global
   AppHeader.tsx          # header de app: volver, título grande colapsable, acciones, buscador
   AppHeaderIsland.tsx    # cápsula flotante desprendida de los bordes, estilo dynamic island
   AppHeaderWave.tsx      # hero con degradado y esquina inferior muy redondeada
@@ -166,6 +167,23 @@ components/
   AnimatedProgressRing.tsx # anillo de progreso animado hacia un valor
   DragReorderList.tsx    # lista reordenable por drag & drop
   VideoCallGrid.tsx      # grilla de participantes de videollamada
+  FabActionSheets.tsx    # FAB con speed dial: cada acción abre su propio BottomSheet
+  QuickNotePad.tsx       # FAB + bloc de notas rápido (viñetas, numeración, emojis)
+  DocumentEditor.tsx     # escritor a pantalla completa: tradicional o Markdown
+  DiceRoller.tsx         # lanzador de dados 3D, cantidad elegible
+  RouletteWheel.tsx      # ruleta con opciones editables, elige una por giro
+  CoinFlip.tsx           # moneda 3D: cara o cruz al azar
+  NumberGenerator.tsx    # número al azar en un rango editable, con historial
+  RaffleDraw.tsx         # sorteo de N ganadores con reel animado, sin repetir
+  TeamShuffler.tsx       # reparte una lista en N equipos parejos al azar
+  TallyCounter.tsx       # anotador de palitos, marcas en grupos de 5
+  Flashcard.tsx          # tarjeta de memorización con flip 3D
+  FlashcardDeck.tsx      # mazo con progreso y calificación por tarjeta
+  QuizCard.tsx           # opción múltiple con feedback y explicación
+  StudyTimer.tsx         # Pomodoro: foco/descanso + ciclos completados
+  StreakTracker.tsx      # racha de estudio + grilla de constancia
+  ProgressByTopic.tsx    # dominio por tema/materia, ordenado por avance
+  MatchingPairs.tsx      # ejercicio de emparejar término/definición
   index.ts               # barrel export
 hooks/
   useSpreadsheet.ts            # motor de fórmulas + selección + undo/redo
@@ -270,7 +288,9 @@ Todos los imports de ejemplo en este README (`@/components/...`) pasan a importa
 
 ## 🏗️ Guía: setup de una app nueva desde cero (SSR-first)
 
-Checklist completa para arrancar un proyecto nuevo con Next.js + `lib-kit-components`, con arquitectura atómica en el consumidor y **Server Components por default** — el cliente se reserva sólo para lo que de verdad necesita interactividad (el shell de `PackageApp`, formularios, hooks de estado).
+Checklist completa para arrancar un proyecto nuevo con Next.js + `lib-kit-components`, con arquitectura atómica en el consumidor y **Server Components por default** — el cliente se reserva sólo para lo que de verdad necesita interactividad (el shell de la app, formularios, hooks de estado).
+
+Para el contenido del shell (qué componentes montar y en qué orden: safe areas, splash, capa PWA, navegación y FAB), la receta completa está en [docs/guides/app-base.md](docs/guides/app-base.md).
 
 ### 1. Crear el proyecto
 
@@ -337,7 +357,7 @@ src/
       layout.tsx               # Server · sólo arma <AppShell>{children}</AppShell>
       page.tsx                 # Server · fetch de datos + <HomeTemplate data={...}/>
       productos/[id]/page.tsx  # Server · fetch por id + <ProductTemplate/>
-    (app)/AppShell.tsx          # Client · único punto donde se monta <PackageApp>
+    (app)/AppShell.tsx          # Client · único punto donde se monta el shell (splash + PWA + nav + FAB)
   components/
     atoms/                     # primitivos 100% propios que no existen en la librería
     molecules/                 # combinación de átomos con un propósito (ProductPrice, RatingStars)
@@ -354,33 +374,43 @@ src/
 - **templates**: pura composición de layout (grid, secciones, orden de organisms). Si no usan hooks, quedan como Server Components — eso es lo que le permite a Next.js streamear el HTML de la pantalla completa antes de que hidrate un solo organism.
 - **pages** (`page.tsx`): siempre Server Components `async`. Son el único lugar autorizado para `await fetch(...)`/queries a la base de datos — nunca en un `organism`/`template` client.
 
-### 5. El shell de la app con `PackageApp` (el único límite cliente/servidor que importa)
+### 5. El shell de la app (el único límite cliente/servidor que importa)
 
-`PackageApp` es `"use client"` (usa `useSplash`, `useOnlineStatus`, estado del `BottomSheet` global) — pero **no** hace falta que tu `layout.tsx` también lo sea. El patrón es aislar `PackageApp` en un componente cliente propio (`AppShell`) que recibe `children` como prop: ese `children` lo sigue resolviendo el Server Component que lo llama, así que las páginas debajo del shell pueden seguir siendo 100% Server Components con fetch en el servidor.
+Las piezas del shell (`SplashScreen`, `PwaInstallPrompt`, `BottomNav`, `FabActionSheets`, …) son client components — pero **no** hace falta que tu `layout.tsx` también lo sea. El patrón es aislarlas en un componente cliente propio (`AppShell`) que recibe `children` como prop: ese `children` lo sigue resolviendo el Server Component que lo llama, así que las páginas debajo del shell pueden seguir siendo 100% Server Components con fetch en el servidor.
 
 ```tsx
 // src/app/(app)/AppShell.tsx
 "use client";
 import type { ReactNode } from "react";
-import { PackageApp } from "lib-kit-components";
-import { HomeIcon, SearchIcon, UserIcon } from "@/components/atoms/icons";
+import {
+  NativeShell, SafeArea, SplashScreen, OfflineBanner, PwaInstallPrompt,
+  BottomNav, FabActionSheets, SnackbarProvider, useSplash,
+} from "lib-kit-components";
+import { NAV, ACTIONS } from "./shell-config";
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const { visible, progress } = useSplash({ minDuration: 1500, oncePerSession: true });
+
   return (
-    <PackageApp
-      appName="Mi App"
-      header={{ title: "Inicio", largeTitle: true, searchable: true }}
-      navItems={[
-        { label: "Inicio", href: "/", icon: <HomeIcon /> },
-        { label: "Buscar", href: "/buscar", icon: <SearchIcon /> },
-        { label: "Perfil", href: "/perfil", icon: <UserIcon /> },
-      ]}
-    >
-      {children}
-    </PackageApp>
+    <SnackbarProvider position="bottom-center" gap={80}>
+      <NativeShell onlyWhenInstalled>
+        <SplashScreen visible={visible} progress={progress} appName="Mi App" variant="bars" background="brand" />
+        <OfflineBanner position="top" />
+        <PwaInstallPrompt appName="Mi App" />
+
+        <SafeArea edges={["left", "right"]} fillViewport className="flex flex-col bg-surface text-foreground">
+          <main className="min-w-0 flex-1 pb-20 md:pb-8">{children}</main>
+        </SafeArea>
+
+        <BottomNav items={NAV} />
+        <FabActionSheets actions={ACTIONS} mainLabel="Acciones" className="pb-[4.5rem] md:pb-0" />
+      </NativeShell>
+    </SnackbarProvider>
   );
 }
 ```
+
+Cada capa de ese shell, sus alternativas y sus gotchas (z-index, paddings sobre el `BottomNav`, safe areas, `HeroTabs` como nav de pantalla): [docs/guides/app-base.md](docs/guides/app-base.md).
 
 ```tsx
 // src/app/(app)/layout.tsx — Server Component: no hace fetch, sólo delega
@@ -422,12 +452,12 @@ export function HomeTemplate({ data }: { data: HomeData }) {
 
 ### 6. Por qué este patrón mantiene SSR real
 
-- El HTML de `HomeTemplate` (hero + grilla con datos reales) se renderiza en el servidor y llega completo en la respuesta inicial — no depende de que hidrate `AppShell`/`PackageApp`.
+- El HTML de `HomeTemplate` (hero + grilla con datos reales) se renderiza en el servidor y llega completo en la respuesta inicial — no depende de que hidrate `AppShell`.
 - El único JS que el cliente hidrata "de arriba" es el shell (header, bottom nav, splash, sheet global); el contenido de cada pantalla hidrata sólo los organisms puntuales que lo necesitan (islas de interactividad), no la página entera.
-- Evitá el error común de poner `"use client"` en `layout.tsx`/`page.tsx` "porque `PackageApp` lo pide" — el límite cliente va en `AppShell`, no en la ruta.
+- Evitá el error común de poner `"use client"` en `layout.tsx`/`page.tsx` "porque el shell lo pide" — el límite cliente va en `AppShell`, no en la ruta.
 - Para confirmarlo: `view-source:` sobre la página en el navegador debe mostrar el contenido de `HomeTemplate` ya resuelto en el HTML crudo (sin JS), no un `<div id="__next">` vacío.
 
-### 7. PWA mínima (si vas a usar `installPrompt`/`updatePrompt` de `PackageApp`)
+### 7. PWA mínima (si vas a montar `PwaInstallPrompt`/`UpdatePrompt`)
 
 - `public/manifest.json` con `name`, `icons`, `start_url`, `display: "standalone"`.
 - `public/sw.js` con al menos el handler que necesita `UpdatePrompt`:
@@ -775,7 +805,24 @@ const columns: Column<Person>[] = [
   events={events} weekStartsOn={1} maxPerDay={3}
   onDayClick={openDay} onEventClick={openEvent}
 />
+
+// Orden con reacomodo animado + celdas que se resaltan al cambiar de valor
+<AnimatedTable
+  columns={columns} rows={liveStats} rowKey={s => s.id}
+  sortable highlightChanges density="compact"
+/>
+
+// Fila con panel de detalle desplegable
+<ExpandableTable
+  columns={columns} rows={pedidos} rowKey={o => o.id}
+  renderDetail={o => <DetallePedido pedido={o}/>}
+  multiple
+/>
 ```
+
+`AnimatedTable` y `ExpandableTable` reutilizan el mismo tipo `Column<T>` que `DataTable`, así que podés pasarles las mismas definiciones de columna. `AnimatedTable` usa `key`, `header`, `width`, `align`, `sortable`, `render` y `sortValue`; `ExpandableTable` usa `key`, `header`, `width`, `align` y `render`. Ninguna de las dos aplica `hideOnMobile`.
+
+Ninguna trae búsqueda, selección ni paginado a propósito — para eso está `DataTable`. Dos detalles: `highlightChanges` sólo resalta columnas **sin** `render` (el resalte se dispara cuando cambia el string del valor crudo), y en `ExpandableTable` **toda la fila es el disparador**, así que un control interactivo dentro de una celda necesita `e.stopPropagation()` para no desplegar el panel.
 
 **Atajos de la hoja de cálculo**: flechas · `⇧`+flechas (rango) · `⌘/Ctrl`+flechas (extremos) · `Tab`/`⇧Tab` · `Enter`/`F2` (editar) · escribir (reemplazar) · `Esc` · `Delete` · `⌘/Ctrl`+`C`/`X`/`V` (TSV, compatible con Excel y Sheets) · `⌘/Ctrl`+`Z`/`⇧Z` · `⌘/Ctrl`+`A` · `Home`/`End`.
 
@@ -1057,37 +1104,49 @@ Las CSS vars quedan disponibles sin JS:
 
 Y hay utilidades listas en `globals.css`: `.h-app`, `.min-h-app`, `.pinned-bottom`, `.scroll-native`.
 
-## 🧩 Layout base de una PWA (`PackageApp`)
+## 🧩 Base de una app (el shell)
+
+No hay un componente "todo en uno": la base se arma con piezas que se montan **una vez** en el shell, y después cada pantalla nueva ya nace completa. Las cinco capas:
+
+| # | Capa | Piezas |
+|---|---|---|
+| 1 | Shell nativo y safe areas | `NativeShell`, `SafeArea` (`SafeAreaSpacer`), `ViewportLock` |
+| 2 | Arranque | `useSplash` + `SplashScreen` |
+| 3 | Capa PWA | `PwaInstallPrompt`, `InstallButton`, `OfflineBanner`, `UpdatePrompt`, `OfflineFallback`, `PwaStatus` |
+| 4 | Navegación | `HeroTabs variant="underline"` (dentro de la pantalla) + `BottomNav` (rutas) |
+| 5 | Acción principal | `FabActionSheets` (3 acciones con sheet propio) + `SnackbarProvider` |
 
 ```tsx
-// app/(app)/layout.tsx — organismo raíz: header + bottom nav + splash + PWA + permisos + sheet global
-import { PackageApp, useAppSheet } from "lib-kit-components";
+// app/(app)/AppShell.tsx — "use client": el único límite cliente "de arriba"
+<SnackbarProvider position="bottom-center" gap={80}>       {/* 80 = BottomNav (64) + margen */}
+  <NativeShell onlyWhenInstalled>                          {/* --sa-*, --app-height; bloqueos sólo instalada */}
+    <SplashScreen visible={visible} progress={progress} appName="Mi App" variant="bars" background="brand" />
+    <OfflineBanner position="top" />
+    <PwaInstallPrompt appName="Mi App" />
+    <UpdatePrompt />                                       {/* requiere /sw.js con SKIP_WAITING */}
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <PackageApp
-      appName="Mi App"
-      header={{ title: "Inicio", largeTitle: true, searchable: true }}
-      navItems={[
-        { label: "Inicio", href: "/", icon: <HomeIcon /> },
-        { label: "Perfil", href: "/perfil", icon: <UserIcon /> },
-      ]}
-      notifications={{ items: notifications, onRead: markAsRead, onReadAll: markAllAsRead }}
-      requiredPermissions={[{ kind: "camera", reason: "Para escanear tu cupón necesitamos la cámara." }]}
-      offline="fallback"       // banner | fallback | false
-      splash={{ variant: "zoom", background: "brand" }}
-    >
-      {children}
-    </PackageApp>
-  );
-}
+    <SafeArea edges={["left", "right"]} fillViewport className="flex flex-col bg-surface text-foreground">
+      <main className="min-w-0 flex-1 pb-20 md:pb-8">{children}</main>
+    </SafeArea>
 
-// …y desde cualquier pantalla hija, sin estado propio
-const { openSheet, closeSheet } = useAppSheet();
-openSheet(<FiltrosForm onApply={closeSheet} />, { title: "Filtros" });
+    <BottomNav items={NAV} />                               {/* 3 rutas, mobile (md:hidden) */}
+    <FabActionSheets actions={ACTIONS} mainLabel="Acciones" className="pb-[4.5rem] md:pb-0" />
+  </NativeShell>
+</SnackbarProvider>
 ```
 
-Compone, en un solo componente: `SplashScreen`, `PwaInstallPrompt`, `OfflineBanner`/`OfflineFallback`, `AppHeader` (con campana de notificaciones opcional → `NotificationPanel` en un `BottomSheet`), `BottomNav`, `PermissionGate` encadenado (`requiredPermissions`), `SnackbarProvider` y un `BottomSheet` global reusable (`useAppSheet`). Detalles y gotchas: [PackageApp](docs/components/PackageApp.md).
+```tsx
+// app/(app)/page.tsx — Server Component: HeroTabs underline es la nav de la pantalla
+<HeroTabs
+  sticky variant="underline"
+  title="Hola, Emanuel"
+  actions={<InstallButton size="sm" variant="outline" />}
+  tabs={[{ id: "resumen", label: "Resumen" }, { id: "movimientos", label: "Movimientos", count: 12 }]}
+  panels={{ resumen: <ResumenPanel />, movimientos: <MovimientosPanel /> }}
+/>
+```
+
+Guía completa (por qué ese orden, el mapa de z-index, los paddings sobre el `BottomNav`, manifest + service worker y los gotchas de cada pieza): **[docs/guides/app-base.md](docs/guides/app-base.md)**. La implementación corriendo está en el playground (grupo *Base de app*) y en `dev/src/app/ejemplos/app-base/`.
 
 ## 📡 Offline, datos y sincronización
 
@@ -1396,6 +1455,128 @@ const { pick } = useFilePicker({ accept: "image/*", maxSize: 5 * 1024 * 1024 });
 // Grilla de videollamada
 <VideoCallGrid participants={[{ id: "1", name: "Ana Torres", speaking: true, videoOn: true }]} onToggleMute={toggleMute} onToggleVideo={toggleVideo} onLeave={salir} />
 ```
+
+## ✍️ Escritura & acciones flotantes
+
+```tsx
+// FAB con speed dial: cada acción abre su propio BottomSheet
+<FabActionSheets
+  mainLabel="Crear"
+  actions={[
+    { icon: <PlusIcon/>, label: "Nuevo gasto", content: <FormularioGasto/> },
+    { icon: <FilterIcon/>, label: "Filtros", sheetSnapPoints: [0.4, 0.9], content: <PanelDeFiltros/> },
+  ]}
+/>
+
+// Bloc de notas rápido desde un FAB — viñetas, numeración y emojis
+<QuickNotePad
+  storageKey="notas.borrador"     // opcional: persiste el borrador en localStorage
+  title="Nueva nota"
+  onSave={texto => api.crearNota(texto)}
+/>
+
+// Escritor a pantalla completa — tradicional (WYSIWYG) o Markdown
+<DocumentEditor
+  defaultTitle={doc.titulo} defaultValue={doc.markdown}
+  defaultFormat="traditional"    // traditional | markdown
+  onChange={md => autosave(md)}  // siempre Markdown, en los dos modos
+  onSave={async ({ title, markdown }) => await api.guardar({ title, markdown })}
+  onClose={cerrar}
+  variant="fullscreen"           // fullscreen | embed
+/>
+```
+
+`FabActionSheets` compone `FloatingButton` + `BottomSheet`: **monta todos los sheets a la vez** (sólo uno abierto), así que un `content` que hace fetch al montarse se ejecuta antes de que el usuario abra nada — renderizalo condicionalmente en ese caso.
+
+En `DocumentEditor` la fuente de verdad es siempre Markdown, y la conversión desde el modo tradicional es **con pérdida**: el subset soportado son títulos, negrita, cursiva, código, enlaces, citas, listas y bloques de código. Todo lo demás (tablas, imágenes, subrayado, HTML pegado) se pierde al convertir. Usa `document.execCommand`, que está deprecado: para un editor que sea pieza central del producto, considerá una librería dedicada. El indicador "Guardado" es cosmético — el guardado real lo hacés en `onChange`/`onSave`.
+
+## 🎲 Juegos & sorteos
+
+```tsx
+// Dados 3D — cubos CSS de 6 caras, cantidad elegible por el usuario
+<DiceRoller
+  min={1} max={6} defaultCount={2} size={64}
+  onRoll={values => console.log(values, values.reduce((a, b) => a + b, 0))}
+/>
+
+// Ruleta con opciones editables por el usuario — conic-gradient + puntero fijo
+<RouletteWheel
+  defaultOptions={["Pizza", "Sushi", "Empanadas", "Hamburguesas"]}
+  allowEdit size={280}
+  onResult={(option, index) => console.log(option, index)}
+/>
+
+// Moneda 3D — cara o cruz al azar
+<CoinFlip labels={["Cara", "Cruz"]} onFlip={r => console.log(r)} />
+
+// Número al azar en un rango editable, con efecto de conteo
+<NumberGenerator defaultMin={1} defaultMax={100} onGenerate={n => console.log(n)} />
+
+// Sorteo — reel animado, N ganadores, con o sin repetición
+<RaffleDraw
+  defaultEntries={["Ana", "Bruno", "Carla", "Diego"]}
+  maxWinners={20}
+  onDraw={winners => console.log(winners)}   // acumulado, no sólo los nuevos
+/>
+
+// Equipos parejos al azar a partir de una lista
+<TeamShuffler defaultEntries={["Ana", "Bruno", "Carla", "Diego"]} defaultTeamCount={2} />
+
+// Anotador de palitos — una fila por jugador, marcas en grupos de 5
+<TallyCounter
+  defaultPlayers={[{ name: "Equipo A", count: 0 }, { name: "Equipo B", count: 0 }]}
+  allowEdit
+/>
+```
+
+Todos son **no controlados**: las props `default*` alimentan el estado inicial y no se vuelven a leer — para recargar la lista, remontá el componente con una `key` distinta. Usan `Math.random()` sin sesgo, y los que animan un desenlace (dado, moneda, ruleta) comparten el patrón de "rotación siempre hacia adelante": el resultado se sortea *antes* y el ángulo se calcula para caer exactamente ahí, así que la animación nunca retrocede. `TallyCounter` y `TeamShuffler` **no exponen su resultado** (no tienen callback): son herramientas de pantalla.
+
+En `DiceRoller`, `min`/`max` acotan la **cantidad de dados**, no el valor de las caras: los dados son siempre de 6 caras.
+
+> ⚠️ El sorteo corre en el cliente y el usuario puede repetirlo hasta que le guste. Si el resultado tiene consecuencias reales, sorteá en el backend y usá estos componentes sólo para mostrar el desenlace.
+
+## 🎓 Estudio & aprendizaje
+
+```tsx
+// Flashcard suelta — flip pregunta/respuesta
+<Flashcard tag="Vocabulario" front="¿Cómo se dice «casa» en portugués?" back="Casa" />
+
+// Mazo con cola de sesión: "De nuevo" vuelve al final
+<FlashcardDeck
+  cards={[{ id: "1", tag: "Historia", front: "¿Año de la independencia?", back: "1816" }]}
+  onGrade={(id, grade) => saveReview(id, grade)}   // again | hard | good | easy
+  onComplete={() => track("deck_done")}
+/>
+
+// Opción múltiple con feedback y explicación
+<QuizCard
+  key={pregunta.id}          // ← necesario para resetear entre preguntas
+  question="¿Capital de Australia?" correctId="b"
+  options={[{ id: "a", label: "Sídney" }, { id: "b", label: "Canberra" }]}
+  explanation="Canberra es la capital; Sídney es la más poblada."
+  index={0} total={5} onAnswer={(id, ok) => logAnswer(id, ok)} onNext={next}
+/>
+
+// Pomodoro — foco/descanso alternados
+<StudyTimer focusMinutes={25} breakMinutes={5} onCycleComplete={kind => track("pomodoro", kind)} />
+
+// Racha de estudio — grilla de constancia + racha actual
+<StreakTracker studiedDates={["2026-07-27", "2026-07-28"]} weeks={14} goalPerWeek={5} />
+
+// Dominio por tema — barra por materia, ordenadas por avance
+<ProgressByTopic topics={[{ id: "1", label: "Álgebra lineal", mastery: 92 }]} onTopicClick={openTopic} />
+
+// Emparejar término/definición (pairs memoizado, ver abajo)
+<MatchingPairs pairs={PAIRS} onComplete={() => track("match_done")} />
+```
+
+`FlashcardDeck` no implementa el algoritmo de repetición espaciada en sí (SM-2 y similares necesitan persistencia entre sesiones): `onGrade` te da la calificación por tarjeta para que la guardes y calcules el próximo repaso en tu backend; localmente sólo reordena la cola de la sesión actual, que se arma al montar.
+
+Tres detalles que hay que tener presentes:
+
+- **`QuizCard` necesita `key`** por pregunta: `onNext` no limpia su estado interno de "respondida".
+- **`MatchingPairs` necesita un `pairs` estable** (definido fuera del componente o con `useMemo`): un array literal inline remezcla las tarjetas en cada render del padre.
+- **`StreakTracker` compara fechas en UTC**: en zonas al este de UTC la grilla y la racha se corren un día. En Argentina (UTC−3) funciona bien.
 
 ## 🖐 Gestos, rendimiento & Web APIs sueltas
 

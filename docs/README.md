@@ -10,6 +10,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 2. Si no estás seguro de cuál usar, empezá por la [guía de decisión](#guía-de-decisión-necesito--usá).
 3. Cada doc de componente tiene una sección **"Cuándo NO usarlo / alternativas"** que compara contra sus componentes hermanos más ambiguos (ej. `Modal` vs `BottomSheet`, `Select` vs `Dropdown`).
 4. Todos los ejemplos asumen `import { X } from "lib-kit-components";` — el paquete tiene un único entry point (barrel export).
+5. Si lo que necesitás es armar algo completo (no una pieza sola), empezá por las [guías de integración](#guías-de-integración).
 
 ## Guía de decisión: "Necesito… → Usá…"
 
@@ -94,7 +95,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una pantalla de éxito completa tras una operación | [SuccessPage](components/SuccessPage.md) |
 | Un historial de notificaciones agrupado por fecha, o una campana con popover en el header | [NotificationPanel](components/NotificationPanel.md) (`NotificationBell`) |
 | Un reproductor de video con controles propios, o un feed vertical tipo reels | [VideoPlayer](components/VideoPlayer.md) |
-| Armar la base completa de una PWA (header, bottom nav, splash, instalación, conectividad, permisos, sheet global) de una | [PackageApp](components/PackageApp.md) (`useAppSheet`) |
+| Armar la base completa de una app/PWA (safe areas, splash, instalación, conectividad, nav superior + inferior, FAB con acciones) | [Guía: la base de una app](guides/app-base.md) |
 | Una cabecera de pantalla con flecha de volver, título grande colapsable y buscador expandible | [AppHeader](components/AppHeader.md) |
 | Una cabecera cápsula flotante desprendida de los bordes, estilo dynamic island | [AppHeaderIsland](components/AppHeaderIsland.md) |
 | Una cabecera hero con degradado y esquina inferior muy redondeada | [AppHeaderWave](components/AppHeaderWave.md) |
@@ -109,6 +110,25 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Tomar una foto con la cámara del dispositivo, dentro de la propia app | [CameraCapture](components/CameraCapture.md) |
 | Elegir una ubicación: GPS actual + dirección con sugerencias | [LocationPicker](components/LocationPicker.md) |
 | Desbloquear la app con Face ID / huella / Windows Hello | [BiometricGate](components/BiometricGate.md) |
+| Una tabla chica cuyas filas se reacomodan animadas al ordenar, o que resalta las celdas que cambian en vivo | [AnimatedTable](components/AnimatedTable.md) |
+| Una tabla donde cada fila despliega un panel de detalle (ítems de un pedido, logs) | [ExpandableTable](components/ExpandableTable.md) |
+| Un FAB con varias acciones donde cada una abre su propio BottomSheet con un formulario | [FabActionSheets](components/FabActionSheets.md) |
+| Capturar una nota rápida desde un botón flotante, con viñetas y emojis | [QuickNotePad](components/QuickNotePad.md) |
+| Escribir un documento a pantalla completa, en formato tradicional o Markdown | [DocumentEditor](components/DocumentEditor.md) |
+| Tirar dados 3D con la cantidad elegible por el usuario | [DiceRoller](components/DiceRoller.md) |
+| Elegir **una** opción al azar entre varias que el usuario carga en el momento | [RouletteWheel](components/RouletteWheel.md) |
+| Una decisión binaria al azar (cara o cruz, quién arranca) | [CoinFlip](components/CoinFlip.md) |
+| Un número al azar dentro de un rango editable | [NumberGenerator](components/NumberGenerator.md) |
+| Sortear **N ganadores** de una lista larga, con o sin repetir | [RaffleDraw](components/RaffleDraw.md) |
+| Repartir a **todos** los participantes en equipos parejos al azar | [TeamShuffler](components/TeamShuffler.md) |
+| Llevar el puntaje de una partida con marcas de palitos por jugador | [TallyCounter](components/TallyCounter.md) |
+| Una tarjeta de estudio suelta que se da vuelta entre pregunta y respuesta | [Flashcard](components/Flashcard.md) |
+| Una sesión de repaso completa con progreso y autoevaluación por tarjeta | [FlashcardDeck](components/FlashcardDeck.md) |
+| Una pregunta de opción múltiple que se corrige sola, con explicación | [QuizCard](components/QuizCard.md) |
+| Un temporizador Pomodoro con foco y descanso alternados | [StudyTimer](components/StudyTimer.md) |
+| Mostrar la racha de días de estudio y una grilla de constancia | [StreakTracker](components/StreakTracker.md) |
+| Mostrar el nivel de dominio por tema o materia | [ProgressByTopic](components/ProgressByTopic.md) |
+| Un ejercicio de emparejar término con definición | [MatchingPairs](components/MatchingPairs.md) |
 | Retrasar un valor o una función (buscador, autoguardado) | [useDebounce / useDebouncedCallback](hooks/useDebounce.md) |
 | Limitar la frecuencia de un handler de scroll/resize/drag | [useThrottledCallback](hooks/useDebounce.md) |
 | Cerrar sesión o bloquear la app tras inactividad, con aviso previo | [useIdle](hooks/useIdle.md) |
@@ -123,13 +143,15 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Autocompletar un código de verificación por SMS (Android) | [useWebOTP](hooks/useWebOTP.md) |
 | Refrescar datos en segundo plano cada tantas horas (PWA instalada) | [usePeriodicSync](hooks/usePeriodicSync.md) |
 
-## Componentes
+## Guías de integración
 
-### Layouts
+Recetas que combinan varios componentes para un objetivo completo, en vez de documentar una pieza sola.
 
-| Componente | Descripción |
+| Guía | De qué se trata |
 |---|---|
-| [PackageApp](components/PackageApp.md) | Organismo raíz para la base de una PWA: header, bottom nav, notificaciones, splash, instalación, conectividad, permisos y `BottomSheet` global (`useAppSheet`). |
+| [La base de una app (PWA)](guides/app-base.md) | Las cinco capas que hay que montar una vez —safe areas, splash, capa PWA, `HeroTabs` underline + `BottomNav`, y un `FabActionSheets` de tres acciones— con la implementación completa lista para copiar. |
+
+## Componentes
 
 ### UI — formularios, feedback y overlays
 
@@ -166,6 +188,9 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [Breadcrumbs](components/Breadcrumbs.md) | Ruta de navegación con colapso automático. |
 | [FlipCard](components/FlipCard.md) | Tarjeta 3D volteable + `CreditCard` / `CreditCardStack`. |
 | [FloatingButton](components/FloatingButton.md) | FAB con speed dial opcional. |
+| [FabActionSheets](components/FabActionSheets.md) | FAB con speed dial donde cada acción abre su propio BottomSheet. |
+| [QuickNotePad](components/QuickNotePad.md) | FAB + bloc de notas rápido: viñetas, numeración con continuación automática y emojis. |
+| [DocumentEditor](components/DocumentEditor.md) | Escritor a pantalla completa: formato tradicional o Markdown con vista previa. |
 | [AddButton](components/AddButton.md) | Control de cantidad (+/−) con loading independiente por botón. |
 | [AddToCartButton](components/AddToCartButton.md) | Botón "agregar" con estados idle → loading → hecho. |
 | [Progress](components/Progress.md) | `ProgressBar`, `ProgressRing`, `StepsProgress`. |
@@ -220,6 +245,8 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Componente | Descripción |
 |---|---|
 | [DataTable](components/DataTable.md) | Tabla con orden, búsqueda, selección y paginado. |
+| [AnimatedTable](components/AnimatedTable.md) | Tabla que reacomoda las filas animadas al ordenar y resalta las celdas que cambian de valor. |
+| [ExpandableTable](components/ExpandableTable.md) | Tabla con fila expandible: click revela un panel de detalle animado. |
 | [Spreadsheet](components/Spreadsheet.md) | Hoja de cálculo editable con fórmulas. |
 | [CalendarGrid](components/CalendarGrid.md) | Grilla mensual con eventos. |
 
@@ -381,6 +408,32 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | [AnimatedProgressRing](components/AnimatedProgressRing.md) | Anillo de progreso animado hacia un valor. |
 | [DragReorderList](components/DragReorderList.md) | Lista reordenable por drag & drop. |
 | [VideoCallGrid](components/VideoCallGrid.md) | Grilla de participantes de videollamada, con mute/video toggle. |
+
+### Juegos & sorteos
+
+Todos usan `Math.random()` sin sesgo y corren **en el cliente**: no sirven para sorteos que haya que auditar (ver la nota de cada uno).
+
+| Componente | Descripción |
+|---|---|
+| [DiceRoller](components/DiceRoller.md) | Dados 3D en CSS, cantidad elegible; muestra el total y el detalle por dado. |
+| [RouletteWheel](components/RouletteWheel.md) | Ruleta con opciones editables por el usuario; elige una por giro. |
+| [CoinFlip](components/CoinFlip.md) | Moneda 3D: cara o cruz al azar, con etiquetas configurables. |
+| [NumberGenerator](components/NumberGenerator.md) | Número al azar en un rango editable, con efecto de conteo e historial. |
+| [RaffleDraw](components/RaffleDraw.md) | Sorteo de N ganadores con reel animado y opción de no repetir. |
+| [TeamShuffler](components/TeamShuffler.md) | Reparte una lista de nombres en N equipos parejos al azar. |
+| [TallyCounter](components/TallyCounter.md) | Anotador de palitos: una fila por jugador, marcas en grupos de 5. |
+
+### Estudio & aprendizaje
+
+| Componente | Descripción |
+|---|---|
+| [Flashcard](components/Flashcard.md) | Tarjeta de memorización suelta, con flip 3D entre pregunta y respuesta. |
+| [FlashcardDeck](components/FlashcardDeck.md) | Mazo con progreso y calificación por tarjeta; "De nuevo" vuelve al final de la cola. |
+| [QuizCard](components/QuizCard.md) | Pregunta de opción múltiple con feedback inmediato y explicación. |
+| [StudyTimer](components/StudyTimer.md) | Pomodoro: foco y descanso alternados, con conteo de ciclos. |
+| [StreakTracker](components/StreakTracker.md) | Racha de días de estudio + grilla de constancia. |
+| [ProgressByTopic](components/ProgressByTopic.md) | Dominio por tema/materia, ordenado por avance. |
+| [MatchingPairs](components/MatchingPairs.md) | Ejercicio de emparejar término con definición. |
 
 ## Hooks
 
