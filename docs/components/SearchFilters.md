@@ -16,6 +16,7 @@ Usalo cuando necesitás una búsqueda con texto libre **combinada** con filtros 
 
 - Si sólo necesitás elegir **un** valor de una lista cerrada dentro de un formulario (sin búsqueda de texto libre ni resultados agrupados), usá [Select](Select.md) — `SearchFilters` no tiene noción de "valor seleccionado" persistente, `onSelect` es un callback de click sobre un resultado, no un estado controlado.
 - Si necesitás un menú de acciones anclado a un trigger, usá [Dropdown](Dropdown.md), no `SearchFilters`.
+- Si lo que necesitás es la cabecera típica de un listado de productos (orden asc/desc + filtros de faceta + rango de precio, sin texto libre ni resultados agrupados debajo), usá [ProductFilterBar](ProductFilterBar.md).
 - Si las opciones de filtro son pocas y no necesitás texto libre ni resultados agrupados debajo, un [ChipCarousel](ChipCarousel.md) con selección múltiple es más liviano.
 - Si lo que necesitás es capturar etiquetas libres escritas por el usuario (no elegir de una lista predefinida), usá [TagInput](TagInput.md).
 - **Importante:** el filtrado real por `active` no está implementado — ver Notas y comportamiento.

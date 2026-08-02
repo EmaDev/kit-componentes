@@ -80,6 +80,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Una galería de una imagen a la vez con contador «3/12» superpuesto | [ImageCounter](components/ImageCounter.md) |
 | Feedback de una acción con «deshacer», uno a la vez (cola FIFO) | [Snackbar](components/Snackbar.md) |
 | Elegir una fecha o un rango, con atajos y días bloqueados | [DatePicker](components/DatePicker.md) |
+| Elegir un horario (hora/minuto), 12h o 24h, con atajos y límites | [TimePicker](components/TimePicker.md) |
 | Saltar a una página específica de un listado grande y conocido | [Pagination](components/Pagination.md) |
 | El gesto nativo de "tirar para refrescar" en una lista mobile | [PullToRefresh](components/PullToRefresh.md) |
 | Un carrito de compras: botón con badge + panel de líneas | [Cart](components/Cart.md) (`CartButton` / `CartPanel` / `useCart`) |
@@ -130,6 +131,7 @@ Para instalación, peer dependencies, tokens de tema y el playground en vivo, ve
 | Mostrar la racha de días de estudio y una grilla de constancia | [StreakTracker](components/StreakTracker.md) |
 | Mostrar el nivel de dominio por tema o materia | [ProgressByTopic](components/ProgressByTopic.md) |
 | Un ejercicio de emparejar término con definición | [MatchingPairs](components/MatchingPairs.md) |
+| Ordenar (asc/desc) y filtrar un listado de productos de una tienda online (categoría, marca, precio…) | [ProductFilterBar](components/ProductFilterBar.md) |
 | Retrasar un valor o una función (buscador, autoguardado) | [useDebounce / useDebouncedCallback](hooks/useDebounce.md) |
 | Limitar la frecuencia de un handler de scroll/resize/drag | [useThrottledCallback](hooks/useDebounce.md) |
 | Cerrar sesión o bloquear la app tras inactividad, con aviso previo | [useIdle](hooks/useIdle.md) |
@@ -274,6 +276,7 @@ Recetas que combinan varios componentes para un objetivo completo, en vez de doc
 | [ImageCounter](components/ImageCounter.md) | Galería de una imagen a la vez con contador «03 / 12», arrastre, teclado y zoom. |
 | [Snackbar](components/Snackbar.md) | `SnackbarProvider` + `useSnackbar()`, uno a la vez con "deshacer" y swipe. |
 | [DatePicker](components/DatePicker.md) | Fecha simple o rango, popover o embebido, atajos y límites. |
+| [TimePicker](components/TimePicker.md) | Horario (h/m/s), 12h o 24h, popover o embebido, atajos y límites. |
 | [Pagination](components/Pagination.md) | Paginado numérico con elipsis, resumen y tamaño de página. |
 | [PullToRefresh](components/PullToRefresh.md) | Gesto nativo de refresco, con resistencia y flash de confirmación. |
 
@@ -365,6 +368,7 @@ Recetas que combinan varios componentes para un objetivo completo, en vez de doc
 | Componente | Descripción |
 |---|---|
 | [SearchFilters](components/SearchFilters.md) | Filtros de búsqueda agrupados + resultados en vivo. |
+| [ProductFilterBar](components/ProductFilterBar.md) | Orden (asc/desc) + filtros de faceta + rango de precio, para un listado de productos. |
 | [BookingCalendar](components/BookingCalendar.md) | Calendario de reservas con horarios disponibles por día. |
 | [ProfileEditor](components/ProfileEditor.md) | Editor de perfil: avatar, datos de contacto y bio. |
 | [LanguagePicker](components/LanguagePicker.md) | Selector de idioma/región. |

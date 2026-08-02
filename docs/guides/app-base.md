@@ -4,7 +4,7 @@
 
 No hay un componente "todo en uno": la base se arma con 10-12 piezas que se montan **una sola vez** en el shell de la app. Hecho eso, cada pantalla nueva ya nace con splash, insets, instalación, aviso de conexión, navegación, acción principal, feedback transitorio y centro de notificaciones resueltos.
 
-Demo corriendo en el playground: grupo **Base de app** (`#appbase`, `#appbase-live`, `#appbase-code`) y la ruta real en `dev/src/app/ejemplos/app-base/`.
+Cada pieza suelta tiene su preview en el playground (`dev/`); acá está el código completo del shell que las une.
 
 ## Cuándo usar esta guía
 
@@ -462,4 +462,4 @@ export default async function HomePage() {
 - **El badge de la campana**: `HeaderAction.badge` es `number | boolean` y sólo se esconde con `undefined` o `false`. Un `0` se renderiza como un badge rojo con un "0" adentro, así que pasale `badge: unread || false`; con `true` dibuja un punto sin número.
 - **Permisos**: no los pidas en el shell al arrancar. Envolvé la feature puntual con `PermissionGate` (cámara, ubicación, notificaciones) cuando el usuario ya entendió para qué.
 - **Desktop**: esta base es mobile-first. Para una app que también vive en escritorio, sumá `Navbar`/`SideBar` en el mismo shell (visibles con `md:`) — el `BottomNav` ya se esconde solo.
-- La implementación de referencia completa, corriendo, está en `dev/src/app/ejemplos/app-base/` (playground → grupo **Base de app** → "Implementación completa, en vivo").
+- La implementación de referencia completa es el código de esta misma guía (secciones anteriores): copiá `AppShell.tsx` y el `layout.tsx` tal cual y ya tenés el shell andando.

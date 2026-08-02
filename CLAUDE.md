@@ -21,11 +21,13 @@ Esto aplica tanto a componentes en `components/` como a hooks en `hooks/`. Ning�
 
 4. **Agregarlo al `README.md` principal**: una línea en el árbol de `## 📁 Estructura` (con comentario corto de qué hace), y si corresponde, un bloque en `## 📚 Uso rápido` o la sección temática correspondiente (Datos, PWA, Plataforma, etc.).
 
-5. **Agregarlo al playground real (`dev/`)**. Pasos:
-   - Importar el componente real desde `../../../components/<Nombre>` en el grupo de `dev/src/sections/` que corresponda (`AtomsGroup.tsx`, `InteractionGroup.tsx`, `DataGroup.tsx`, `PwaGroup.tsx`), o crear un grupo nuevo si no encaja en ninguno.
-   - Envolverlo en `<Section id="..." title="..." description="...">` con al menos una `<Card>` mostrando un uso representativo (interactivo si el componente tiene estado).
-   - Si es un grupo nuevo, registrarlo en `dev/src/chrome/groups.ts` (`GROUPS`) para que aparezca en el sidebar con scroll-spy, y agregar el `<GroupHeader/>` + el grupo en `dev/src/app/page.tsx`.
+5. **Agregarlo al playground real (`dev/`)**. El playground es un catálogo plano: un preview por componente, ordenado según las 6 categorías del inventario. Pasos:
+   - Escribir el demo en el archivo de `dev/src/demos/` que temáticamente corresponda (`ui.tsx`, `interaction.tsx`, `data.tsx`, `pwa.tsx`, `finance.tsx`, …), importando el componente real desde `../../../components/<Nombre>`.
+   - El demo es **una función exportada** llamada `<Nombre>Section` que devuelve `<Section id="..." title="<Nombre>" description="...">` con al menos una `<Card>` mostrando un uso representativo (interactivo si el componente tiene estado). El `id` es el ancla de la página y tiene que ser único en todo el playground.
+   - Registrarlo en `dev/src/catalog.tsx`: una `Entry` (`{ id, name, alias?, Demo }`) dentro del grupo de la categoría que corresponda. El `id` debe coincidir con el del `<Section>`. `name` es lo que se ve en el índice lateral; `alias` suma términos de búsqueda (sub-componentes, hooks, sinónimos en español).
+   - No hay que tocar `dev/src/app/page.tsx`: renderiza el catálogo entero por sí solo (índice lateral, buscador y anclas incluidos).
    - `dev/` es una app Next.js real, así que `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también se montan en vivo — no hace falta ninguna excepción para ellos.
+   - No crear rutas nuevas ni pantallas de ejemplo: el playground es una sola página.
    - Validar con `cd dev && npx tsc --noEmit` antes de dar por terminado.
 
 No hace falta pedir permiso para estos cinco pasos — son parte de terminar el trabajo de agregar el componente, no un extra opcional.

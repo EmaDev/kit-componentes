@@ -14,7 +14,7 @@ Usalo para capturar una fecha o un rango de fechas dentro de un formulario: fech
 
 ## Cuándo NO usarlo / alternativas
 
-- Si necesitás elegir sólo una hora (no una fecha), no hay un `TimePicker` en esta librería todavía — construilo con `Select`/inputs numéricos propios.
+- Si necesitás elegir sólo una hora (no una fecha), usá [TimePicker](TimePicker.md).
 - Si el rango de fechas es fijo y pequeño (ej. "hoy" / "esta semana" / "este mes"), un grupo de botones simple es más liviano que montar `DatePicker`.
 - Para elegir un valor de una lista no temporal, usá [Select](Select.md).
 

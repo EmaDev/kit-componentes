@@ -66,6 +66,7 @@ components/
   ImageCounter.tsx       # galería de una imagen con contador «03 / 12» + zoom
   Snackbar.tsx           # <SnackbarProvider> + useSnackbar() (cola + deshacer)
   DatePicker.tsx         # fecha simple o rango, popover o embebido
+  TimePicker.tsx         # horario (h/m/s), 12h o 24h, popover o embebido
   Pagination.tsx         # paginado con elipsis, resumen y tamaño de página
   PullToRefresh.tsx      # gesto nativo de refresco
   Cart.tsx               # CartButton (badge animado) + CartPanel + useCart()
@@ -133,6 +134,7 @@ components/
   BudgetCategoryProgress.tsx # progreso de gasto por categoría de presupuesto
   PaymentMethodPicker.tsx # selector de tarjetas guardadas + alta de tarjeta nueva
   SearchFilters.tsx      # filtros de búsqueda agrupados + resultados en vivo
+  ProductFilterBar.tsx   # orden asc/desc + filtros de faceta + rango de precio (tienda online)
   BookingCalendar.tsx    # calendario de reservas con horarios disponibles por día
   ProfileEditor.tsx      # editor de perfil: avatar, datos de contacto y bio
   LanguagePicker.tsx     # selector de idioma/región
@@ -671,7 +673,9 @@ npm run dev
 # abrí http://localhost:3000
 ```
 
-Al ser una app Next.js de verdad, `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también corren en vivo: tienen su demo en la página principal y una mini-demo de navegación real en `/nav-demo` para ver el estado activo cambiar entre rutas.
+Es **una sola pantalla**: un catálogo con un preview por componente, ordenado en las 6 categorías del inventario (Átomos · Moléculas · PWA & nativo · Config & hooks · Nicho · Otros), con índice lateral y buscador por nombre. Cada preview tiene su ancla propia (`/#datatable`, `/#bottomsheet`, …).
+
+Al ser una app Next.js de verdad, `Navbar`, `SideBar` y `BottomNav` (que usan `next/link`/`next/navigation`) también corren en vivo, sin mocks.
 
 Para agregar un componente nuevo al playground (y el resto de los pasos obligatorios al crear uno): ver [CLAUDE.md](CLAUDE.md).
 
@@ -863,6 +867,15 @@ undo("«Factura #1042» eliminada", () => restore(row));
   weekStartsOn={1} locale="es-AR"
 />
 <DatePicker mode="range" months={2} value={range} onChange={setRange}/>
+
+// Time picker — horas/minutos (y segundos opcional), 12h o 24h, atajos, límites
+<TimePicker
+  value={time} onChange={setTime}
+  label="Hora de la reserva" step={15}
+  min="09:00" max="18:00"
+  disabledTime={h => h === 13}
+/>
+<TimePicker hour12 value={time} onChange={setTime}/>
 
 // Paginado — elipsis, extremos, resumen y tamaño de página
 <Pagination
@@ -1153,7 +1166,7 @@ No hay un componente "todo en uno": la base se arma con piezas que se montan **u
 />
 ```
 
-Guía completa (por qué ese orden, el mapa de z-index, los paddings sobre el `BottomNav`, manifest + service worker y los gotchas de cada pieza): **[docs/guides/app-base.md](docs/guides/app-base.md)**. La implementación corriendo está en el playground (grupo *Base de app*) y en `dev/src/app/ejemplos/app-base/`.
+Guía completa (por qué ese orden, el mapa de z-index, los paddings sobre el `BottomNav`, manifest + service worker y los gotchas de cada pieza): **[docs/guides/app-base.md](docs/guides/app-base.md)**, que trae el código completo de cada archivo del shell.
 
 ## 📡 Offline, datos y sincronización
 
@@ -1347,6 +1360,14 @@ const { pick } = useFilePicker({ accept: "image/*", maxSize: 5 * 1024 * 1024 });
 ```tsx
 // Filtros de búsqueda + resultados en vivo
 <SearchFilters groups={[{ id: "categoria", label: "Categoría", options: [{ id: "ropa", label: "Ropa" }] }]} onSearch={setQuery} results={results} />
+
+// Orden (asc/desc) + filtros de faceta + rango de precio — cabecera de listado de productos
+<ProductFilterBar
+  value={filters} onChange={setFilters} resultCount={128}
+  sortFields={[{ id: "relevancia", label: "Más relevantes" }, { id: "precio", label: "Precio" }]}
+  price={{ min: 0, max: 200000, format: n => `$${n.toLocaleString("es-AR")}` }}
+  groups={[{ id: "categoria", label: "Categoría", options: [{ id: "ropa", label: "Ropa", count: 84 }] }]}
+/>
 
 // Calendario de reservas
 <BookingCalendar days={[{ date: new Date(), slots: [{ time: "10:00", available: true }] }]} value={slot} onChange={setSlot} onConfirm={reservar} />

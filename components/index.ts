@@ -119,6 +119,7 @@ export { SnackbarProvider, useSnackbar } from "./Snackbar";
 export type { Snack, SnackbarVariant, SnackbarPosition } from "./Snackbar";
 export { DatePicker } from "./DatePicker";
 export type { DateRange } from "./DatePicker";
+export { TimePicker } from "./TimePicker";
 export { Pagination } from "./Pagination";
 export { PullToRefresh } from "./PullToRefresh";
 
@@ -311,6 +312,8 @@ export type { SavedCard, NewCardInput } from "./PaymentMethodPicker";
 // --- Formularios avanzados ---
 export { SearchFilters } from "./SearchFilters";
 export type { FilterGroup, SearchResult } from "./SearchFilters";
+export { ProductFilterBar } from "./ProductFilterBar";
+export type { SortDirection, SortField, FilterOption, ProductFilterGroup, ProductFilterValue } from "./ProductFilterBar";
 export { BookingCalendar } from "./BookingCalendar";
 export type { BookingSlot, BookingDay } from "./BookingCalendar";
 export { ProfileEditor } from "./ProfileEditor";
