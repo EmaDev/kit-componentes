@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "../../../components/Button";
 import { I } from "./Icon";
 import { SITE_CONFIG } from "../site.config";
 
@@ -13,52 +11,64 @@ function ThemeToggle() {
   }, [dark]);
   return (
     <button
+      type="button"
       onClick={() => setDark((d) => !d)}
-      className="relative w-14 h-8 rounded-full border border-border bg-surface-alt transition-colors hover:border-muted/40 active:scale-95"
+      className="shrink-0 w-9 h-9 rounded-lg border border-border bg-surface-alt text-muted flex items-center justify-center hover:text-foreground hover:border-muted/40 active:scale-95 transition-all"
       aria-label="Cambiar tema"
     >
-      <span
-        className="absolute top-1 w-6 h-6 rounded-full bg-surface shadow-md flex items-center justify-center transition-all duration-300"
-        style={{
-          left: dark ? "calc(100% - 1.75rem)" : "0.25rem",
-          color: dark ? "var(--color-accent)" : "var(--color-primary)",
-        }}
-      >
-        {dark ? I.moon : I.sun}
-      </span>
+      {dark ? I.moon : I.sun}
     </button>
   );
 }
 
-function Logo() {
+export function Header({
+  query,
+  onQueryChange,
+  shown,
+  total,
+}: {
+  query: string;
+  onQueryChange: (q: string) => void;
+  shown: number;
+  total: number;
+}) {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-md shadow-primary/30">
-        {I.zap}
-      </div>
-      <span className="font-bold text-foreground tracking-tight">lib-kit-components</span>
-    </div>
-  );
-}
+    <header className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 h-16 flex items-center gap-3 sm:gap-5">
+        <a href="#top" className="hidden sm:flex items-center gap-2.5 shrink-0">
+          <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
+            {I.zap}
+          </span>
+          <span className="font-bold text-foreground tracking-tight">lib-kit-components</span>
+        </a>
 
-export function Header() {
-  return (
-    <header className="sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        <Logo />
-        <div className="flex items-center gap-2">
-          <Link href="/ejemplos">
-            <Button size="sm" variant="ghost">
-              Ejemplos
-            </Button>
-          </Link>
-          <ThemeToggle />
-          <a href={SITE_CONFIG.repoUrl} target="_blank" rel="noreferrer">
-            <Button size="sm" leftIcon={I.github} variant="secondary">
-              GitHub
-            </Button>
-          </a>
+        <div className="flex-1 min-w-0 max-w-xl sm:ml-auto">
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">{I.search}</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="Buscar componente…"
+              aria-label="Buscar componente"
+              className="w-full h-10 pl-10 pr-24 rounded-xl border border-border bg-surface-alt text-sm text-foreground placeholder:text-muted outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-muted pointer-events-none">
+              {query ? `${shown}/${total}` : total}
+            </span>
+          </div>
         </div>
+
+        <ThemeToggle />
+        <a
+          href={SITE_CONFIG.repoUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 w-9 h-9 rounded-lg border border-border bg-surface-alt text-muted flex items-center justify-center hover:text-foreground hover:border-muted/40 active:scale-95 transition-all"
+          aria-label="Repositorio en GitHub"
+        >
+          {I.github}
+        </a>
       </div>
     </header>
   );
